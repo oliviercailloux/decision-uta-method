@@ -1,3 +1,5 @@
+package io.github.oliviercailloux.labreuche.model;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -5,6 +7,7 @@ import java.util.Map;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.uta_calculator.model.LabreucheModel;
 
 public class MainLabreucheModel {
 

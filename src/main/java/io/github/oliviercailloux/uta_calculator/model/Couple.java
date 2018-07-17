@@ -1,3 +1,5 @@
+package io.github.oliviercailloux.uta_calculator.model;
+
 
 
 public class Couple<L,R> {

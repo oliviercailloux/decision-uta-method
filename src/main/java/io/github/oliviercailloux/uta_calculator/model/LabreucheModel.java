@@ -1,3 +1,7 @@
+package io.github.oliviercailloux.uta_calculator.model;
+
+
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
