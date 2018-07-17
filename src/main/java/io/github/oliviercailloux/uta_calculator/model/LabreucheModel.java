@@ -1,6 +1,3 @@
-package io.github.oliviercailloux.uta_calculator.model;
-
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -52,11 +49,12 @@ public class LabreucheModel {
 	}
 	
 	
-	/**********************************
-	 *  						      *
-	 *  		Getters				  *
-	 *  							  *	
-	 * ********************************/
+	/***************************************************************************************
+	 *  						      													   *
+	 *  								GETTERS & SETTERS							       *
+	 *  							  													   *	
+	 * *************************************************************************************/
+	
 	
 	public List<Criterion> getCriteria(){ 					return this.criteria; 			}
 	
@@ -84,36 +82,43 @@ public class LabreucheModel {
 	
 	public Alternative getSecondChoice() {					return this.second_choice;		}
 	
-	public void setWeights(HashMap<Criterion, Double> w) {  this.weights = w; 				}
 	
 	
-	/***********************************************
-	 *  						                   *
-	 *  		         Methods				   *
-	 *  					                	   *	
-	 * ********************************************/
 	
-	//give v(alt)
- 	public Double score(Alternative alt, Map<Criterion,Double> w){
+	/****************************************************************************************
+	 *  						                   											*
+	 *  		         					METHODS						    				*
+	 *  					                	   											*	
+	 ****************************************************************************************/
+	
+	
+	/* * * * * * * * * * * * * * * * * * * *
+	 *                                     *
+	 *  Beginning's methods for resolution   *
+	 *                                     *
+	 * * * * * * * * * * * * * * * * * * * */
+	
+	
+	//give v(x)
+ 	public Double score(Alternative x, Map<Criterion,Double> w){
 		Double score = 0.0;
-		Map<Criterion,Double> evals = alt.getEvaluations();
 		
 		//Sum w_i * x_i
 		for(Criterion c : w.keySet())
-			score +=  w.get(c) * evals.get(c) ;
+			score +=  w.get(c) * x.getEvaluations().get(c) ;
 		
 		return score;
 	}
 	
 
- 	// calculate the score for all the alternatives and stock them on the scoreboard.
+ 	// associate the score for all the alternatives and stock them on the scoreboard.
 	public void scoringAlternatives(){
 		for(Alternative a : alternatives)
 			this.scoreboard.put(score(a, this.weights),a);
 	}
 
 	
-	// Build the  Delta, between 2 alternatives, needed on the anchor NOA, IVT.
+	// Build the  Delta, between 2 alternatives, needed for the anchor NOA, IVT.
 	public void buildDelta(Alternative x, Alternative y){   // x better than y by the score function.
 		if(!this.deltas.isEmpty())
 			this.deltas.clear();
@@ -139,6 +144,17 @@ public class LabreucheModel {
 					this.nullArguments.add(w_i.getKey());          
 		}
 	}
+	
+	
+	
+	
+	
+	
+	/* * * * * * * * * * * * * * * * * * *
+	 * 									 *
+	 *    Methods used by NOA anchor    *
+	 * 									 *
+	 * * * * * * * * * * * * * * * * * * */
 	
 	
 	// return all permutations of size "size" in list.
@@ -203,19 +219,17 @@ public class LabreucheModel {
 	} 
 	
 	
-	public Double d_eu(List<Criterion> list, int flag) {
+	public Couple<Double,List<Criterion>> d_eu(List<Criterion> list, int flag) {
 		Double first_part = 0.0;
 		
-		if(list.isEmpty())
-			return first_part;
+		if(list.isEmpty()) 
+			return new Couple<Double,List<Criterion>>(first_part,list);
 		
 		for(Criterion c : list)
 			first_part += this.weights.get(c) * deltas.get(c);
 				
-		List<Criterion> best_min_pi = this.pi_min(list);
-		
+		List<Criterion> best_min_pi = this.pi_min(list);	
 		Map<Criterion,Double> pi_w = this.modified_w(best_min_pi);
-		
 		Double min_part = 0.0;
 		
 		for(Criterion c : best_min_pi)
@@ -227,16 +241,16 @@ public class LabreucheModel {
 		//System.out.println("Calling d_eu for "+ this.showCriteria(list) +" : "+ first_part +" - "+ min_part +" = " + result + " pi best : "+ this.showCriteria(best_min_pi) );
 		
 		if(flag == 0)
-			return first_part;
+			return new Couple<Double,List<Criterion>>(first_part,best_min_pi);
 		
 		if(flag == 1)
-			return min_part;
+			return new Couple<Double,List<Criterion>>(min_part,best_min_pi);
 		
-		return result;
+		return new Couple<Double,List<Criterion>>(result,best_min_pi);
 	}
 	
 	
-	// return the permutation that minimize sum pi(i) delta_i on the list
+	// return the permutation that minimize Sum pi(i) delta_i,  for all i in "list"
 	public List<Criterion> pi_min(List<Criterion> list){
 		List<List<Criterion>> pis = this.allPi(list);
 		Map<Criterion,Double> w_modified = new LinkedHashMap<Criterion,Double>();
@@ -357,6 +371,14 @@ public class LabreucheModel {
 	}
 	
 	
+	
+	/* * * * * * * * * * * * * * * * * * * * * *
+	 * 										   *
+	 *  	Methods used by IVT anchors       *
+	 *                                 		   *
+	 * * * * * * * * * * * * * * * * * * * * * */
+	
+	
 	// return true if the intersection of "list_l" and "l" is empty, and false otherwise 
 	public boolean isCapEmpty(List<List<Criterion>> list_l, List<Criterion> l) {		
 		if(list_l.isEmpty())
@@ -381,104 +403,6 @@ public class LabreucheModel {
 		
 		return true;
 	}
-	
-		
-	// construct all the couple possible in list
-	public List<Couple> couples_of(List<Criterion> list){
-		List<Couple> cpl = new ArrayList<Couple>();
-		
-		for(Criterion c1 : list) {
-			for(Criterion c2 : list) {
-				if(!c1.equals(c2)) {
-					//System.out.println("Test ("+ c1.getName() + " , " + c2.getName() + " )");
-					//System.out.println(this.deltas.get(c1)+ " < "+ this.deltas.get(c2)+  " && " + this.weights.get(c1)+ " < " + this.weights.get(c2));
-					if(this.deltas.get(c1) < this.deltas.get(c2) && this.weights.get(c1) < this.weights.get(c2)) {
-						//System.out.println("add  ( " + c1.getName()+" , "+ c2.getName()+ " )" );
-						cpl.add(new Couple(c1,c2));
-					}
-				}
-			}
-		}
-		
-		//for(Couple c : cpl)
-		//	System.out.println(c.toString());
-		
-		//cpl = this.r_top(cpl);
-		
-		return cpl;
-	}
-	
-	
-	
-	
-	
-	
-	public String displayAsVector(Alternative a) {
-
-		String vectorPerf = "(";
-		
-		for(Map.Entry<Criterion, Double>  perf : a.getEvaluations().entrySet())
-			vectorPerf += " "+perf.getValue()+" ";
-				
-		return vectorPerf +")";
-	}
-
-	
-	public String showVector(Map<Criterion,Double> v) {
-		String show2 = "( ";
-		
-		for(Map.Entry<Criterion, Double> c : v.entrySet()) {
-			Double c_scaled = BigDecimal.valueOf(c.getValue()).setScale(3, RoundingMode.HALF_UP).doubleValue();
-			show2 += c_scaled+" ";
-		}
-		show2 += " )";	
-		
-		return "             "+show2;
-	}
-
-	
-	public String showCriteria(List<Criterion> c){
-		String show = "{ ";
-		
-		for(int i = 0; i < c.size();i++){
-			if(i == c.size()-1)
-				show += c.get(i).getName();
-			else
-				show += c.get(i).getName()+", ";
-		}
-			
-		return show +" }";
-	}
-
-	
-	public String showSet(List<List<Criterion>> list) {
-		String str = "{ ";
-		
-		for(List<Criterion> l : list)
-			str += this.showCriteria(l) + " ";
-		
-		str += " }";
-		
-		return str;
-	}
-	
-
-	public String showCouples(List<Couple> cpls) {
-		String string = "{ ";
-		
-		for(Couple c : cpls)
-			string += "("+c.getLeft().getName() +","+ c.getRight().getName()+") ";
-		
-		string += "}";
-		
-		return string;
-	}
-	
-	
-	
-		
-
-	// done but not checked
 	
 	
 	
@@ -510,7 +434,7 @@ public class LabreucheModel {
 			
 			for(List<Criterion> l2 : tmp) {
 				//System.out.println("set "+ showCriteria(l2)+" d_eu = "+d_eu(l2));
-				rankedSameSize.put(d_eu(l2,5),l2);
+				rankedSameSize.put(d_eu(l2,5).getLeft(),l2);
 			}
 			
 			ArrayList<Double> keys = new ArrayList<Double>(rankedSameSize.keySet());
@@ -539,56 +463,52 @@ public class LabreucheModel {
 
 	//return the minimal set of permutation that inverse the decison between x and y.
 	public List<List<Criterion>> algo_EU(List<List<Criterion>> a, List<List<Criterion>> b, int k){
-		//System.out.println("#### Calling ALGO_EU : k = "+ k );
+		System.out.println(" \n #### Calling ALGO_EU : " + this.showSet(a) +"  and   k = "+ k );
 		
 		List<List<Criterion>> a_copy = new ArrayList<List<Criterion>>(a);
 		List<List<Criterion>> f = new ArrayList<List<Criterion>>();
 		
 		for(int i=k; i < this.c_set.size(); i++) {				  											//L1
-			//System.out.println("T_i = "+ this.showCriteria(this.c_set.get(i))+ " i = "+i);
-			//System.out.println("Is "+ this.showSet(a)+" CAP "+ this.showCriteria(this.c_set.get(i))+ " empty  : "+ isCapEmpty(a,this.c_set.get(i)));
+			System.out.println(k +" " + i +" T_i = "+ this.showCriteria(this.c_set.get(i))+ " i = "+i);
+			System.out.println(k +" " + i +" Is "+ this.showSet(a)+" CAP "+ this.showCriteria(this.c_set.get(i))+ " empty  : "+ isCapEmpty(a,this.c_set.get(i)));
 			
 			if(isCapEmpty(a,this.c_set.get(i))){				  											//L2
 				Double sum = 0.0;
 				
 				if(!a.isEmpty()) {
 					for(List<Criterion> l : a)
-						sum += this.d_eu(l,5);
+						sum += this.d_eu(l,5).getLeft();
 				}
-				sum += this.d_eu(this.c_set.get(i),5);
+				sum += this.d_eu(this.c_set.get(i),5).getLeft();
 				
 				Double hache = this.score(this.best_choice, this.weights) - this.score(this.second_choice, this.weights);
-				//System.out.println(" sum better than hache? "+sum +" >= "+ hache);
+				System.out.println(k +" " + i +" sum better than hache? "+sum +" >= "+ hache);
 				if(sum >= hache) {																			//L3
-					//System.out.println("Adding to F"+ this.showCriteria(this.c_set.get(i)));
+					System.out.println(k+" " + i +" Adding to F"+ this.showCriteria(this.c_set.get(i)));
 					a_copy.add(this.c_set.get(i));
 					f = new ArrayList<List<Criterion>>(a_copy);												//L4
 				}else{																						//L5
-					a.add(this.c_set.get(i));
-					//System.out.println("Calling algo_eu"+this.showSet(a)+" "+this.showSet(b)+" , "+ (i+1));
-					f = algo_EU(a,b,(i+1));																	//L6
+					a_copy.add(this.c_set.get(i));
+					System.out.println(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+" "+this.showSet(b)+" , "+ (i+1));
+					f = algo_EU(a_copy,b,(i+1));																	//L6
 					
 				}
-				//System.out.println("Test for update :"+ !f.isEmpty() + " and [ "+ b.isEmpty()+" or "+ this.includeDiscri(f,b) +" ]");
+				System.out.println(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+ b.isEmpty()+" or "+ this.includeDiscri(f,b) +" ]");
 				if(!f.isEmpty() && ( b.isEmpty() || this.includeDiscri(f,b) )) {							//L8
-					//System.out.println("UPDATE");
+					System.out.println(k+" " + i +" UPDATE");
 					b = new ArrayList<List<Criterion>>(f);													//L8		
 				}
-				
-				
-				
-				//System.out.println("Test for return B :" + !b.isEmpty()+" and "+!this.includeDiscri(a,b));
-				if(!b.isEmpty() && !this.includeDiscri(a,b)) {												//L10
-					//System.out.println("Return B");
+				System.out.println(k+" " + i +" A" + this.showSet(a)); //System.out.println(k+" " + i +" B" + this.showSet(b));//System.out.println(k+" " + i +" Test for return B :" + !b.isEmpty()+" and "+!this.includeDiscri(a_copy,b));
+				if(!b.isEmpty() && !this.includeDiscri(a_copy,b)) {												//L10
 					return b;		
 				}
 			}
+			
+			a_copy.clear();
 		}
-		
 		List<List<Criterion>> empty = new ArrayList<List<Criterion>>();
 		
-		
-		//System.out.println("#### END ALGO_EU : k = "+ k );
+		System.out.println("#### END ALGO EU : k = "+k);
 		return empty;
 	}
 	
@@ -631,7 +551,7 @@ public class LabreucheModel {
 					//System.out.println(k);
 				}while(k < a.size());
 				
-				if(d_eu(a.get(k),5) > d_eu(b.get(k),5))
+				if(d_eu(a.get(k),5).getLeft() > d_eu(b.get(k),5).getLeft())
 					result = true;
 				else
 					result = false;
@@ -682,58 +602,251 @@ public class LabreucheModel {
 	
 	
 	
+	/* * * * * * * * * * * * * * *
+	 *                           *
+	 * 	Methods for building	 *	
+	 * 	R* used in IVT anchor    *
+	 *							 *
+	 * * * * * * * * * * * * * * */
+	
+	
+	
+	// construct all the couple possible in list
+	public List<Couple<Criterion,Criterion>> couples_of(List<Criterion> list){
+		List<Couple<Criterion,Criterion>> cpl = new ArrayList<Couple<Criterion,Criterion>>();
+		
+		for(Criterion c1 : list) {
+			for(Criterion c2 : list) {
+				if(!c1.equals(c2)) {
+					//System.out.println("Test ("+ c1.getName() + " , " + c2.getName() + " )");
+					//System.out.println(this.deltas.get(c1)+ " < "+ this.deltas.get(c2)+  " && " + this.weights.get(c1)+ " < " + this.weights.get(c2));
+					if(this.deltas.get(c1) < this.deltas.get(c2) && this.weights.get(c1) < this.weights.get(c2)) {
+						//System.out.println("add  ( " + c1.getName()+" , "+ c2.getName()+ " )" );
+						cpl.add(new Couple<Criterion,Criterion>(c1,c2));
+					}
+				}
+			}
+		}
+		return cpl;
+	}
+	
+	
+	public List<Couple<Criterion,Criterion>> r_top(List<Couple<Criterion,Criterion>> list_c){
+		boolean change_flag = false;						 // -> list_c have a new couple added, falg = true;
+		List<Couple<Criterion,Criterion>> copy = new ArrayList<Couple<Criterion,Criterion>>(list_c);
+		List<Couple<Criterion,Criterion>> light = null;							// -> used to avoid to check the same couples
+		Couple<Criterion,Criterion> tmp = null;
+		
+		do {
+			change_flag = false;
+		
+			// c1 = (a   b)
+			for(Couple<Criterion,Criterion> c1 : copy) {
+			light = new ArrayList<Couple<Criterion,Criterion>>(copy);
+			light.remove(c1);
+				
+				// c2 = (c   d)
+				for(Couple<Criterion,Criterion> c2 : light) {
+					// (a   b) , (c   d) =>  b=c and a!=d
+					if(c1.getRight().equals(c2.getLeft()) && !c1.getLeft().equals(c2.getRight())) {
+						tmp  = new Couple<Criterion,Criterion>(c1.getLeft(),c2.getRight());
+						if(!copy.contains(tmp)) {
+							copy.add(tmp);
+							change_flag = true;
+						}
+					}
+					// (c   d) , (a   b) =>  a=d and b!=d 				
+					if(c1.getLeft().equals(c2.getRight()) && !c1.getRight().equals(c2.getLeft())) {
+						tmp  = new Couple<Criterion,Criterion>(c1.getRight(),c2.getLeft());
+						if(!copy.contains(tmp)) {
+							copy.add(tmp);
+							change_flag = true;
+						}
+					}
+				}
+			}
+			light.clear();
+			
+		}while(change_flag);
+		
+		return copy;
+	}
+
+	
+	public List<Couple<Criterion,Criterion>> r_star(List<Couple<Criterion,Criterion>> cpls){
+		List<List<Couple<Criterion,Criterion>>> subsets = this.allSubsetCouple(cpls);
+		List<Couple<Criterion,Criterion>> result = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Couple<Criterion,Criterion>> tmp_top;
+		
+		for(List<Couple<Criterion,Criterion>> c_list : subsets) {
+			tmp_top = this.r_top(c_list);
+		
+			if(tmp_top.equals(c_list)){
+				for(Couple<Criterion,Criterion> c : c_list) {
+					if(!result.contains(c))
+						result.add(c);
+				}
+			}
+		}
+		return result;
+	}
+	
+	
+	public List<List<Couple<Criterion,Criterion>>> allSubsetCouple(List<Couple<Criterion,Criterion>> set, int size){
+		List<List<Couple<Criterion,Criterion>>> subsets= new ArrayList<List<Couple<Criterion,Criterion>>>();
+		for(int i = 0; i< size; i++) {
+			if(i == 0){
+				List<Couple<Criterion,Criterion>> singleton; 
+				
+				for(int j = 0; j< set.size(); j++){
+					singleton = new ArrayList<Couple<Criterion,Criterion>>();
+					singleton.add(set.get(j));
+					subsets.add(singleton);
+				}
+			} 
+			else {
+				List<List<Couple<Criterion,Criterion>>> copy_subsets = new ArrayList<List<Couple<Criterion,Criterion>>>(subsets);
+				List<Couple<Criterion,Criterion>> new_subset = new ArrayList<Couple<Criterion,Criterion>>();
+				List<Couple<Criterion,Criterion>> set_light = new ArrayList<Couple<Criterion,Criterion>>(set);
+				
+				for(List<Couple<Criterion,Criterion>> subset : copy_subsets){
+					int born_sup = set.indexOf(subset.get(subset.size()-1));
+					set_light.removeAll(set.subList(0,born_sup + 1));
+					
+					if(set_light.size() >= 1){
+						for(Couple<Criterion,Criterion> c : set_light){
+							new_subset = this.addCouple(subset,c);
+							subsets.add(new_subset);
+						}
+						subsets.remove(subset);
+					}
+					subsets.remove(subset);
+					set_light.addAll(set.subList(0, born_sup + 1));
+				}
+			}	
+		}
+		
+		return subsets;
+	}
+	
+	
+	public List<List<Couple<Criterion,Criterion>>> allSubsetCouple(List<Couple<Criterion,Criterion>> set){
+		List<List<Couple<Criterion,Criterion>>> result = new ArrayList<List<Couple<Criterion,Criterion>>>();
+		List<List<Couple<Criterion,Criterion>>> tmp;
+	
+		for(int i = 1; i<=set.size(); i++){
+			tmp = allSubsetCouple(set,i);
+			
+			for(List<Couple<Criterion,Criterion>> l : tmp)
+				result.add(l);
+		}
+		
+		return result;
+	}
+	
+	
+	public List<Couple<Criterion,Criterion>> addCouple(List<Couple<Criterion,Criterion>> l, Couple<Criterion,Criterion> c){
+		List<Couple<Criterion,Criterion>> new_l = new ArrayList<Couple<Criterion,Criterion>>(l);
+		new_l.add(c);
+		return new_l;
+	}
+	
+	
+	
+	
+		
+	/* * * * * * * * * * * * * * * * * * *
+	 * 									 *
+	 * 	Used to show properly sets of    *
+	 *  criteria or Couple of criteria   *
+	 *                                   *
+	 * * * * * * * * * * * * * * * * * * */
+	
+	
+	
+	public String displayAsVector(Alternative a) {
+ 
+		String vectorPerf = "( ";
+		
+		for(Map.Entry<Criterion, Double>  perf : a.getEvaluations().entrySet())
+			vectorPerf += " "+perf.getValue()+" ";
+				
+		return vectorPerf +" )";
+	}
+
+	
+	public String showVector(Map<Criterion,Double> v) {
+		String show2 = "( ";
+		
+		for(Map.Entry<Criterion, Double> c : v.entrySet()) {
+			Double c_scaled = BigDecimal.valueOf(c.getValue()).setScale(3, RoundingMode.HALF_UP).doubleValue();
+			show2 += c_scaled+" ";
+		}
+		show2 += " )";	
+		
+		return "  "+show2;
+	}
+
+	
+	public String showCriteria(List<Criterion> c){
+		String show = "{ ";
+		
+		for(int i = 0; i < c.size();i++){
+			if(i == c.size()-1)
+				show += c.get(i).getName();
+			else
+				show += c.get(i).getName()+", ";
+		}
+			
+		return show +" }";
+	}
+
+	
+	public String showSet(List<List<Criterion>> list) {
+		String str = "{ ";
+		
+		for(List<Criterion> l : list)
+			str += this.showCriteria(l) + " ";
+		
+		str += " }";
+		
+		return str;
+	}
+	
+
+	public String showCouples(List<Couple<Criterion,Criterion>> cpls) {
+		String string = "{ ";
+		
+		for(Couple<Criterion,Criterion> c : cpls)
+			string += "("+((Criterion) c.getLeft()).getName() +","+ ((Criterion) c.getRight()).getName()+") ";
+		
+		string += " }";
+		
+		return string;
+	}
+	
+	
+
+	
 	/*********************************************************************************************
 	 *                                                                                           *
 	 *                                Methods On Process                                         *
 	 *                                                                                           *
 	 *********************************************************************************************/
 
-	//not used
-	public List<Couple> r_top(List<Couple> list_c){
-
-		List<Couple> cpls = new ArrayList<Couple>(list_c);
-		boolean find = false;
-		
-		for(Couple c1 : list_c){
-			List<Couple> list_light = new ArrayList<Couple>(list_c);
-			list_light.remove(c1);
-			System.out.println("Test sur " + c1.toString());
-			
-			for(Couple c2 : list_light) {
-				List<Couple> list_light2 = new ArrayList<Couple>(list_light);
-				list_light2.remove(c2);
-				
-				for(Couple c3 : list_light2) {
-					if(c1.getLeft().equals(c2.getLeft()) && c1.getRight().equals(c3.getRight()) && c2.getRight().equals(c3.getLeft()) ) {
-						System.out.println(c2.toString() + " et " + c3.toString() + " 1er if");
-						find = true;
-					}
-					if( c1.getLeft().equals(c3.getLeft()) && c1.getRight().equals(c2.getRight()) && c2.getLeft().equals(c3.getRight()) ) {
-						System.out.println(c3.toString() + " et " + c2.toString()+ " 2nd if");
-						find = true;
-					}	
-				}
-			}
-			
-			
-			if(find)
-				cpls.remove(c1);
-			
-			find = false;
-		}			
-		
-		return cpls;
-	}
-
-
 	
-	/****************************************
-	 * 										*	
-	 *  Explanation methods : Anchors		*
-	 *  									*
-	 *  Explain why "x" is better than "y"	*		
-	 *  									*
-	 ****************************************/
+	
+	// empty! \o/
+	
+	
+	
+	/*********************************************************************************************
+	 * 																							 *	
+	 *  						Explanation methods : Anchors									 *
+	 *  																						 *
+	 * 						  Explain why "x" is better than "y"								 *		
+	 *  																						 *
+	 ********************************************************************************************/
 	
 	
 	
@@ -749,17 +862,15 @@ public class LabreucheModel {
 		return  x.getName()+" is preferred to "+y.getName()+" since "+x.getName()+" is better then "+y.getName()+" on ALL criteria.";
 	}
 	
-
+	
 	
 	public String anchorNOA(Alternative x, Alternative y){
 		//System.out.println("reference score : "+score(x,weightsReferences)+ " > "+score(y,weightsReferences)+" ?");
 		
-		if(score(x,weightsReferences) > score(y,weightsReferences))
+		if(score(x,this.weightsReferences) > score(y,this.weightsReferences))
 			return "not applicable";
 		
-		buildDelta(x, y);
-		
-		//System.out.println("Bidule machin chouette : ");
+		System.out.println("\n \n" + "Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas));
 		
 		Map<Double,Criterion> temp = new HashMap<Double,Criterion>();  				// ->  associate (w_i - 1/n) * Delta_i to the criterion c_i
 		
@@ -836,12 +947,11 @@ public class LabreucheModel {
 	}  
 	
 	
+	
 	public String anchorIVT(Alternative x, Alternative y) {
-		String explanation = "not applicable";
-		
-		buildDelta(x, y);
-				
+		String explanation = "not applicable";				
 		int size = 2;
+		size = this.criteria.size();
 		List<List<Criterion>> subsets = new ArrayList<List<Criterion>>();     
 		List<List<Criterion>> big_a = new ArrayList<List<Criterion>>();       // -> first variable for algo_eu calls 
 		List<List<Criterion>> big_b = new ArrayList<List<Criterion>>();       // -> second variable for algo_eu calls
@@ -849,8 +959,9 @@ public class LabreucheModel {
 		Double d_eu = null;
 		List<Criterion> pi = new ArrayList<Criterion>();
 		
+		System.out.println("Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas) + "\n");
+		
 		do {
-			//System.out.println("################ While loop : "+ size +" ################" );
 			d_eu = null;
 			pi.clear();
 			big_a.clear();
@@ -859,33 +970,37 @@ public class LabreucheModel {
 			subsets.clear();
 			this.c_set.clear();
 			
-			subsets = this.allSubset(this.criteria,size);
+			//subsets = this.allSubset(this.criteria,size);
+			
+			subsets = this.allSubset(this.criteria);
 			
 			for(List<Criterion> subset : subsets) {
-				
-				d_eu = this.d_eu(subset,5);
+				System.out.println(this.showCriteria(subset));
+				d_eu = this.d_eu(subset,5).getLeft();
+				System.out.println(" E.T");
 				pi = this.pi_min(subset);
-				//System.out.println("Subset : " + this.showCriteria(subset) + " d_eu = " + d_eu + " pi : "+ this.showCriteria(pi));
+				System.out.println("Subset : " + this.showCriteria(subset) + " d_eu = " + d_eu + " pi : "+ this.showCriteria(pi));
 				if(d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
 					this.c_set.add(subset);
-					//System.out.println("adding set to c_set : " + this.showCriteria(subset));
+					System.out.println("adding set to c_set : " + this.showCriteria(subset));
 				}
 				
 				pi.clear();
 			}
 			
+			
 			this.c_set = this.sortLexi(this.c_set);
 			
-			//System.out.println("C_set : ");
-			//for(List<Criterion> l : this.c_set)
-			//	System.out.println(this.showCriteria(l) + " " + this.d_eu(l,0) + " "  + this.d_eu(l,1) + " " + this.d_eu(l,5) + " " + this.showCriteria(this.pi_min(l)));
+			System.out.println("C_set : ");
+			for(List<Criterion> l : this.c_set)
+				System.out.println(this.showCriteria(l)); // + " " + this.d_eu(l,0) + " "  + this.d_eu(l,1) + " " + this.d_eu(l,5) + " " + this.showCriteria(this.pi_min(l)));
 			
 			//System.out.println("@@@@@@@@@@@@  ALGO EU CALLING @@@@@@@@@@@@");
 			big_c = this.algo_EU(big_a, big_b, 0);
 			
 			//System.out.println("Algo_eu return  : ");
 			//for(List<Criterion> c : big_c)
-			//	System.out.println(this.showCriteria(c));
+				//System.out.println(this.showCriteria(c));
 			
 			size++;
 		}while(big_c.isEmpty() && size <= this.criteria.size());
@@ -894,32 +1009,36 @@ public class LabreucheModel {
 			return explanation;
 		
 		
-		List<Couple> cpls = new ArrayList<Couple>();
-		List<Couple> r_s = new ArrayList<Couple>();
+		// Start to determine R*
+		
+		List<Couple<Criterion,Criterion>> cpls = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Couple<Criterion,Criterion>> r_s = new ArrayList<Couple<Criterion,Criterion>>();
 		
 		System.out.println("Minimal permutation : " + this.showSet(big_c) + "\n");
 		
 		for(List<Criterion> l : big_c) {
 			r_s = this.couples_of(l);
 			
-			for(Couple c : r_s) {
+			for(Couple<Criterion,Criterion> c : r_s) {
 				if(!cpls.contains(c))
 					cpls.add(c);
 			}
 			
 			r_s.clear();
 		}
+				
+		List<Couple<Criterion,Criterion>> r_star = this.r_star(cpls);
+
+		// R* determined
 		
-		
-		//System.out.println("Cpls is empty ? " + cpls.isEmpty());
 		
 		List<Criterion> k_ps  = new ArrayList<Criterion>();
 		List<Criterion> k_prs = new ArrayList<Criterion>();
 		List<Criterion> k_nw  = new ArrayList<Criterion>();
 		List<Criterion> k_nrw = new ArrayList<Criterion>();
-		List<Couple> k_pn  = new ArrayList<Couple>();
+		List<Couple<Criterion,Criterion>> k_pn  = new ArrayList<Couple<Criterion,Criterion>>();
 		
-		for(Couple c : cpls) { 						// c = (i,j) where i and j are criteria
+		for(Couple<Criterion,Criterion> c : r_star) { 						// c = (i,j) where i and j are criteria
 			
 			// j in S+ and i in S- and w_j > w_i
 			if(this.positiveArguments.contains(c.getRight()) && this.negativeArguments.contains(c.getLeft()) && this.weights.get(c.getRight()) > this.weights.get(c.getLeft())) {
@@ -927,27 +1046,27 @@ public class LabreucheModel {
 				// w_j >= 1/n  and w_i <= 1/n 
 				if(this.weights.get(c.getRight()) >= (1.0 / this.criteria.size()) && this.weights.get(c.getLeft()) <= (1.0 / this.criteria.size())   ) {
 					if(!k_ps.contains(c.getRight()))
-						k_ps.add(c.getRight());  // adding j
+						k_ps.add(c.getRight());  			// adding j
 					if(!k_nw.contains(c.getLeft()))
-						k_nw.add(c.getLeft());   // adding i
+						k_nw.add(c.getLeft());   			// adding i
 				}
 				else {
 					// w_j >> w_i 
 					if(this.weights.get(c.getRight()) > this.weights.get(c.getLeft()) + this.epsilon) {
 						if(!k_pn.contains(c))
-							k_pn.add(c);   			// adding (i,j)
+							k_pn.add(c);   					// adding (i,j)
 					}
 					else{
 						// w_j >= 1/n
 						if(this.weights.get(c.getRight()) >= (1.0 / this.criteria.size())) {
 							if(!k_ps.contains(c.getRight()))
-								k_ps.add(c.getRight());  //adding j
+								k_ps.add(c.getRight());  	// adding j
 						}
 						else {
 							// w_i <= 1/n
 							if(this.weights.get(c.getLeft()) <= (1.0 / this.criteria.size())) {
 								if(!k_nw.contains(c.getLeft()))
-									k_nw.add(c.getLeft());   //adding i
+									k_nw.add(c.getLeft());   // adding i
 							}
 						}
 					}
@@ -961,12 +1080,11 @@ public class LabreucheModel {
 				// w_j >= 1/n
 				if(this.weights.get(c.getRight()) >= (1.0 / this.criteria.size()) ) {
 					if(!k_ps.contains(c.getRight()))
-						k_ps.add(c.getRight());
-					
+						k_ps.add(c.getRight());			// adding j
 				}
 				else {
 					if(!k_prs.contains(c.getRight()))
-						k_prs.add(c.getRight());
+						k_prs.add(c.getRight());		// adding j
 				}
 			}
 					
@@ -976,17 +1094,16 @@ public class LabreucheModel {
 				// w_j <= 1/n
 				if(this.weights.get(c.getRight()) <= (1.0 / this.criteria.size()) ) {
 					if(!k_nw.contains(c.getRight()))
-						k_nw.add(c.getRight());
-					
+						k_nw.add(c.getRight());			// adding j
 				}
 				else {
 					if(!k_nrw.contains(c.getRight()))
-						k_nrw.add(c.getRight());
+						k_nrw.add(c.getRight());		// adding j
 				}
 			}
 		}
 		
-		System.out.println("R* : " + this.showCouples(cpls)+ "\n");
+		System.out.println("R* : " + this.showCouples(r_star)+ "\n");
 		
 		if(!k_ps.isEmpty())
 			System.out.print("K_ps = " + this.showCriteria(k_ps) + "  ");
@@ -1013,18 +1130,17 @@ public class LabreucheModel {
 		
 		if(!k_pn.isEmpty()) {
 			explanation += "And ";
-			for(Couple couple : k_pn){
+			for(Couple<Criterion,Criterion> couple : k_pn){
 				explanation += couple.getRight().getName() + " for wich " + x.getName() + " is better than " + y.getName() +
 							" is more important than criterion " + couple.getLeft().getName() + " for wich " + x.getName() + 
 							" is worse than " + y.getName() + " ";
 			}
 			explanation += ".";
 		}
-		
-		//System.out.println("++++++++++++++++++++++ ENDING IVT +++++++++++++++");
-		
+				
 		return explanation;		
 	}
+	
 	
 	
 	public String anchorRMG(Alternative x, Alternative y){
@@ -1060,12 +1176,11 @@ public class LabreucheModel {
 	}
 	
 	
-
 	
 	public void resolved(){
 		String display =  "****************************************************************";
 		display += "\n" + "*                                                              *";
-		display += "\n" + "*              Labreuche Model recommander system              *";
+		display += "\n" + "*         Recommender system based on Labreuche Model          *";
 		display += "\n" + "*                                                              *";
 		display += "\n" + "****************************************************************" + "\n";
 		
@@ -1101,7 +1216,7 @@ public class LabreucheModel {
 		
 		this.buildDelta(x, y);
 		
-		display += "\n \n" + "Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas);
+		//display += "\n \n" + "Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas);
 		
 		System.out.println(display + "\n");	
 		

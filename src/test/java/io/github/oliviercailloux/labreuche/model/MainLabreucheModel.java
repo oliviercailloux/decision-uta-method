@@ -1,6 +1,3 @@
-package io.github.oliviercailloux.labreuche.model;
-
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,7 +5,6 @@ import java.util.Map;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.model.LabreucheModel;
 
 public class MainLabreucheModel {
 
@@ -31,8 +27,8 @@ public class MainLabreucheModel {
 		*/
 		
 		// example 9 for IVT
-		/*
 		
+		/*
 		Double[] w = {0.06, 0.11, 0.21, 0.29, 0.33};
 		Double[] x = {0.89, 0.03, 0.07, 0.32, 0.38};
 		Double[] y = {0.36, 0.76, 0.60, 0.25, 0.75};
@@ -55,8 +51,8 @@ public class MainLabreucheModel {
 		//Double[] w = {0.06 , 0.11, 0.19, 0.11, 0.31, 0.08, 0.14}; // example 13   NOA  ->  validate!
 		//Double[] w = {0.14 , 0.05, 0.17, 0.23, 0.17, 0.11, 0.13}; // example 14   NOA	-> validate!
 		//Double[] w = {0.11 , 0.14, 0.13, 0.02, 0.27, 0.25, 0.08}; // example 15   IVT   -> validate!
-		//Double[] w = {0.24 , 0.20, 0.25, 0.06, 0.02, 0.19, 0.04}; // example 16   IVT -> validate!
-		Double[] w = {0.16 , 0.14, 0.15, 0.10, 0.16, 0.15, 0.14}; // example 17   RMG   -> validate!
+		Double[] w = {0.24 , 0.20, 0.25, 0.06, 0.02, 0.19, 0.04}; // example 16   IVT -> validate!
+		//Double[] w = {0.16 , 0.14, 0.15, 0.10, 0.16, 0.15, 0.14}; // example 17   RMG   -> validate!
 		//Double[] w = {0.12 , 0.16, 0.15, 0.16, 0.15, 0.14, 0.12}; // example 18   RMG  -> with epsilon too small we don't have the same result
 		
 		

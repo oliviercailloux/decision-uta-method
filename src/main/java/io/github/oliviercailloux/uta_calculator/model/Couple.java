@@ -1,13 +1,10 @@
-package io.github.oliviercailloux.uta_calculator.model;
 
 
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
-
-public class Couple {
+public class Couple<L,R> {
 
 		
-	private Criterion left;
-	private Criterion right;
+	private L left;
+	private R right;
 	
 	
 	/*****************************
@@ -16,7 +13,7 @@ public class Couple {
 	 *                           *
 	 *****************************/
 		
-	public Couple(Criterion l, Criterion r) {
+	public Couple(L l, R r) {
 			this.left = l;
 			this.right = r;
 	}
@@ -33,13 +30,13 @@ public class Couple {
 	 *****************************/
 	
 
-	public Criterion getLeft() { 			return this.left; 	}
+	public L getLeft() { 			return this.left; 	}
 	
-	public Criterion getRight() { 			return this.right; 	}
+	public R getRight() { 			return this.right; 	}
 	
-	public void setLeft(Criterion l) {		this.left = l; 		}
+	public void setLeft(L l) {		this.left = l; 		}
 	
-	public void setRight(Criterion r) {		this.right = r;		}
+	public void setRight(R r) {		this.right = r;		}
 	
 	
 	/*****************************
@@ -48,5 +45,6 @@ public class Couple {
 	 *                           *
 	 *****************************/
 
-	public String toString() { 	return "( " + this.left.getName() + ", " + this.right.getName() + " )";  }
+	public String toString() { 
+		return "( " + this.left.toString() + ", " + this.right.toString() + " )";  }
 }
