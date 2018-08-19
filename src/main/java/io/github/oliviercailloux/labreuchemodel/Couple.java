@@ -1,6 +1,4 @@
-package io.github.oliviercailloux.uta_calculator.model;
-
-
+package io.github.oliviercailloux.labreuchemodel;
 
 public class Couple<L,R> {
 
@@ -47,6 +45,7 @@ public class Couple<L,R> {
 	 *                           *
 	 *****************************/
 
+	@Override
 	public String toString() { 
 		return "( " + this.left.toString() + ", " + this.right.toString() + " )";  }
 }

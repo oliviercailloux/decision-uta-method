@@ -1,6 +1,4 @@
-package io.github.oliviercailloux.uta_calculator.model;
-
-
+package io.github.oliviercailloux.labreuchemodel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,37 +14,40 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheModel {
 	
-	static {System.loadLibrary("jniortools");}
-	
-	private List<Criterion> criteria;
-	private List<Alternative> alternatives;
-	private Map<Criterion,Double> weights;
-	private Map<Criterion,Double> weightsReferences;
-	private Map<Criterion,Double> deltas;
-	private Map<Double,Alternative> scoreboard;
-	private List<Criterion> positiveArguments;
-	private List<Criterion> negativeArguments;
-	private List<Criterion> nullArguments;
+	public List<Criterion> criteria;
+	public Map<Criterion,Double> weights;
+	public Map<Criterion,Double> weightsReferences;
+	public Map<Criterion,Double> deltas;
+	public Map<Double,Alternative> scoreboard;
+	public List<Criterion> positiveArguments;
+	public List<Criterion> negativeArguments;
+	public List<Criterion> nullArguments;
 	public List<List<Criterion>> c_set;
-	private Double epsilon;
-	private Alternative best_choice;
-	private Alternative second_choice;
+	public Double epsilon;
+	public Alternative best_choice;
+	public Alternative second_choice;
+	
+	public AllOutput phi_all;
+	public NOAOutput phi_noa;
+	public IVTOutput phi_ivt;
+	public RMGAVGOutput phi_rmgavg;
+	public RMGCOMPOutput phi_rmgcomp;
 	
 	
-	public LabreucheModel(List<Criterion> criteria, List<Alternative> alternatives, Map<Criterion,Double> weights){
+	
+	public LabreucheModel(List<Criterion> criteria, Alternative x, Alternative y, Map<Criterion,Double> weights){
 		this.criteria = criteria;
-		this.alternatives = alternatives;
 		this.weights = weights;
-		this.deltas = new LinkedHashMap<Criterion,Double>();
-		this.weightsReferences = new LinkedHashMap<Criterion,Double>();
-		this.scoreboard = new HashMap<Double,Alternative>();
-		this.positiveArguments = new ArrayList<Criterion>();
-		this.negativeArguments = new ArrayList<Criterion>();
-		this.nullArguments = new ArrayList<Criterion>();
-		this.c_set = new ArrayList<List<Criterion>>();
+		this.deltas = new LinkedHashMap<>();
+		this.weightsReferences = new LinkedHashMap<>();
+		this.scoreboard = new HashMap<>();
+		this.positiveArguments = new ArrayList<>();
+		this.negativeArguments = new ArrayList<>();
+		this.nullArguments = new ArrayList<>();
+		this.c_set = new ArrayList<>();
 		this.epsilon = 0.2 / this.criteria.size();
-		this.best_choice = null;
-		this.second_choice = null;
+		this.best_choice = x;
+		this.second_choice = y;
 		
 		for(int i=0; i<criteria.size();i++) 
 			this.weightsReferences.put(criteria.get(i),1.0/criteria.size());
@@ -61,9 +62,7 @@ public class LabreucheModel {
 	
 	
 	public List<Criterion> getCriteria(){ 					return this.criteria; 			}
-	
-	public List<Alternative> getAlternatives(){ 			return this.alternatives; 		}
-		
+			
 	public Map<Criterion,Double> getWeights(){ 				return this.weights; 			}
 
 	public Map<Criterion,Double> getWeightsReferences(){ 	return this.weightsReferences; 	}
@@ -86,8 +85,7 @@ public class LabreucheModel {
 	
 	public Alternative getSecondChoice() {					return this.second_choice;		}
 	
-	
-	
+		
 	
 	/****************************************************************************************
 	 *  						                   											*
@@ -98,7 +96,7 @@ public class LabreucheModel {
 	
 	/* * * * * * * * * * * * * * * * * * * *
 	 *                                     *
-	 *  Beginning's methods for resolution   *
+	 *  Beginning's methods for resolution *
 	 *                                     *
 	 * * * * * * * * * * * * * * * * * * * */
 	
@@ -117,16 +115,13 @@ public class LabreucheModel {
 
  	// associate the score for all the alternatives and stock them on the scoreboard.
 	public void scoringAlternatives(){
-		for(Alternative a : alternatives)
-			this.scoreboard.put(score(a, this.weights),a);
+		this.scoreboard.put(score(best_choice, this.weights),best_choice);
+		this.scoreboard.put(score(second_choice, this.weights),second_choice);
 	}
 
 	
 	// Build the  Delta, between 2 alternatives, needed for the anchor NOA, IVT.
 	public void buildDelta(Alternative x, Alternative y){   // x better than y by the score function.
-		if(!this.deltas.isEmpty())
-			this.deltas.clear();
-		
 		Map<Criterion, Double> evalsX = x.getEvaluations();
 		Map<Criterion,Double> evalsY = y.getEvaluations();
 		
@@ -163,21 +158,21 @@ public class LabreucheModel {
 	
 	// return all permutations of size "size" in list.
 	public List<List<Criterion>> allPi(List<Criterion> list, int size){
-		List<List<Criterion>> cycles = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> cycles = new ArrayList<>();
 		
 		for(int i = 0; i < size; i++) {
 			if(i == 0){
 				List<Criterion> singleton; 
 				
 				for(int j = 0; j< list.size(); j++){
-					singleton = new ArrayList<Criterion>();
+					singleton = new ArrayList<>();
 					singleton.add(list.get(j));
 					cycles.add(singleton);
 				}				
 			}else {
-				List<List<Criterion>> copy_cycles = new ArrayList<List<Criterion>>(cycles);
-				List<Criterion> new_cycle = new ArrayList<Criterion>();
-				List<Criterion> list_light = new ArrayList<Criterion>(list);
+				List<List<Criterion>> copy_cycles = new ArrayList<>(cycles);
+				List<Criterion> new_cycle = new ArrayList<>();
+				List<Criterion> list_light = new ArrayList<>(list);
 				
 				for(List<Criterion> cycle : copy_cycles){
 					list_light.removeAll(cycle);
@@ -201,7 +196,7 @@ public class LabreucheModel {
 	
 	
 	public List<Criterion> add(List<Criterion> l, Criterion c){
-		List<Criterion> new_l = new ArrayList<Criterion>(l);
+		List<Criterion> new_l = new ArrayList<>(l);
 		new_l.add(c);
 		return new_l;
 	}
@@ -209,7 +204,7 @@ public class LabreucheModel {
 	
 	// return all permutations of list
 	public List<List<Criterion>> allPi(List<Criterion> list){
-		List<List<Criterion>> result = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 	
 		for(int i = 2; i<=list.size(); i++){
@@ -227,7 +222,7 @@ public class LabreucheModel {
 		Double first_part = 0.0;
 		
 		if(list.isEmpty()) 
-			return new Couple<Double,List<Criterion>>(first_part,list);
+			return new Couple<>(first_part,list);
 		
 		for(Criterion c : list)
 			first_part += this.weights.get(c) * deltas.get(c);
@@ -245,19 +240,19 @@ public class LabreucheModel {
 		//System.out.println("Calling d_eu for "+ this.showCriteria(list) +" : "+ first_part +" - "+ min_part +" = " + result + " pi best : "+ this.showCriteria(best_min_pi) );
 		
 		if(flag == 0)
-			return new Couple<Double,List<Criterion>>(first_part,best_min_pi);
+			return new Couple<>(first_part,best_min_pi);
 		
 		if(flag == 1)
-			return new Couple<Double,List<Criterion>>(min_part,best_min_pi);
+			return new Couple<>(min_part,best_min_pi);
 		
-		return new Couple<Double,List<Criterion>>(result,best_min_pi);
+		return new Couple<>(result,best_min_pi);
 	}
 	
 	
 	// return the permutation that minimize Sum pi(i) delta_i,  for all i in "list"
 	public List<Criterion> pi_min(List<Criterion> list){
 		List<List<Criterion>> pis = this.allPi(list);
-		Map<Criterion,Double> w_modified = new LinkedHashMap<Criterion,Double>();
+		Map<Criterion,Double> w_modified = new LinkedHashMap<>();
 		Double min_pi_value = Double.MAX_VALUE;
 		List<Criterion> min_pi = null;
 		Double sum = null;
@@ -289,7 +284,7 @@ public class LabreucheModel {
 	
 	//returned weight vector modified by cycle
 	public Map<Criterion,Double> modified_w(List<Criterion> cycle){
-		Map<Criterion,Double> pi_w = new LinkedHashMap<Criterion,Double>(this.weights);
+		Map<Criterion,Double> pi_w = new LinkedHashMap<>(this.weights);
 		Double tmp_pi = 0.0;
 
 		tmp_pi = pi_w.get(cycle.get(cycle.size()- 1));
@@ -307,21 +302,21 @@ public class LabreucheModel {
 	
 	// return all the subset of size "size" in set
 	public List<List<Criterion>> allSubset(List<Criterion> set, int size){
-		List<List<Criterion>> subsets= new ArrayList<List<Criterion>>();
+		List<List<Criterion>> subsets= new ArrayList<>();
 		
 		for(int i = 0; i< size; i++) {
 			if(i == 0){
 				List<Criterion> singleton; 
 				
 				for(int j = 0; j< set.size(); j++){
-					singleton = new ArrayList<Criterion>();
+					singleton = new ArrayList<>();
 					singleton.add(set.get(j));
 					subsets.add(singleton);
 				}	
 			} else {
-				List<List<Criterion>> copy_subsets = new ArrayList<List<Criterion>>(subsets);
-				List<Criterion> new_subset = new ArrayList<Criterion>();
-				List<Criterion> set_light = new ArrayList<Criterion>(set);
+				List<List<Criterion>> copy_subsets = new ArrayList<>(subsets);
+				List<Criterion> new_subset = new ArrayList<>();
+				List<Criterion> set_light = new ArrayList<>(set);
 				
 				for(List<Criterion> subset : copy_subsets){
 					//System.out.println("######## changing subset ###########");
@@ -361,7 +356,7 @@ public class LabreucheModel {
 	
 	// return all the subset
 	public List<List<Criterion>> allSubset(List<Criterion> set){
-		List<List<Criterion>> result = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 	
 		for(int i = 2; i<=set.size(); i++){
@@ -391,7 +386,7 @@ public class LabreucheModel {
 		if(l.isEmpty())
 			return true;
 		
-		List<Criterion> union_l = new ArrayList<Criterion>();
+		List<Criterion> union_l = new ArrayList<>();
 		
 		for(List<Criterion> list : list_l) {
 			for(Criterion c : list) {
@@ -412,12 +407,12 @@ public class LabreucheModel {
 	
 	// return list sorted in a sense of lexi
 	public List<List<Criterion>> sortLexi(List<List<Criterion>> list){
-		List<List<Criterion>> sorted = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> sorted = new ArrayList<>();
 		int min_size = Integer.MAX_VALUE;
 		
-		List<List<Criterion>> tmp = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> tmp = new ArrayList<>();
 		//Map<List<Criterion>,Double> rankedSameSize = new HashMap<List<Criterion>,Double>();
-		Map<Double,List<Criterion>> rankedSameSize = new HashMap<Double,List<Criterion>>();
+		Map<Double,List<Criterion>> rankedSameSize = new HashMap<>();
 		
 		while(!list.isEmpty()) {
 			//System.out.println("Size of list = "+ list.size());
@@ -441,7 +436,7 @@ public class LabreucheModel {
 				rankedSameSize.put(d_eu(l2,5).getLeft(),l2);
 			}
 			
-			ArrayList<Double> keys = new ArrayList<Double>(rankedSameSize.keySet());
+			ArrayList<Double> keys = new ArrayList<>(rankedSameSize.keySet());
 			Collections.sort(keys);
 			Collections.reverse(keys);
 			
@@ -469,8 +464,9 @@ public class LabreucheModel {
 	public List<List<Criterion>> algo_EU(List<List<Criterion>> a, List<List<Criterion>> b, int k){
 		System.out.println(" \n #### Calling ALGO_EU : " + this.showSet(a) +"  and   k = "+ k );
 		
-		List<List<Criterion>> a_copy = new ArrayList<List<Criterion>>(a);
-		List<List<Criterion>> f = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> a_copy = new ArrayList<>(a);
+		List<List<Criterion>> b_copy = new ArrayList<>(b);
+		List<List<Criterion>> f = new ArrayList<>();
 		
 		for(int i=k; i < this.c_set.size(); i++) {				  											//L1
 			System.out.println(k +" " + i +" T_i = "+ this.showCriteria(this.c_set.get(i))+ " i = "+i);
@@ -486,31 +482,31 @@ public class LabreucheModel {
 				sum += this.d_eu(this.c_set.get(i),5).getLeft();
 				
 				Double hache = this.score(this.best_choice, this.weights) - this.score(this.second_choice, this.weights);
-				System.out.println(k +" " + i +" sum better than hache? "+sum +" >= "+ hache);
+				//System.out.println(k +" " + i +" sum better than hache? "+sum +" >= "+ hache);
 				if(sum >= hache) {																			//L3
-					System.out.println(k+" " + i +" Adding to F"+ this.showCriteria(this.c_set.get(i)));
+					//System.out.println(k+" " + i +" Adding to F"+ this.showCriteria(this.c_set.get(i)));
 					a_copy.add(this.c_set.get(i));
-					f = new ArrayList<List<Criterion>>(a_copy);												//L4
+					f = new ArrayList<>(a_copy);												//L4
 				}else{																						//L5
 					a_copy.add(this.c_set.get(i));
-					System.out.println(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+" "+this.showSet(b)+" , "+ (i+1));
-					f = algo_EU(a_copy,b,(i+1));																	//L6
+					//System.out.println(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+" "+this.showSet(b)+" , "+ (i+1));
+					f = algo_EU(a_copy,b_copy,(i+1));																	//L6
 					
 				}
-				System.out.println(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+ b.isEmpty()+" or "+ this.includeDiscri(f,b) +" ]");
-				if(!f.isEmpty() && ( b.isEmpty() || this.includeDiscri(f,b) )) {							//L8
-					System.out.println(k+" " + i +" UPDATE");
-					b = new ArrayList<List<Criterion>>(f);													//L8		
+				//System.out.println(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+ b_copy.isEmpty()+" or "+ this.includeDiscri(f,b) +" ]");
+				if(!f.isEmpty() && ( b_copy.isEmpty() || this.includeDiscri(f,b_copy) )) {							//L8
+					//System.out.println(k+" " + i +" UPDATE");
+					b_copy = new ArrayList<>(f);													//L8		
 				}
 				System.out.println(k+" " + i +" A" + this.showSet(a)); //System.out.println(k+" " + i +" B" + this.showSet(b));//System.out.println(k+" " + i +" Test for return B :" + !b.isEmpty()+" and "+!this.includeDiscri(a_copy,b));
-				if(!b.isEmpty() && !this.includeDiscri(a_copy,b)) {												//L10
-					return b;		
+				if(!b_copy.isEmpty() && !this.includeDiscri(a_copy,b_copy)) {												//L10
+					return b_copy;		
 				}
 			}
 			
 			a_copy.clear();
 		}
-		List<List<Criterion>> empty = new ArrayList<List<Criterion>>();
+		List<List<Criterion>> empty = new ArrayList<>();
 		
 		System.out.println("#### END ALGO EU : k = "+k);
 		return empty;
@@ -617,7 +613,7 @@ public class LabreucheModel {
 	
 	// construct all the couple possible in list
 	public List<Couple<Criterion,Criterion>> couples_of(List<Criterion> list){
-		List<Couple<Criterion,Criterion>> cpl = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Couple<Criterion,Criterion>> cpl = new ArrayList<>();
 		
 		for(Criterion c1 : list) {
 			for(Criterion c2 : list) {
@@ -626,7 +622,7 @@ public class LabreucheModel {
 					//System.out.println(this.deltas.get(c1)+ " < "+ this.deltas.get(c2)+  " && " + this.weights.get(c1)+ " < " + this.weights.get(c2));
 					if(this.deltas.get(c1) < this.deltas.get(c2) && this.weights.get(c1) < this.weights.get(c2)) {
 						//System.out.println("add  ( " + c1.getName()+" , "+ c2.getName()+ " )" );
-						cpl.add(new Couple<Criterion,Criterion>(c1,c2));
+						cpl.add(new Couple<>(c1,c2));
 					}
 				}
 			}
@@ -637,8 +633,8 @@ public class LabreucheModel {
 	
 	public List<Couple<Criterion,Criterion>> r_top(List<Couple<Criterion,Criterion>> list_c){
 		boolean change_flag = false;						 // -> list_c have a new couple added, falg = true;
-		List<Couple<Criterion,Criterion>> copy = new ArrayList<Couple<Criterion,Criterion>>(list_c);
-		List<Couple<Criterion,Criterion>> light = null;							// -> used to avoid to check the same couples
+		List<Couple<Criterion,Criterion>> copy = new ArrayList<>(list_c);
+		List<Couple<Criterion,Criterion>> light = new ArrayList<>();							// -> used to avoid to check the same couples
 		Couple<Criterion,Criterion> tmp = null;
 		
 		do {
@@ -646,14 +642,14 @@ public class LabreucheModel {
 		
 			// c1 = (a   b)
 			for(Couple<Criterion,Criterion> c1 : copy) {
-			light = new ArrayList<Couple<Criterion,Criterion>>(copy);
+			light = new ArrayList<>(copy);
 			light.remove(c1);
 				
 				// c2 = (c   d)
 				for(Couple<Criterion,Criterion> c2 : light) {
 					// (a   b) , (c   d) =>  b=c and a!=d
 					if(c1.getRight().equals(c2.getLeft()) && !c1.getLeft().equals(c2.getRight())) {
-						tmp  = new Couple<Criterion,Criterion>(c1.getLeft(),c2.getRight());
+						tmp  = new Couple<>(c1.getLeft(),c2.getRight());
 						if(!copy.contains(tmp)) {
 							copy.add(tmp);
 							change_flag = true;
@@ -661,7 +657,7 @@ public class LabreucheModel {
 					}
 					// (c   d) , (a   b) =>  a=d and b!=d 				
 					if(c1.getLeft().equals(c2.getRight()) && !c1.getRight().equals(c2.getLeft())) {
-						tmp  = new Couple<Criterion,Criterion>(c1.getRight(),c2.getLeft());
+						tmp  = new Couple<>(c1.getRight(),c2.getLeft());
 						if(!copy.contains(tmp)) {
 							copy.add(tmp);
 							change_flag = true;
@@ -679,7 +675,7 @@ public class LabreucheModel {
 	
 	public List<Couple<Criterion,Criterion>> r_star(List<Couple<Criterion,Criterion>> cpls){
 		List<List<Couple<Criterion,Criterion>>> subsets = this.allSubsetCouple(cpls);
-		List<Couple<Criterion,Criterion>> result = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Couple<Criterion,Criterion>> result = new ArrayList<>();
 		List<Couple<Criterion,Criterion>> tmp_top;
 		
 		for(List<Couple<Criterion,Criterion>> c_list : subsets) {
@@ -697,21 +693,21 @@ public class LabreucheModel {
 	
 	
 	public List<List<Couple<Criterion,Criterion>>> allSubsetCouple(List<Couple<Criterion,Criterion>> set, int size){
-		List<List<Couple<Criterion,Criterion>>> subsets= new ArrayList<List<Couple<Criterion,Criterion>>>();
+		List<List<Couple<Criterion,Criterion>>> subsets= new ArrayList<>();
 		for(int i = 0; i< size; i++) {
 			if(i == 0){
 				List<Couple<Criterion,Criterion>> singleton; 
 				
 				for(int j = 0; j< set.size(); j++){
-					singleton = new ArrayList<Couple<Criterion,Criterion>>();
+					singleton = new ArrayList<>();
 					singleton.add(set.get(j));
 					subsets.add(singleton);
 				}
 			} 
 			else {
-				List<List<Couple<Criterion,Criterion>>> copy_subsets = new ArrayList<List<Couple<Criterion,Criterion>>>(subsets);
-				List<Couple<Criterion,Criterion>> new_subset = new ArrayList<Couple<Criterion,Criterion>>();
-				List<Couple<Criterion,Criterion>> set_light = new ArrayList<Couple<Criterion,Criterion>>(set);
+				List<List<Couple<Criterion,Criterion>>> copy_subsets = new ArrayList<>(subsets);
+				List<Couple<Criterion,Criterion>> new_subset = new ArrayList<>();
+				List<Couple<Criterion,Criterion>> set_light = new ArrayList<>(set);
 				
 				for(List<Couple<Criterion,Criterion>> subset : copy_subsets){
 					int born_sup = set.indexOf(subset.get(subset.size()-1));
@@ -735,7 +731,7 @@ public class LabreucheModel {
 	
 	
 	public List<List<Couple<Criterion,Criterion>>> allSubsetCouple(List<Couple<Criterion,Criterion>> set){
-		List<List<Couple<Criterion,Criterion>>> result = new ArrayList<List<Couple<Criterion,Criterion>>>();
+		List<List<Couple<Criterion,Criterion>>> result = new ArrayList<>();
 		List<List<Couple<Criterion,Criterion>>> tmp;
 	
 		for(int i = 1; i<=set.size(); i++){
@@ -750,7 +746,7 @@ public class LabreucheModel {
 	
 	
 	public List<Couple<Criterion,Criterion>> addCouple(List<Couple<Criterion,Criterion>> l, Couple<Criterion,Criterion> c){
-		List<Couple<Criterion,Criterion>> new_l = new ArrayList<Couple<Criterion,Criterion>>(l);
+		List<Couple<Criterion,Criterion>> new_l = new ArrayList<>(l);
 		new_l.add(c);
 		return new_l;
 	}
@@ -822,7 +818,7 @@ public class LabreucheModel {
 		String string = "{ ";
 		
 		for(Couple<Criterion,Criterion> c : cpls)
-			string += "("+((Criterion) c.getLeft()).getName() +","+ ((Criterion) c.getRight()).getName()+") ";
+			string += "("+c.getLeft().getName() +","+ c.getRight().getName()+") ";
 		
 		string += " }";
 		
@@ -876,7 +872,7 @@ public class LabreucheModel {
 		
 		System.out.println("\n \n" + "Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas));
 		
-		Map<Double,Criterion> temp = new HashMap<Double,Criterion>();  				// ->  associate (w_i - 1/n) * Delta_i to the criterion c_i
+		Map<Double,Criterion> temp = new HashMap<>();  				// ->  associate (w_i - 1/n) * Delta_i to the criterion c_i
 		
 		
 		for(Map.Entry<Criterion, Double> w_i : this.weights.entrySet())
@@ -888,13 +884,13 @@ public class LabreucheModel {
 		//	System.out.println(tp.getValue() +" : "+ tp.getKey());
 		
 		// sorting the values
-		ArrayList<Double> keys = new ArrayList<Double>(temp.keySet());
+		ArrayList<Double> keys = new ArrayList<>(temp.keySet());
 		//System.out.println("Print keys : "+ keys);
 		Collections.sort(keys);
 		//System.out.println("Print keys sorted : "+ keys);
 		
 		
-		List<Criterion> C = new ArrayList<Criterion>();
+		List<Criterion> C = new ArrayList<>();
 		//Map<Criterion,Double> wcomposed = this.weights;
 		Map<Criterion,Double> wcomposed = this.weightsReferences;
 		
@@ -923,8 +919,8 @@ public class LabreucheModel {
 				
 		//System.out.println("C = "+ C.toString());
 		
-		List<Criterion> ConPA = new ArrayList<Criterion>();
-		List<Criterion> ConNA = new ArrayList<Criterion>();
+		List<Criterion> ConPA = new ArrayList<>();
+		List<Criterion> ConNA = new ArrayList<>();
 		
 		for(Criterion c : C){
 			if(positiveArguments.contains(c))
@@ -956,12 +952,12 @@ public class LabreucheModel {
 		String explanation = "not applicable";				
 		int size = 2;
 		size = this.criteria.size();
-		List<List<Criterion>> subsets = new ArrayList<List<Criterion>>();     
-		List<List<Criterion>> big_a = new ArrayList<List<Criterion>>();       // -> first variable for algo_eu calls 
-		List<List<Criterion>> big_b = new ArrayList<List<Criterion>>();       // -> second variable for algo_eu calls
-		List<List<Criterion>> big_c = new ArrayList<List<Criterion>>();       // result of algo_eu
+		List<List<Criterion>> subsets = new ArrayList<>();     
+		List<List<Criterion>> big_a = new ArrayList<>();       // -> first variable for algo_eu calls 
+		List<List<Criterion>> big_b = new ArrayList<>();       // -> second variable for algo_eu calls
+		List<List<Criterion>> big_c = new ArrayList<>();       // result of algo_eu
 		Double d_eu = null;
-		List<Criterion> pi = new ArrayList<Criterion>();
+		List<Criterion> pi = new ArrayList<>();
 		
 		System.out.println("Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas) + "\n");
 		
@@ -979,14 +975,14 @@ public class LabreucheModel {
 			subsets = this.allSubset(this.criteria);
 			
 			for(List<Criterion> subset : subsets) {
-				System.out.println(this.showCriteria(subset));
+				//System.out.println(this.showCriteria(subset));
 				d_eu = this.d_eu(subset,5).getLeft();
-				System.out.println(" E.T");
+				//System.out.println(" E.T");
 				pi = this.pi_min(subset);
-				System.out.println("Subset : " + this.showCriteria(subset) + " d_eu = " + d_eu + " pi : "+ this.showCriteria(pi));
+				//System.out.println("Subset : " + this.showCriteria(subset) + " d_eu = " + d_eu + " pi : "+ this.showCriteria(pi));
 				if(d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
 					this.c_set.add(subset);
-					System.out.println("adding set to c_set : " + this.showCriteria(subset));
+					//System.out.println("adding set to c_set : " + this.showCriteria(subset));
 				}
 				
 				pi.clear();
@@ -1015,8 +1011,8 @@ public class LabreucheModel {
 		
 		// Start to determine R*
 		
-		List<Couple<Criterion,Criterion>> cpls = new ArrayList<Couple<Criterion,Criterion>>();
-		List<Couple<Criterion,Criterion>> r_s = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Couple<Criterion,Criterion>> cpls = new ArrayList<>();
+		List<Couple<Criterion,Criterion>> r_s = new ArrayList<>();
 		
 		System.out.println("Minimal permutation : " + this.showSet(big_c) + "\n");
 		
@@ -1036,11 +1032,11 @@ public class LabreucheModel {
 		// R* determined
 		
 		
-		List<Criterion> k_ps  = new ArrayList<Criterion>();
-		List<Criterion> k_prs = new ArrayList<Criterion>();
-		List<Criterion> k_nw  = new ArrayList<Criterion>();
-		List<Criterion> k_nrw = new ArrayList<Criterion>();
-		List<Couple<Criterion,Criterion>> k_pn  = new ArrayList<Couple<Criterion,Criterion>>();
+		List<Criterion> k_ps  = new ArrayList<>();
+		List<Criterion> k_prs = new ArrayList<>();
+		List<Criterion> k_nw  = new ArrayList<>();
+		List<Criterion> k_nrw = new ArrayList<>();
+		List<Couple<Criterion,Criterion>> k_pn  = new ArrayList<>();
 		
 		for(Couple<Criterion,Criterion> c : r_star) { 						// c = (i,j) where i and j are criteria
 			
@@ -1146,7 +1142,6 @@ public class LabreucheModel {
 	}
 	
 	
-	
 	public String anchorRMG(Alternative x, Alternative y){
 		String explanation = "";
 		Double max_w = Double.MIN_VALUE;
@@ -1181,7 +1176,8 @@ public class LabreucheModel {
 	
 	
 	
-	public void resolved(){
+	public void resolved(boolean show){
+		
 		String display =  "****************************************************************";
 		display += "\n" + "*                                                              *";
 		display += "\n" + "*         Recommender system based on Labreuche Model          *";
@@ -1195,10 +1191,12 @@ public class LabreucheModel {
 
 		display += "\n \n Alternatives : "; 
 		
-		for(Alternative a : alternatives)	
-			display += "\n" + "	" + a.getName() + " " + " : " + displayAsVector(a);
+		display += "\n" + "	" + best_choice.getName() + " " + " : " + displayAsVector(best_choice);
+		display += "\n" + "	" + second_choice.getName() + " " + " : " + displayAsVector(second_choice);
 		
-		System.out.println(display);
+		if(show)
+			System.out.println(display);
+		
 		
 		long start = System.currentTimeMillis();
 		
@@ -1206,7 +1204,7 @@ public class LabreucheModel {
 	
 		display = "\n" + "Top of alternatives : ";
 		
-		ArrayList<Double> scores = new ArrayList<Double>(this.scoreboard.keySet());
+		ArrayList<Double> scores = new ArrayList<>(this.scoreboard.keySet());
 		Collections.sort(scores);
 		 
 		for(int i = scores.size() - 1; i >= 0; i--)
@@ -1220,39 +1218,57 @@ public class LabreucheModel {
 		
 		this.buildDelta(x, y);
 		
-		//display += "\n \n" + "Delta " + x.getName() +" > "+y.getName() + " : " + this.showVector(deltas);
-		
-		System.out.println(display + "\n");	
+		if(show)
+			System.out.println(display + "\n");
 		
 		display = "Explanation why "+x.getName()+" is better than "+y.getName()+" :";
 
 		this.buildArgumentsSets(x, y);
 		
-		String explanation = this.anchorALL(x, y);
+		String explanation = "";
 		
-		if(explanation == "not applicable") {
-			//System.out.println("Anchor ALL not applicable");
-			explanation = this.anchorNOA(x, y);
+		phi_all = new AllOutput(best_choice, second_choice, deltas);
+		phi_noa = new NOAOutput(best_choice, second_choice, weights, weightsReferences, positiveArguments, deltas);
+		phi_ivt = new IVTOutput(best_choice, second_choice, weights, weightsReferences, deltas, positiveArguments, negativeArguments, nullArguments);
+		phi_rmgavg = new RMGAVGOutput(best_choice, second_choice, weights);
+		phi_rmgcomp = new RMGCOMPOutput(best_choice, second_choice, weights, positiveArguments, negativeArguments);
+		
+		if(phi_all.isApplicable())
+			explanation = phi_all.argue();
+		else {
+			System.out.println("noa");
+			if(phi_noa.isApplicable())
+				explanation = phi_noa.argue();
+			else {
+				System.out.println("ivt");
+				if(phi_ivt.isApplicable())
+					explanation = phi_ivt.argue();
+				else {
+					System.out.println("rmg");
+					if(phi_rmgavg.isApplicable())
+						explanation = phi_rmgavg.argue();
+					else
+						explanation = phi_rmgcomp.argue();
+				}
+			}
 		}
 		
-		if(explanation == "not applicable") {
-			//System.out.println("Anchor NOA not applicable");
-			explanation = this.anchorIVT(x, y);
-		}
-				
-		if(explanation == "not applicable") {
-			//System.out.println("Anchor IVT not applicable");
-			explanation = this.anchorRMG(x, y);
-		}
-		
-		System.out.println(display);
 		
 		display = "\n" + explanation;
 		long time = System.currentTimeMillis() - start;
 		display += "\n \n" + "Problem solved in : " + time + " milliseconds";
-		System.out.println(display);
+		
+		if(show)
+			System.out.println(display);
 	}
-
-
+	
+	
+	public String arguer() {
+		String explanation = "";
+		
+		
+		
+		return explanation;
+	}
 	
 }
