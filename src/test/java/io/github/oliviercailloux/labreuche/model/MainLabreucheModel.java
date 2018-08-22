@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.oliviercailloux.labreuchemodel.AlternativeComparison;
-import io.github.oliviercailloux.labreuchemodel.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.view.MainBuyingNewCar;
@@ -233,15 +233,15 @@ public class MainLabreucheModel {
 		}
 		
 		// problems generate
-		lm5  = new LabreucheModel(new AlternativeComparison(x_5,y_5,weightsEx5));
-		lm6  = new LabreucheModel(new AlternativeComparison(x_6,y_6,weightsEx6));
-		lm9  = new LabreucheModel(new AlternativeComparison(x_9,y_9,weightsEx9));
-		lm10 = new LabreucheModel(new AlternativeComparison(x_10,y_10,weightsEx10));
-		lm13 = new LabreucheModel(new AlternativeComparison(x_13,y_13,weightsEx13));
-		lm14 = new LabreucheModel(new AlternativeComparison(x_14,y_14,weightsEx14));
-		lm15 = new LabreucheModel(new AlternativeComparison(x_15,y_15,weightsEx15));
-		lm16 = new LabreucheModel(new AlternativeComparison(x_16,y_16,weightsEx16));
-		lm17 = new LabreucheModel(new AlternativeComparison(x_17,y_17,weightsEx17));
-		lm18 = new LabreucheModel(new AlternativeComparison(x_18,y_18,weightsEx18));	
+		lm5  = new LabreucheModel(new AlternativesComparison(x_5,y_5,weightsEx5));
+		lm6  = new LabreucheModel(new AlternativesComparison(x_6,y_6,weightsEx6));
+		lm9  = new LabreucheModel(new AlternativesComparison(x_9,y_9,weightsEx9));
+		lm10 = new LabreucheModel(new AlternativesComparison(x_10,y_10,weightsEx10));
+		lm13 = new LabreucheModel(new AlternativesComparison(x_13,y_13,weightsEx13));
+		lm14 = new LabreucheModel(new AlternativesComparison(x_14,y_14,weightsEx14));
+		lm15 = new LabreucheModel(new AlternativesComparison(x_15,y_15,weightsEx15));
+		lm16 = new LabreucheModel(new AlternativesComparison(x_16,y_16,weightsEx16));
+		lm17 = new LabreucheModel(new AlternativesComparison(x_17,y_17,weightsEx17));
+		lm18 = new LabreucheModel(new AlternativesComparison(x_18,y_18,weightsEx18));	
 	}
 }

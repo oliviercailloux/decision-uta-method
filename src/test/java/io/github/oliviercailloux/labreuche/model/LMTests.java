@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import io.github.oliviercailloux.labreuchemodel.LabreucheModel;
-import io.github.oliviercailloux.labreuchemodel.Tools;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.view.MainBuyingNewCar; 

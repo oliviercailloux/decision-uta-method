@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.labreuchemodel;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

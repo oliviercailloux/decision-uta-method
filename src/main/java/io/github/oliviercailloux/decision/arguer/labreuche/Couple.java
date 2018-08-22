@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.labreuchemodel;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 public class Couple<L,R> {
 

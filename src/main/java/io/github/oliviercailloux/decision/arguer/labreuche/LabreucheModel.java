@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.labreuchemodel;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,11 +27,11 @@ public class LabreucheModel {
 	private RMGAVGOutput phi_rmgavg;
 	private RMGCOMPOutput phi_rmgcomp;
 	private LabreucheOutput lop;
-	private AlternativeComparison comparison;
+	private AlternativesComparison comparison;
 	
-	public LabreucheModel(AlternativeComparison alt){
+	public LabreucheModel(AlternativesComparison alt){
 		this.comparison = alt;
-		this.weights = alt.getW();
+		this.weights = alt.getWeight();
 		this.best_choice = alt.getX();
 		this.second_choice = alt.getY();
 		this.criteria = new ArrayList<>();
@@ -258,10 +258,6 @@ public class LabreucheModel {
 	
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		return phi_rmgcomp;
-	}
-	
-	public String arguer() {
-		return lop.argue();
 	}
 	
 }
