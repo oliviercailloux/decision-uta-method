@@ -16,12 +16,7 @@ public class LabreucheModel {
 	
 	private List<Criterion> criteria;
 	private Map<Criterion,Double> weights;
-	private Map<Criterion,Double> weightsReferences;
-	private Map<Criterion,Double> deltas;
 	private Map<Double,Alternative> scoreboard;
-	private List<Criterion> positiveArguments;
-	private List<Criterion> negativeArguments;
-	private List<Criterion> nullArguments;
 	private List<List<Criterion>> c_set;
 	private Double epsilon;
 	private Alternative best_choice;
@@ -32,28 +27,23 @@ public class LabreucheModel {
 	private RMGAVGOutput phi_rmgavg;
 	private RMGCOMPOutput phi_rmgcomp;
 	private LabreucheOutput lop;
+	private AlternativeComparison comparison;
 	
-	
-	
-	public LabreucheModel(Alternative x, Alternative y, Map<Criterion,Double> w){
-		this.weights = w;
-		this.deltas = new LinkedHashMap<>();
-		this.weightsReferences = new LinkedHashMap<>();
-		this.scoreboard = new HashMap<>();
-		this.positiveArguments = new ArrayList<>();
-		this.negativeArguments = new ArrayList<>();
-		this.nullArguments = new ArrayList<>();
-		this.c_set = new ArrayList<>();
-		this.epsilon = 0.2 / this.criteria.size();
-		this.best_choice = x;
-		this.second_choice = y;
+	public LabreucheModel(AlternativeComparison alt){
+		this.comparison = alt;
+		this.weights = alt.getW();
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getY();
 		this.criteria = new ArrayList<>();
 		
 		for(Criterion c : weights.keySet())
 			this.criteria.add(c);
+				
+		this.scoreboard = new HashMap<>();
+		this.c_set = new ArrayList<>();
+		this.epsilon = 0.2 / this.criteria.size();
 		
-		for(int i=0; i<criteria.size();i++) 
-			this.weightsReferences.put(criteria.get(i),1.0/criteria.size());
+		
 	}
 	
 	
@@ -71,29 +61,10 @@ public class LabreucheModel {
 	public Map<Criterion,Double> getWeights(){ 		
 		return this.weights; 
 	}
+	
 
-	public Map<Criterion,Double> getWeightsReferences(){ 	
-		return this.weightsReferences;
-	}
-	
-	public Map<Criterion,Double> getDeltas(){			
-		return this.deltas; 		
-	}
-	
 	public Map<Double,Alternative> getScoreboard() { 
 		return this.scoreboard;		
-	}
-	
-	public List<Criterion> getPositiveArguments() {	
-		return this.positiveArguments;
-	}
-	
-	public List<Criterion> getNegativeArguments() {
-		return this.negativeArguments;
-	}
-	
-	public List<Criterion> getNullArguments() { 		
-		return this.nullArguments;	
 	}
 	
 	public List<List<Criterion>> getC_set() {		
@@ -146,31 +117,6 @@ public class LabreucheModel {
 		this.scoreboard.put(score(second_choice, this.weights),second_choice);
 	}
 
-	
-	// build the  Delta, between 2 alternatives, needed for the anchor NOA, IVT.
-	public void buildDelta(Alternative x, Alternative y){   // x better than y by the score function.
-		Map<Criterion, Double> evalsX = x.getEvaluations();
-		Map<Criterion,Double> evalsY = y.getEvaluations();
-		
-		// delta_i = x_i - y_i
-		for(Criterion c : criteria)
-			deltas.put(c,(evalsX.get(c) - evalsY.get(c)));	
-	}
-	
-	
-	// build the sets of positives, negatives and nulls criteria of x over y. 
-	public void buildArgumentsSets(Alternative x, Alternative y){
-		for(Map.Entry<Criterion,Double> w_i : weights.entrySet()) {
-			if(x.getEvaluations().get(w_i.getKey()) > y.getEvaluations().get(w_i.getKey()))     // x_i > y_i
-				this.positiveArguments.add(w_i.getKey());
-			else
-				if(x.getEvaluations().get(w_i.getKey()) < y.getEvaluations().get(w_i.getKey())) // x_i < y_i
-					this.negativeArguments.add(w_i.getKey());
-				else																			// x_i = y_i
-					this.nullArguments.add(w_i.getKey());          
-		}
-	}
-
 
 	/* * * * * * * * * * * * * * * * * * * *
 	 * 									   *
@@ -218,50 +164,41 @@ public class LabreucheModel {
 		this.best_choice = this.scoreboard.get(scores.get(scores.size() - 1)); 
 		this.second_choice = this.scoreboard.get(scores.get(scores.size() - 2));
 		
-		this.buildDelta(x, y);
-		
 		if(show)
 			System.out.println(display + "\n");
 		
 		display = "Explanation why "+x.getName()+" is better than "+y.getName()+" :";
 		
-		getExplanation();
+		//getExplanation();
 		
-		String explanation = arguer();
+		//String explanation = arguer();
 		
 		
-		display = "\n" + explanation;
-		long time = System.currentTimeMillis() - start;
-		display += "\n \n" + "Problem solved in : " + time + " milliseconds";
+		//display = "\n" + explanation;
+		//long time = System.currentTimeMillis() - start;
+		//display += "\n \n" + "Problem solved in : " + time + " milliseconds";
 		
 		if(show)
 			System.out.println(display);
 	}
 	
-	public LabreucheOutput getExplanation() {
-		AlternativeComparison alt = new AlternativeComparison(best_choice, second_choice, weights);
-		
-		phi_all = new ALLOutput(alt);	
+	public LabreucheOutput getExplanation() {	
 		
 		if(phi_all.isApplicable())
 			lop = phi_all;
 		else {
-			phi_noa = new NOAOutput(alt);
 			System.out.println("noa");
 			if(phi_noa.isApplicable())
 				lop = phi_noa;
 			else {
 				System.out.println("ivt");
-				phi_ivt = new IVTOutput(alt);
 				if(phi_ivt.isApplicable())
 					lop = phi_ivt;
 				else {
 					System.out.println("rmg");
-					phi_rmgavg = new RMGAVGOutput(alt);
 					if(phi_rmgavg.isApplicable())
 						lop = phi_rmgavg;
 					else {
-						phi_rmgcomp = new RMGCOMPOutput(alt);
 						lop = phi_rmgcomp;
 					}
 				}
@@ -270,6 +207,38 @@ public class LabreucheModel {
 		
 		return lop;
 	}
+	
+	
+	public boolean isAnchorALLApplicable() {
+		phi_all = new ALLOutput(this.comparison);
+		
+		return phi_all.isApplicable();
+	}
+	
+	public boolean isAnchorNOAApplicable() {
+		phi_noa = new NOAOutput(comparison);
+		
+		return phi_noa.isApplicable();
+	}
+	
+	public boolean isAnchorIVTApplicable() {
+		phi_ivt = new IVTOutput(comparison);
+		
+		return phi_ivt.isApplicable();
+	}
+	
+	public boolean isAnchorRMGAVGApplicable(){
+		phi_rmgavg = new RMGAVGOutput(comparison);
+		
+		return phi_rmgavg.isApplicable();
+	}
+	
+	public boolean isAnchorRMGCOMPApplicable() {
+		phi_rmgcomp = new RMGCOMPOutput(comparison);
+		
+		return phi_rmgcomp.isApplicable();
+	}
+	
 	
 	public ALLOutput getALLExplanation() {
 		return phi_all;
