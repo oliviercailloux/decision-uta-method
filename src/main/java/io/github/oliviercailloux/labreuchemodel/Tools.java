@@ -8,18 +8,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Tools {
-	
-	
-	/* * * * * * * * * * * * * * * * * * * *
-	 *                                     *
-	 *  Beginning's methods for resolution *
-	 *                                     *
-	 * * * * * * * * * * * * * * * * * * * */
 	
 	
 	public static Double score(Alternative x, Map<Criterion,Double> w){
@@ -31,8 +25,6 @@ public class Tools {
 		
 		return score;
 	}
-	
-	
 	
 	
 	/* * * * * * * * * * * * * * * * * * *
@@ -639,6 +631,16 @@ public class Tools {
 				show += c.get(i).getName()+", ";
 		}
 			
+		return show +" }";
+	}
+	
+	public static String showCriteria(Set<Criterion> s){
+		String show = "{ ";
+		
+		for(Criterion c : s){
+			show += c.getName() + " ";
+		}
+		
 		return show +" }";
 	}
 

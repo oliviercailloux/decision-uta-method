@@ -12,37 +12,85 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class NOAOutput implements LabreucheOutput{
 
-	public Set<Criterion> criteria;
-	public Map<Criterion,Double> weights;
-	public Map<Criterion,Double> weightsReferences;
-	public Map<Criterion,Double> deltas;
-	public List<Criterion> positiveArguments;
-	public Alternative best_choice;
-	public Alternative second_choice;
-	public List<Criterion> C;
-	public List<Criterion> ConPA;
-	public List<Criterion> ConNA;
+	private List<Criterion> criteria;
+	private Map<Criterion,Double> weights;
+	private Map<Criterion,Double> weightsReferences;
+	private Map<Criterion,Double> deltas;
+	private Set<Criterion> positiveArguments;
+	private Alternative best_choice;
+	private Alternative second_choice;
+	private List<Criterion> C;
+	private List<Criterion> ConPA;
+	private List<Criterion> ConNA;
+	private Anchor anchor;
 	
-	
-	public NOAOutput(Alternative x, Alternative y, Map<Criterion,Double> w, Map<Criterion,Double> w_ref,List<Criterion> pa, Map<Criterion,Double> d) {
-		this.best_choice = x;
-		this.second_choice = y;
-		this.weights = w;
-		this.weightsReferences = w_ref;
-		this.positiveArguments = pa;
-		this.criteria = w.keySet();
-		this.deltas = d;
+	public NOAOutput(AlternativeComparison alt) {
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getY();
+		this.weights = alt.getW();
+		this.positiveArguments = alt.getCriteriaInFavor();
+		
+		this.criteria =  new ArrayList<>();
+		for(Criterion c : alt.getW().keySet())
+			this.criteria.add(c);
+		
+		this.deltas = alt.getDelta();
+		this.weightsReferences = new HashMap<>();
+
+		for(Criterion c : criteria) 
+			this.weightsReferences.put(c,1.0/criteria.size());
+		
 		this.C = new ArrayList<>();
 		this.ConPA = new ArrayList<>();
 		this.ConNA = new ArrayList<>();
+		this.anchor = Anchor.NOA;
 	}
 	
-	
-	@Override
-	public Anchor anchor() {
-		
-		return null;
+	public List<Criterion> getCriteria() {
+		return criteria;
 	}
+
+	public Map<Criterion, Double> getWeights() {
+		return weights;
+	}
+
+	public Map<Criterion, Double> getWeightsReferences() {
+		return weightsReferences;
+	}
+
+	public Map<Criterion, Double> getDeltas() {
+		return deltas;
+	}
+
+	public Set<Criterion> getPositiveArguments() {
+		return positiveArguments;
+	}
+
+	public Alternative getBest_choice() {
+		return best_choice;
+	}
+
+	public Alternative getSecond_choice() {
+		return second_choice;
+	}
+
+	public List<Criterion> getC() {
+		return C;
+	}
+
+	public List<Criterion> getConPA() {
+		return ConPA;
+	}
+
+	public List<Criterion> getConNA() {
+		return ConNA;
+	}
+
+	public Anchor getAnchor() {
+		return anchor;
+	}
+	
+
 
 	@Override
 	public String argue() {

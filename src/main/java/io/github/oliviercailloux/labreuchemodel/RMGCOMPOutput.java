@@ -3,6 +3,7 @@ package io.github.oliviercailloux.labreuchemodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -11,31 +12,25 @@ public class RMGCOMPOutput implements LabreucheOutput {
 
 	private List<Criterion> criteria;
 	private Map<Criterion,Double> weights;
-	private List<Criterion> positiveArguments;
-	private List<Criterion> negativeArguments;
+	private Set<Criterion> positiveArguments;
+	private Set<Criterion> negativeArguments;
 	private Double epsilon;
 	private Alternative best_choice;
 	private Alternative second_choice;
-	public Double max_w;
+	private Double max_w;
+	private Anchor anchor;
 	
-	public RMGCOMPOutput(Alternative x, Alternative y, Map<Criterion,Double> w,List<Criterion> pa, List<Criterion> na) {
-		this.best_choice = x;
-		this.second_choice = y;
-		this.weights = w;
+	public RMGCOMPOutput(AlternativeComparison alt) {
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getY();
+		this.weights = alt.getW();
 		this.criteria = new ArrayList<>();
-		for(Criterion c : w.keySet())
+		for(Criterion c : this.weights.keySet())
 			this.criteria.add(c);
-		this.positiveArguments = pa;
-		this.negativeArguments = na;
+		this.positiveArguments = alt.getCriteriaInFavor();
+		this.negativeArguments = alt.getCriteriaAgainst();
 		this.max_w = null;
-		
-	}
-	
-	
-	@Override
-	public Anchor anchor() {
-		
-		return null;
+		this.anchor = Anchor.RMGCOMP;
 	}
 
 	@Override
@@ -70,6 +65,42 @@ public class RMGCOMPOutput implements LabreucheOutput {
 			return true;
 			
 		return false;		
+	}
+
+	public List<Criterion> getCriteria() {
+		return criteria;
+	}
+
+	public Map<Criterion, Double> getWeights() {
+		return weights;
+	}
+
+	public Set<Criterion> getPositiveArguments() {
+		return positiveArguments;
+	}
+
+	public Set<Criterion> getNegativeArguments() {
+		return negativeArguments;
+	}
+
+	public Double getEpsilon() {
+		return epsilon;
+	}
+
+	public Alternative getBest_choice() {
+		return best_choice;
+	}
+
+	public Alternative getSecond_choice() {
+		return second_choice;
+	}
+
+	public Double getMax_w() {
+		return max_w;
+	}
+
+	public Anchor getAnchor() {
+		return anchor;
 	}
 
 	

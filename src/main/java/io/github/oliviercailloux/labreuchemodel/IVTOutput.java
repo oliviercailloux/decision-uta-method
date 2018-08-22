@@ -2,6 +2,7 @@ package io.github.oliviercailloux.labreuchemodel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,10 @@ public class IVTOutput implements LabreucheOutput {
 	public List<Criterion> criteria;
 	public List<Alternative> alternatives;
 	public Map<Criterion,Double> weights;
-	public Map<Criterion,Double> weightsReferences;
 	public Map<Criterion,Double> deltas;
-	public Map<Double,Alternative> scoreboard;
-	public List<Criterion> positiveArguments;
-	public List<Criterion> negativeArguments;
-	public List<Criterion> nullArguments;
+	public Set<Criterion> positiveArguments;
+	public Set<Criterion> negativeArguments;
+	public Set<Criterion> nullArguments;
 	public List<List<Criterion>> c_set;
 	public Alternative best_choice;
 	public Alternative second_choice;
@@ -31,24 +30,23 @@ public class IVTOutput implements LabreucheOutput {
 	public List<Criterion> k_nw;
 	public List<Criterion> k_nrw;
 	public List<Couple<Criterion,Criterion>> k_pn;
+	private Anchor anchor;
 	
 	
-	public IVTOutput(Alternative x,  Alternative y, Map<Criterion,Double> w, Map<Criterion,Double> w_ref,
-			Map<Criterion,Double> d, List<Criterion> pa, List<Criterion> na,List<Criterion> nulla) {
-		
-		this.best_choice = x;
-		this.second_choice = y;
-		
+	public IVTOutput(AlternativeComparison alt) {
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getY();
 		this.criteria =  new ArrayList<>();
-		for(Criterion c : w.keySet())
+		for(Criterion c : alt.getW().keySet())
 			this.criteria.add(c);
 		
-		this.weights = w;
-		this.deltas = d;
-		this.weightsReferences = w_ref;
-		this.positiveArguments = pa;
-		this.negativeArguments = na;
-		this.nullArguments = nulla;
+		this.weights = alt.getW();
+		this.deltas = alt.getDelta();
+		this.positiveArguments = alt.getCriteriaInFavor();
+		this.negativeArguments = alt.getCriteriaAgainst();
+		this.nullArguments = new HashSet<>(criteria);
+		this.nullArguments.removeAll(positiveArguments);
+		this.nullArguments.removeAll(negativeArguments);
 		this.epsilon = 0.2 / this.criteria.size();
 		this.c_set = new ArrayList<>();
 		this.k_ps  = new ArrayList<>();
@@ -57,13 +55,8 @@ public class IVTOutput implements LabreucheOutput {
 		this.k_nrw = new ArrayList<>();
 		this.k_pn  = new ArrayList<>();
 		this.r_star = null;
+		this.anchor = Anchor.IVT;
 	}	
-	
-	@Override
-	public Anchor anchor() {
-		
-		return null;
-	}
 
 
 
@@ -299,8 +292,116 @@ public class IVTOutput implements LabreucheOutput {
 		}
 		List<List<Criterion>> empty = new ArrayList<>();
 		
-		System.out.println("#### END ALGO EU : k = "+k);
+		//System.out.println("#### END ALGO EU : k = "+k);
 		return empty;
+	}
+
+
+
+	public List<Criterion> getCriteria() {
+		return criteria;
+	}
+
+
+
+	public List<Alternative> getAlternatives() {
+		return alternatives;
+	}
+
+
+
+	public Map<Criterion, Double> getWeights() {
+		return weights;
+	}
+
+
+
+	public Map<Criterion, Double> getDeltas() {
+		return deltas;
+	}
+
+
+
+	public Set<Criterion> getPositiveArguments() {
+		return positiveArguments;
+	}
+
+
+
+	public Set<Criterion> getNegativeArguments() {
+		return negativeArguments;
+	}
+
+
+
+	public Set<Criterion> getNullArguments() {
+		return nullArguments;
+	}
+
+
+
+	public List<List<Criterion>> getC_set() {
+		return c_set;
+	}
+
+
+
+	public Alternative getBest_choice() {
+		return best_choice;
+	}
+
+
+
+	public Alternative getSecond_choice() {
+		return second_choice;
+	}
+
+
+
+	public Double getEpsilon() {
+		return epsilon;
+	}
+
+
+
+	public List<Couple<Criterion, Criterion>> getR_star() {
+		return r_star;
+	}
+
+
+
+	public List<Criterion> getK_ps() {
+		return k_ps;
+	}
+
+
+
+	public List<Criterion> getK_prs() {
+		return k_prs;
+	}
+
+
+
+	public List<Criterion> getK_nw() {
+		return k_nw;
+	}
+
+
+
+	public List<Criterion> getK_nrw() {
+		return k_nrw;
+	}
+
+
+
+	public List<Couple<Criterion, Criterion>> getK_pn() {
+		return k_pn;
+	}
+
+
+
+	public Anchor getAnchor() {
+		return anchor;
 	}
 
 }

@@ -8,8 +8,6 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public interface LabreucheOutput {
 	
-	abstract Anchor anchor();
-	
 	abstract String argue();
 	
 	abstract Boolean isApplicable();

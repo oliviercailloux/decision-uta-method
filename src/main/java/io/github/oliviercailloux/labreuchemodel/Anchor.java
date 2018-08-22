@@ -4,6 +4,7 @@ enum Anchor {
 	ALL,
 	NOA,
 	IVT,
-	RMG;
+	RMGAVG,
+	RMGCOMP;
 }
 

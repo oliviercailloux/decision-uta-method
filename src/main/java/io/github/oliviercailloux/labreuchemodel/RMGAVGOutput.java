@@ -12,28 +12,21 @@ public class RMGAVGOutput implements LabreucheOutput {
 	
 	private List<Criterion> criteria;
 	private Map<Criterion,Double> weights;
-	private List<Criterion> positiveArguments;
-	private List<Criterion> negativeArguments;
 	private Double epsilon;
 	private Alternative best_choice;
 	private Alternative second_choice;
-	public Double max_w;
+	private Double max_w;
+	private Anchor anchor;
 	
-	public RMGAVGOutput(Alternative x, Alternative y, Map<Criterion,Double> w) {
-		this.best_choice = x;
-		this.second_choice = y;
-		this.weights = w;
+	public RMGAVGOutput(AlternativeComparison alt) {
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getY();
+		this.weights = alt.getW();
 		this.criteria = new ArrayList<>();
-		for(Criterion c : w.keySet())
+		for(Criterion c : this.weights.keySet())
 			this.criteria.add(c);
 		this.max_w = null;
-		
-	}
-
-	@Override
-	public Anchor anchor() {
-		
-		return null;
+		this.anchor = Anchor.RMGAVG;	
 	}
 
 	@Override
@@ -59,6 +52,34 @@ public class RMGAVGOutput implements LabreucheOutput {
 			return true;	
 		
 		return false;
+	}
+
+	public List<Criterion> getCriteria() {
+		return criteria;
+	}
+
+	public Map<Criterion, Double> getWeights() {
+		return weights;
+	}
+
+	public Double getEpsilon() {
+		return epsilon;
+	}
+
+	public Alternative getBest_choice() {
+		return best_choice;
+	}
+
+	public Alternative getSecond_choice() {
+		return second_choice;
+	}
+
+	public Double getMax_w() {
+		return max_w;
+	}
+
+	public Anchor getAnchor() {
+		return anchor;
 	}
 
 }

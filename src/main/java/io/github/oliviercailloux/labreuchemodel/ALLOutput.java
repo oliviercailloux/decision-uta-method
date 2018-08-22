@@ -6,25 +6,22 @@ import java.util.Map;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class AllOutput implements LabreucheOutput {
+public class ALLOutput implements LabreucheOutput {
 	
-	public Alternative best_choice;
-	public Alternative second_choice;
-	public Map<Criterion,Double> deltas;
+	private Alternative best_choice;
+	private Alternative second_choice;
+	private Map<Criterion,Double> deltas;
+	private Anchor anchor;
 
 	
-	public AllOutput(Alternative x, Alternative y, Map<Criterion,Double> d ) {
-		this.best_choice = x;
-		this.second_choice = y;
-		this.deltas = d;
+	public ALLOutput(AlternativeComparison alt) {
+		this.best_choice = alt.getX();
+		this.second_choice = alt.getX();
+		this.deltas = alt.getDelta();
+		this.anchor = Anchor.ALL;
 	}
 	
-	@Override
-	public Anchor anchor() {
-		
-		return null;
-	}
-
+	
 	@Override
 	public String argue() {
 		
@@ -41,6 +38,32 @@ public class AllOutput implements LabreucheOutput {
 		}
 		
 		return true;
+	}
+
+
+
+
+	public Alternative getBest_choice() {
+		return best_choice;
+	}
+
+
+
+
+	public Alternative getSecond_choice() {
+		return second_choice;
+	}
+
+
+
+
+	public Map<Criterion, Double> getDeltas() {
+		return deltas;
+	}
+
+
+	public Anchor getAnchor() {
+		return anchor;
 	}
 
 	
