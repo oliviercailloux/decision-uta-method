@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.oliviercailloux.labreuchemodel.AlternativeComparison;
 import io.github.oliviercailloux.labreuchemodel.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -230,17 +231,17 @@ public class MainLabreucheModel {
 			weightsEx17.put(criteriaEx13.get(i), w17[i]);
 			weightsEx18.put(criteriaEx13.get(i), w18[i]);
 		}
-			
+		
 		// problems generate
-		lm5  = new LabreucheModel(criteriaEx5,x_5,y_5,weightsEx5);
-		lm6  = new LabreucheModel(criteriaEx6,x_6,y_6,weightsEx6);
-		lm9  = new LabreucheModel(criteriaEx9,x_9,y_9,weightsEx9);
-		lm10 = new LabreucheModel(criteriaEx10,x_10,y_10,weightsEx10);
-		lm13 = new LabreucheModel(criteriaEx13,x_13,y_13,weightsEx13);
-		lm14 = new LabreucheModel(criteriaEx14,x_14,y_14,weightsEx14);
-		lm15 = new LabreucheModel(criteriaEx15,x_15,y_15,weightsEx15);
-		lm16 = new LabreucheModel(criteriaEx16,x_16,y_16,weightsEx16);
-		lm17 = new LabreucheModel(criteriaEx17,x_17,y_17,weightsEx17);
-		lm18 = new LabreucheModel(criteriaEx18,x_18,y_18,weightsEx18);	
+		lm5  = new LabreucheModel(new AlternativeComparison(x_5,y_5,weightsEx5));
+		lm6  = new LabreucheModel(new AlternativeComparison(x_6,y_6,weightsEx6));
+		lm9  = new LabreucheModel(new AlternativeComparison(x_9,y_9,weightsEx9));
+		lm10 = new LabreucheModel(new AlternativeComparison(x_10,y_10,weightsEx10));
+		lm13 = new LabreucheModel(new AlternativeComparison(x_13,y_13,weightsEx13));
+		lm14 = new LabreucheModel(new AlternativeComparison(x_14,y_14,weightsEx14));
+		lm15 = new LabreucheModel(new AlternativeComparison(x_15,y_15,weightsEx15));
+		lm16 = new LabreucheModel(new AlternativeComparison(x_16,y_16,weightsEx16));
+		lm17 = new LabreucheModel(new AlternativeComparison(x_17,y_17,weightsEx17));
+		lm18 = new LabreucheModel(new AlternativeComparison(x_18,y_18,weightsEx18));	
 	}
 }

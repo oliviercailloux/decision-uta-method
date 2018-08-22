@@ -124,7 +124,7 @@ public class LabreucheModel {
 	 * 									   *
 	 * * * * * * * * * * * * * * * * * * * */
 	
-	public void resolved(boolean show){
+	public void startproblem(boolean show){
 		
 		String display =  "****************************************************************";
 		display += "\n" + "*                                                              *";
@@ -145,8 +145,7 @@ public class LabreucheModel {
 		if(show)
 			System.out.println(display);
 		
-		
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		
 		this.scoringAlternatives();
 	
@@ -181,6 +180,7 @@ public class LabreucheModel {
 		if(show)
 			System.out.println(display);
 	}
+	
 	
 	public LabreucheOutput getExplanation() {	
 		
@@ -238,6 +238,9 @@ public class LabreucheModel {
 		
 		return phi_rmgcomp.isApplicable();
 	}
+	
+	
+	
 	
 	
 	public ALLOutput getALLExplanation() {
