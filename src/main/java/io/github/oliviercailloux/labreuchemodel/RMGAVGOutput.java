@@ -22,6 +22,7 @@ public class RMGAVGOutput implements LabreucheOutput {
 		this.best_choice = alt.getX();
 		this.second_choice = alt.getY();
 		this.weights = alt.getW();
+		this.epsilon = 0.2 / this.criteria.size();
 		this.criteria = new ArrayList<>();
 		for(Criterion c : this.weights.keySet())
 			this.criteria.add(c);

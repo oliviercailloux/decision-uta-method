@@ -25,6 +25,7 @@ public class RMGCOMPOutput implements LabreucheOutput {
 		this.second_choice = alt.getY();
 		this.weights = alt.getW();
 		this.criteria = new ArrayList<>();
+		this.epsilon = 0.2 / this.criteria.size();
 		for(Criterion c : this.weights.keySet())
 			this.criteria.add(c);
 		this.positiveArguments = alt.getCriteriaInFavor();

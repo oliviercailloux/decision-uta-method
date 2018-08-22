@@ -240,9 +240,6 @@ public class LabreucheModel {
 	}
 	
 	
-	
-	
-	
 	public ALLOutput getALLExplanation() {
 		return phi_all;
 	}
@@ -262,7 +259,6 @@ public class LabreucheModel {
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		return phi_rmgcomp;
 	}
-	
 	
 	public String arguer() {
 		return lop.argue();

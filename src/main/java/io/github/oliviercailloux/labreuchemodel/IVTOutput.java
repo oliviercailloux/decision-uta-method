@@ -104,6 +104,11 @@ public class IVTOutput implements LabreucheOutput {
 
 	@Override
 	public Boolean isApplicable() {	
+		
+		if(!c_set.isEmpty()) {
+			return true;
+		}
+		
 		int size = 2;
 		size = this.criteria.size();
 		List<List<Criterion>> subsets = new ArrayList<>();     
