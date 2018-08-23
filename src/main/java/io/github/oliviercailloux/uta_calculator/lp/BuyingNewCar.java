@@ -9,35 +9,38 @@ import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPVariable;
 
 public class BuyingNewCar {
-	static { System.loadLibrary("jniortools"); }
+	static {
+		System.loadLibrary("jniortools");
+	}
 
 	private static void runLinearProgrammingExample(String solverType, boolean printModel) {
-		MPSolver solver = new MPSolver("Choice of transportation", MPSolver.OptimizationProblemType.valueOf(solverType));
+		MPSolver solver = new MPSolver("Choice of transportation",
+				MPSolver.OptimizationProblemType.valueOf(solverType));
 		double infinity = MPSolver.infinity();
 		double sigma = 0.05;
 
 		Map<String, MPVariable> variables = new HashMap<>();
-		variables.put("w11",solver.makeNumVar(0.0, infinity, "w11"));
-		variables.put("w12",solver.makeNumVar(0.0, infinity, "w12"));
-		variables.put("w21",solver.makeNumVar(0.0, infinity, "w21"));
-		variables.put("w22",solver.makeNumVar(0.0, infinity, "w22"));
-		variables.put("w23",solver.makeNumVar(0.0, infinity, "w23"));
-		variables.put("w31",solver.makeNumVar(0.0, infinity, "w31"));
-		variables.put("w32",solver.makeNumVar(0.0, infinity, "w32"));
+		variables.put("w11", solver.makeNumVar(0.0, infinity, "w11"));
+		variables.put("w12", solver.makeNumVar(0.0, infinity, "w12"));
+		variables.put("w21", solver.makeNumVar(0.0, infinity, "w21"));
+		variables.put("w22", solver.makeNumVar(0.0, infinity, "w22"));
+		variables.put("w23", solver.makeNumVar(0.0, infinity, "w23"));
+		variables.put("w31", solver.makeNumVar(0.0, infinity, "w31"));
+		variables.put("w32", solver.makeNumVar(0.0, infinity, "w32"));
 
 		Map<String, MPVariable> errors = new HashMap<>();
-		errors.put("ec4+",solver.makeNumVar(0.0, infinity, "ec4+"));
-		errors.put("ec4-",solver.makeNumVar(0.0, infinity, "ec4-"));
-		errors.put("ep208+",solver.makeNumVar(0.0, infinity, "ep208+"));
-		errors.put("ep208-",solver.makeNumVar(0.0, infinity, "ep208-"));
-		errors.put("ep308+",solver.makeNumVar(0.0, infinity, "ep308+"));
-		errors.put("ep308-",solver.makeNumVar(0.0, infinity, "ep308-"));
-		errors.put("ens+",solver.makeNumVar(0.0, infinity, "ens+"));
-		errors.put("ens-",solver.makeNumVar(0.0, infinity, "ens-"));
+		errors.put("ec4+", solver.makeNumVar(0.0, infinity, "ec4+"));
+		errors.put("ec4-", solver.makeNumVar(0.0, infinity, "ec4-"));
+		errors.put("ep208+", solver.makeNumVar(0.0, infinity, "ep208+"));
+		errors.put("ep208-", solver.makeNumVar(0.0, infinity, "ep208-"));
+		errors.put("ep308+", solver.makeNumVar(0.0, infinity, "ep308+"));
+		errors.put("ep308-", solver.makeNumVar(0.0, infinity, "ep308-"));
+		errors.put("ens+", solver.makeNumVar(0.0, infinity, "ens+"));
+		errors.put("ens-", solver.makeNumVar(0.0, infinity, "ens-"));
 
 		// Minimize Sum of Errors
 		MPObjective objective = solver.objective();
-		for (Map.Entry<String, MPVariable> entry : errors.entrySet()){
+		for (Map.Entry<String, MPVariable> entry : errors.entrySet()) {
 			objective.setCoefficient(entry.getValue(), 1);
 		}
 		objective.setMinimization();
@@ -71,10 +74,8 @@ public class BuyingNewCar {
 		c2.setCoefficient(errors.get("ep308+"), 1);
 		c2.setCoefficient(errors.get("ep308-"), -1);
 
-
-
 		MPConstraint c5 = solver.makeConstraint(1, 1);
-		for (Map.Entry<String, MPVariable> entry : variables.entrySet()){
+		for (Map.Entry<String, MPVariable> entry : variables.entrySet()) {
 			c5.setCoefficient(entry.getValue(), 1);
 		}
 
@@ -96,9 +97,9 @@ public class BuyingNewCar {
 
 		// Verify that the solution satisfies all constraints (when using solvers
 		// others than GLOP_LINEAR_PROGRAMMING, this is highly recommended!).
-		if (!solver.verifySolution(/*tolerance=*/1e-7, /*logErrors=*/true)) {
-			System.err.println("The solution returned by the solver violated the"
-					+ " problem constraints by at least 1e-7");
+		if (!solver.verifySolution(/* tolerance= */1e-7, /* logErrors= */true)) {
+			System.err.println(
+					"The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
 			return;
 		}
 
@@ -108,10 +109,10 @@ public class BuyingNewCar {
 		System.out.println("Optimal objective value = " + solver.objective().value());
 
 		// The value of each variable in the solution.
-		for (Map.Entry<String, MPVariable> entry : variables.entrySet()){
+		for (Map.Entry<String, MPVariable> entry : variables.entrySet()) {
 			System.out.println(entry.getKey() + " = " + entry.getValue().solutionValue());
 		}
-		for (Map.Entry<String, MPVariable> entry : errors.entrySet()){
+		for (Map.Entry<String, MPVariable> entry : errors.entrySet()) {
 			System.out.println(entry.getKey() + " = " + entry.getValue().solutionValue());
 		}
 	}

@@ -1,21 +1,22 @@
 package io.github.oliviercailloux.uta_calculator.model;
 
 public class Point {
-	
-	//Attributes
+
+	// Attributes
 	private final double x;
 	private final double y;
-	
-	//Constructor
-	public Point(double x, double y){
+
+	// Constructor
+	public Point(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	//Getters
+	// Getters
 	public double getX() {
 		return x;
 	}
+
 	public double getY() {
 		return y;
 	}
@@ -24,5 +25,5 @@ public class Point {
 	public String toString() {
 		return "(" + x + "," + y + ") ";
 	}
-	
+
 }

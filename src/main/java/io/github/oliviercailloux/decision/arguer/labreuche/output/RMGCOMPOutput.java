@@ -17,24 +17,20 @@ public class RMGCOMPOutput implements LabreucheOutput {
 		this.epsilon = requireNonNull(epsilon);
 	}
 
-	
 	@Override
 	public Anchor getAnchor() {
 		return Anchor.RMGCOMP;
 	}
-	
-	
+
 	@Override
 	public AlternativesComparison getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 
-
 	public Double getEpsilon() {
 		return epsilon;
 	}
 
-	
 	public Double getMax_w() {
 		Double max_w = Double.MIN_VALUE;
 
@@ -45,7 +41,7 @@ public class RMGCOMPOutput implements LabreucheOutput {
 				max_w = v;
 			}
 		}
-		
+
 		return max_w;
 	}
 }

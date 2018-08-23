@@ -6,46 +6,53 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public class Criterion {
-	
-	//Attributes
+
+	// Attributes
 	private int id;
 	private String name;
 	private List<Double> scale;
-	
-	//Constructors
-	public Criterion(int id, String name, List<Double> scale){
+
+	// Constructors
+	public Criterion(int id, String name, List<Double> scale) {
 		this.id = id;
 		this.name = name;
 		this.scale = scale;
 	}
-	
-	//Getters and Setters
+
+	// Getters and Setters
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public List<Double> getScale() {
 		return scale;
 	}
+
 	public void setScale(List<Double> scale) {
 		this.scale = scale;
 	}
-	
-	//Methods
-	public double getMinValue(){
+
+	// Methods
+	public double getMinValue() {
 		return scale.get(0);
 	}
-	public double getMaxValue(){
-		return scale.get(scale.size() -1);
+
+	public double getMaxValue() {
+		return scale.get(scale.size() - 1);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -59,10 +66,11 @@ public class Criterion {
 			return false;
 		return true;
 	}
+
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
-		stringHelper.add("id", id).add("name",name).add("scale", scale);
+		stringHelper.add("id", id).add("name", name).add("scale", scale);
 		return stringHelper.toString();
 	}
-	
+
 }

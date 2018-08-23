@@ -6,35 +6,40 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public class Alternative {
-	
-	//Attributes
+
+	// Attributes
 	private int id;
 	private String name;
 	private Map<Criterion, Double> evaluations;
-	
-	//Constructors
-	public Alternative(int id, String name, Map<Criterion,Double> evaluations){
+
+	// Constructors
+	public Alternative(int id, String name, Map<Criterion, Double> evaluations) {
 		this.id = id;
 		this.name = name;
 		this.evaluations = evaluations;
 	}
 
-	//Getters and Setters
+	// Getters and Setters
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Map<Criterion, Double> getEvaluations() {
 		return evaluations;
 	}
+
 	public void setEvaluations(Map<Criterion, Double> evaluations) {
 		this.evaluations = evaluations;
 	}
@@ -42,7 +47,7 @@ public class Alternative {
 	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
-		stringHelper.add("id", id).add("name",name).add("evaluations", evaluations);
+		stringHelper.add("id", id).add("name", name).add("evaluations", evaluations);
 		return stringHelper.toString();
 	}
 
@@ -50,8 +55,7 @@ public class Alternative {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((evaluations == null) ? 0 : evaluations.hashCode());
+		result = prime * result + ((evaluations == null) ? 0 : evaluations.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -80,5 +84,5 @@ public class Alternative {
 			return false;
 		return true;
 	}
-	
+
 }

@@ -7,10 +7,13 @@ import com.google.ortools.linearsolver.MPVariable;
 
 public class SimpleExample {
 
-	static { System.loadLibrary("jniortools"); }
+	static {
+		System.loadLibrary("jniortools");
+	}
 
 	private static void runLinearProgrammingExample(String solverType, boolean printModel) {
-		MPSolver solver = new MPSolver("LinearProgrammingExample", MPSolver.OptimizationProblemType.valueOf(solverType));
+		MPSolver solver = new MPSolver("LinearProgrammingExample",
+				MPSolver.OptimizationProblemType.valueOf(solverType));
 		double infinity = MPSolver.infinity();
 
 		// x1, x2 and x3 are continuous non-negative variables.
@@ -61,9 +64,9 @@ public class SimpleExample {
 
 		// Verify that the solution satisfies all constraints (when using solvers
 		// others than GLOP_LINEAR_PROGRAMMING, this is highly recommended!).
-		if (!solver.verifySolution(/*tolerance=*/1e-7, /*logErrors=*/true)) {
-			System.err.println("The solution returned by the solver violated the"
-					+ " problem constraints by at least 1e-7");
+		if (!solver.verifySolution(/* tolerance= */1e-7, /* logErrors= */true)) {
+			System.err.println(
+					"The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
 			return;
 		}
 
