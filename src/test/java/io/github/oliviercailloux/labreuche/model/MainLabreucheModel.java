@@ -26,7 +26,6 @@ public class MainLabreucheModel {
 
 	public MainLabreucheModel() {
 		generateProblems();
-
 	}
 	
 	public  void main(String[] args) {

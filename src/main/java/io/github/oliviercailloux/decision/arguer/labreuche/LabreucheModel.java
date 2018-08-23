@@ -13,6 +13,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Collections;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -372,7 +378,8 @@ public class LabreucheModel {
 		}
 
 		List<Couple<Criterion,Criterion>> r_star = Tools.r_star(cpls);
-
+		
+		
 		// R* determined
 
 		phi_ivt = new IVTOutput(this.alternativesComparison, r_star,this.epsilon);

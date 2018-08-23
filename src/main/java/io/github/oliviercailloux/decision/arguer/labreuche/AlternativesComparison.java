@@ -29,7 +29,7 @@ public class AlternativesComparison {
 	public AlternativesComparison(Alternative x, Alternative y, Map<Criterion, Double> weights) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
-		this.weights = weights;
+		this.weights = requireNonNull(weights);
 	}
 
 	public Set<Criterion> getCriteriaAgainst() {

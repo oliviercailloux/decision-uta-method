@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer.labreuche;
+package io.github.oliviercailloux.decision.arguer.labreuche.output;
 
 import static java.util.Objects.requireNonNull;
 
@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
+import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
