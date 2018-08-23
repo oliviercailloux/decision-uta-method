@@ -39,8 +39,8 @@ public class RMGCOMPOutput implements LabreucheOutput {
 	public double getMaxW() {
 		double maxW = Double.MIN_VALUE;
 
-		for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-			double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
+		for (Map.Entry<Criterion, Double> entry : this.alternativesComparison.getWeight().entrySet()) {
+			double v = Math.abs(entry.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
 
 			if (v > maxW) {
 				maxW = v;

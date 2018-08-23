@@ -5,10 +5,10 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
@@ -47,9 +47,12 @@ public class LabreucheModel {
 		this.c_set = new ArrayList<>();
 		this.epsilon = 0.2 / this.weight.keySet().size();
 		this.weightsReferences = new HashMap<>();
-		for (Criterion c : this.alternativesComparison.getCriteria()) {
-			this.weightsReferences.put(c, 1.0 / this.alternativesComparison.getCriteria().size());
+
+		for (Criterion c : this.weight.keySet()) {
+			this.weightsReferences.put(c, 1.0 / this.weight.keySet().size());
 		}
+
+		System.out.println("youpi!");
 
 		(this).startproblem(false);
 	}
@@ -227,21 +230,21 @@ public class LabreucheModel {
 
 	public LabreucheOutput getExplanation() {
 
-		if (isAnchorALLApplicable())
+		if (isAnchorALLApplicable()) {
 			lop = phi_all;
-		else {
+		} else {
 			System.out.println("noa");
-			if (isAnchorNOAApplicable())
+			if (isAnchorNOAApplicable()) {
 				lop = phi_noa;
-			else {
+			} else {
 				System.out.println("ivt");
-				if (isAnchorIVTApplicable())
+				if (isAnchorIVTApplicable()) {
 					lop = phi_ivt;
-				else {
+				} else {
 					System.out.println("rmg");
-					if (isAnchorRMGAVGApplicable())
+					if (isAnchorRMGAVGApplicable()) {
 						lop = phi_rmgavg;
-					else {
+					} else {
 						lop = phi_rmgcomp;
 					}
 				}
@@ -272,7 +275,7 @@ public class LabreucheModel {
 		}
 
 		Map<Double, Criterion> temp = new HashMap<>();
-		Set<Criterion> setC = new TreeSet<>();
+		Set<Criterion> setC = new LinkedHashSet<>();
 
 		for (Map.Entry<Criterion, Double> w_i : this.alternativesComparison.getWeight().entrySet()) {
 			temp.put((w_i.getValue() - 1.0 / this.alternativesComparison.getCriteria().size())
@@ -320,7 +323,7 @@ public class LabreucheModel {
 			subsets.clear();
 			this.c_set.clear();
 
-			subsets = Tools.allSubset(this.alternativesComparison.getCriteria());
+			subsets = Tools.allSubset(new ArrayList<>(this.alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
 				d_eu = Tools.d_eu(subset, 5, this.alternativesComparison.getWeight(),
@@ -454,8 +457,8 @@ public class LabreucheModel {
 		case NOA:
 
 			AlternativesComparison alcoNOA = phi_noa.getAlternativesComparison();
-			Set<Criterion> ConPA = phi_noa.getConPA();
-			Set<Criterion> ConNA = phi_noa.getConNA();
+			Set<Criterion> ConPA = phi_noa.getPositiveNoaCriteria();
+			Set<Criterion> ConNA = phi_noa.getNegativeNoaCriteria();
 
 			explanation = "Even though " + alcoNOA.getY().getName() + " is better than " + alcoNOA.getX().getName()
 					+ " on average, " + alcoNOA.getX().getName() + " is preferred to " + alcoNOA.getY().getName()
@@ -483,11 +486,11 @@ public class LabreucheModel {
 
 			AlternativesComparison alcoIVT = phi_ivt.getAlternativesComparison();
 
-			List<Criterion> k_nrw = phi_ivt.getK_nrw();
-			List<Criterion> k_nw = phi_ivt.getK_nw();
-			List<Criterion> k_prs = phi_ivt.getK_prs();
-			List<Criterion> k_ps = phi_ivt.getK_ps();
-			List<Couple<Criterion, Criterion>> k_pn = phi_ivt.getK_pn();
+			Set<Criterion> k_nrw = phi_ivt.getK_nrw();
+			Set<Criterion> k_nw = phi_ivt.getK_nw();
+			Set<Criterion> k_prs = phi_ivt.getK_prs();
+			Set<Criterion> k_ps = phi_ivt.getK_ps();
+			Set<Couple<Criterion, Criterion>> k_pn = phi_ivt.getK_pn();
 
 			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "

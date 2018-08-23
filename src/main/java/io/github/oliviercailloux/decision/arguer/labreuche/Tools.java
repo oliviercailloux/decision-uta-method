@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -31,22 +33,22 @@ public class Tools {
 	 */
 
 	// return all permutations of size "size" in list.
-	public static List<List<Criterion>> allPi(List<Criterion> list, int size) {
+	public static List<List<Criterion>> allPi(List<Criterion> subset, int size) {
 		List<List<Criterion>> cycles = new ArrayList<>();
 
 		for (int i = 0; i < size; i++) {
 			if (i == 0) {
 				List<Criterion> singleton;
 
-				for (int j = 0; j < list.size(); j++) {
+				for (Criterion c : subset) {
 					singleton = new ArrayList<>();
-					singleton.add(list.get(j));
+					singleton.add(c);
 					cycles.add(singleton);
 				}
 			} else {
 				List<List<Criterion>> copy_cycles = new ArrayList<>(cycles);
 				List<Criterion> new_cycle = new ArrayList<>();
-				List<Criterion> list_light = new ArrayList<>(list);
+				List<Criterion> list_light = new ArrayList<>(subset);
 
 				for (List<Criterion> cycle : copy_cycles) {
 					list_light.removeAll(cycle);
@@ -75,12 +77,12 @@ public class Tools {
 	}
 
 	// return all permutations of list
-	public static List<List<Criterion>> allPi(List<Criterion> list) {
+	public static List<List<Criterion>> allPi(List<Criterion> subset) {
 		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 
-		for (int i = 2; i <= list.size(); i++) {
-			tmp = allPi(list, i);
+		for (int i = 2; i <= subset.size(); i++) {
+			tmp = allPi(subset, i);
 
 			for (List<Criterion> l : tmp)
 				result.add(l);
@@ -89,17 +91,17 @@ public class Tools {
 		return result;
 	}
 
-	public static Couple<Double, List<Criterion>> d_eu(List<Criterion> list, int flag, Map<Criterion, Double> w,
+	public static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, int flag, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-		Double first_part = 0.0;
+		double first_part = 0.0;
 
-		if (list.isEmpty())
-			return new Couple<>(first_part, list);
+		if (subset.isEmpty())
+			return new Couple<>(first_part, subset);
 
-		for (Criterion c : list)
+		for (Criterion c : subset)
 			first_part += w.get(c) * delta.get(c);
 
-		List<Criterion> best_min_pi = pi_min(list, w, delta);
+		List<Criterion> best_min_pi = pi_min(subset, w, delta);
 		Map<Criterion, Double> pi_w = modified_w(best_min_pi, w);
 		Double min_part = 0.0;
 
@@ -122,8 +124,9 @@ public class Tools {
 	}
 
 	// return the permutation that minimize Sum pi(i) delta_i, for all i in "list"
-	public static List<Criterion> pi_min(List<Criterion> list, Map<Criterion, Double> w, Map<Criterion, Double> delta) {
-		List<List<Criterion>> pis = allPi(list);
+	public static List<Criterion> pi_min(List<Criterion> subset, Map<Criterion, Double> w,
+			Map<Criterion, Double> delta) {
+		List<List<Criterion>> pis = allPi(subset);
 		Map<Criterion, Double> w_modified = new LinkedHashMap<>();
 		Double min_pi_value = Double.MAX_VALUE;
 		List<Criterion> min_pi = null;
@@ -134,7 +137,7 @@ public class Tools {
 
 			sum = 0.0;
 
-			for (Criterion c : list)
+			for (Criterion c : subset)
 				sum += delta.get(c) * w_modified.get(c);
 
 			// System.out.println("Current Min part of "+ this.showCriteria(pi) + " = " +
@@ -179,9 +182,9 @@ public class Tools {
 			if (i == 0) {
 				List<Criterion> singleton;
 
-				for (int j = 0; j < set.size(); j++) {
+				for (Criterion c : set) {
 					singleton = new ArrayList<>();
-					singleton.add(set.get(j));
+					singleton.add(c);
 					subsets.add(singleton);
 				}
 			} else {
@@ -225,12 +228,12 @@ public class Tools {
 	}
 
 	// return all the subset
-	public static List<List<Criterion>> allSubset(List<Criterion> set) {
+	public static List<List<Criterion>> allSubset(List<Criterion> immutableSet) {
 		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 
-		for (int i = 2; i <= set.size(); i++) {
-			tmp = allSubset(set, i);
+		for (int i = 2; i <= immutableSet.size(); i++) {
+			tmp = allSubset(immutableSet, i);
 
 			for (List<Criterion> l : tmp)
 				result.add(l);
@@ -414,12 +417,12 @@ public class Tools {
 	 * * * * * * * * * * * * * * *
 	 */
 
-	public static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> list, Map<Criterion, Double> w,
+	public static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		List<Couple<Criterion, Criterion>> cpl = new ArrayList<>();
 
-		for (Criterion c1 : list) {
-			for (Criterion c2 : list) {
+		for (Criterion c1 : l) {
+			for (Criterion c2 : l) {
 				if (!c1.equals(c2)) {
 					if (delta.get(c1) < delta.get(c2) && w.get(c1) < w.get(c2)) {
 						cpl.add(new Couple<>(c1, c2));
@@ -597,10 +600,21 @@ public class Tools {
 		return show + " }";
 	}
 
-	public static String showSet(List<List<Criterion>> list) {
+	public static String showSet(List<List<Criterion>> big_a) {
 		String str = "{ ";
 
-		for (List<Criterion> l : list)
+		for (List<Criterion> l : big_a)
+			str += showCriteria(l) + " ";
+
+		str += " }";
+
+		return str;
+	}
+
+	public static String showSet(Set<Set<Criterion>> big_a) {
+		String str = "{ ";
+
+		for (Set<Criterion> l : big_a)
 			str += showCriteria(l) + " ";
 
 		str += " }";

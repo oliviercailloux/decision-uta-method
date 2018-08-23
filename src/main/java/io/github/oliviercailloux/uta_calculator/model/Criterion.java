@@ -67,10 +67,16 @@ public class Criterion {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
 		stringHelper.add("id", id).add("name", name).add("scale", scale);
 		return stringHelper.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

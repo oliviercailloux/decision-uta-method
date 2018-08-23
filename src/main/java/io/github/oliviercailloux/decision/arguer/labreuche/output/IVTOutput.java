@@ -1,33 +1,40 @@
 package io.github.oliviercailloux.decision.arguer.labreuche.output;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
-import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class IVTOutput implements LabreucheOutput {
 
 	private AlternativesComparison alternativesComparison;
-	private List<Couple<Criterion, Criterion>> r_star;
-	private Double epsilon;
-
-	private List<Criterion> k_nrw;
-	private List<Criterion> k_nw;
-	private List<Criterion> k_prs;
-	private List<Criterion> k_ps;
-	private List<Couple<Criterion, Criterion>> k_pn;
-
+	private ImmutableSet<Couple<Criterion, Criterion>> r_star;
+	private double epsilon;
+	private Set<Criterion> k_nrw;
+	private Set<Criterion> k_nw;
+	private Set<Criterion> k_prs;
+	private Set<Criterion> k_ps;
+	private Set<Couple<Criterion, Criterion>> k_pn;
 	private boolean firstcall;
 
-	public IVTOutput(AlternativesComparison alternativesComparison, List<Couple<Criterion, Criterion>> r_star,
-			Double epsilon) {
+	/**
+	 * @param r_star2
+	 *            may not be empty.
+	 */
+	public IVTOutput(AlternativesComparison alternativesComparison, List<Couple<Criterion, Criterion>> r_star2,
+			double epsilon) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
-		this.r_star = requireNonNull(r_star);
+		this.r_star = ImmutableSet.copyOf(requireNonNull(r_star2));
+		checkArgument(!r_star2.isEmpty());
 		this.epsilon = requireNonNull(epsilon);
+		checkArgument(Double.isFinite(epsilon));
 		this.firstcall = false;
 	}
 
@@ -41,7 +48,7 @@ public class IVTOutput implements LabreucheOutput {
 		return this.alternativesComparison;
 	}
 
-	public List<Criterion> getK_nrw() {
+	public Set<Criterion> getK_nrw() {
 
 		if (!this.firstcall) {
 			buildKset();
@@ -51,7 +58,7 @@ public class IVTOutput implements LabreucheOutput {
 		return k_nrw;
 	}
 
-	public List<Criterion> getK_nw() {
+	public Set<Criterion> getK_nw() {
 
 		if (!this.firstcall) {
 			buildKset();
@@ -60,7 +67,7 @@ public class IVTOutput implements LabreucheOutput {
 		return k_nw;
 	}
 
-	public List<Couple<Criterion, Criterion>> getK_pn() {
+	public Set<Couple<Criterion, Criterion>> getK_pn() {
 
 		if (!this.firstcall) {
 			buildKset();
@@ -70,7 +77,7 @@ public class IVTOutput implements LabreucheOutput {
 		return k_pn;
 	}
 
-	public List<Criterion> getK_prs() {
+	public Set<Criterion> getK_prs() {
 
 		if (!this.firstcall) {
 			buildKset();
@@ -80,7 +87,7 @@ public class IVTOutput implements LabreucheOutput {
 		return k_prs;
 	}
 
-	public List<Criterion> getK_ps() {
+	public Set<Criterion> getK_ps() {
 
 		if (!this.firstcall) {
 			buildKset();
@@ -90,7 +97,7 @@ public class IVTOutput implements LabreucheOutput {
 		return k_ps;
 	}
 
-	public List<Couple<Criterion, Criterion>> getR_star() {
+	public Set<Couple<Criterion, Criterion>> getR_star() {
 		return this.r_star;
 	}
 
@@ -108,33 +115,23 @@ public class IVTOutput implements LabreucheOutput {
 						.get(c.getRight()) >= (1.0 / this.alternativesComparison.getCriteria().size())
 						&& this.alternativesComparison.getWeight()
 								.get(c.getLeft()) <= (1.0 / this.alternativesComparison.getCriteria().size())) {
-					if (!k_ps.contains(c.getRight())) {
-						k_ps.add(c.getRight()); // adding j
-					}
-					if (!k_nw.contains(c.getLeft())) {
-						k_nw.add(c.getLeft()); // adding i
-					}
+					k_ps.add(c.getRight()); // adding j
+					k_nw.add(c.getLeft()); // adding i
 				} else {
 					// w_j >> w_i
 					if (this.alternativesComparison.getWeight().get(
 							c.getRight()) > this.alternativesComparison.getWeight().get(c.getLeft()) + this.epsilon) {
-						if (!k_pn.contains(c)) {
-							k_pn.add(c); // adding (i,j)
-						}
+						k_pn.add(c); // adding (i,j)
 					} else {
 						// w_j >= 1/n
 						if (this.alternativesComparison.getWeight()
 								.get(c.getRight()) >= (1.0 / this.alternativesComparison.getCriteria().size())) {
-							if (!k_ps.contains(c.getRight())) {
-								k_ps.add(c.getRight()); // adding j
-							}
+							k_ps.add(c.getRight()); // adding j
 						} else {
 							// w_i <= 1/n
 							if (this.alternativesComparison.getWeight()
 									.get(c.getLeft()) <= (1.0 / this.alternativesComparison.getCriteria().size())) {
-								if (!k_nw.contains(c.getLeft())) {
-									k_nw.add(c.getLeft()); // adding i
-								}
+								k_nw.add(c.getLeft()); // adding i
 							}
 						}
 					}
@@ -152,13 +149,9 @@ public class IVTOutput implements LabreucheOutput {
 				// w_j >= 1/n
 				if (this.alternativesComparison.getWeight()
 						.get(c.getRight()) >= (1.0 / this.alternativesComparison.getCriteria().size())) {
-					if (!k_ps.contains(c.getRight())) {
-						k_ps.add(c.getRight()); // adding j
-					}
+					k_ps.add(c.getRight()); // adding j
 				} else {
-					if (!k_prs.contains(c.getRight())) {
-						k_prs.add(c.getRight()); // adding j
-					}
+					k_prs.add(c.getRight()); // adding j
 				}
 			}
 
@@ -172,46 +165,12 @@ public class IVTOutput implements LabreucheOutput {
 				// w_j <= 1/n
 				if (this.alternativesComparison.getWeight()
 						.get(c.getRight()) <= (1.0 / this.alternativesComparison.getCriteria().size())) {
-					if (!k_nw.contains(c.getRight())) {
-						k_nw.add(c.getRight()); // adding j
-					}
+					k_nw.add(c.getRight()); // adding j
 				} else {
-					if (!k_nrw.contains(c.getRight())) {
-						k_nrw.add(c.getRight()); // adding j
-					}
+					k_nrw.add(c.getRight()); // adding j
 				}
 			}
 		}
-
-	}
-
-	public String argue() {
-
-		System.out.println("R* : " + Tools.showCouples(r_star) + "\n");
-
-		if (!k_ps.isEmpty()) {
-			System.out.print("K_ps = " + Tools.showCriteria(k_ps) + "  ");
-		}
-
-		if (!k_prs.isEmpty()) {
-			System.out.print("K_prs = " + Tools.showCriteria(k_prs) + "  ");
-		}
-
-		if (!k_nw.isEmpty()) {
-			System.out.print("K_nw = " + Tools.showCriteria(k_nw) + "  ");
-		}
-
-		if (!k_nrw.isEmpty()) {
-			System.out.print("K_nrw = " + Tools.showCriteria(k_nrw) + "  ");
-		}
-
-		if (!k_pn.isEmpty()) {
-			System.out.print("K_pn = " + Tools.showCouples(k_pn) + " ");
-		}
-
-		System.out.println("\n");
-
-		return "";
 	}
 
 }
