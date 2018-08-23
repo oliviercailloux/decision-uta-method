@@ -4,6 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 
+/**
+ *
+ * Immutable.
+ *
+ */
 public class RMGAVGOutput implements LabreucheOutput {
 
 	private AlternativesComparison alternativesComparison;

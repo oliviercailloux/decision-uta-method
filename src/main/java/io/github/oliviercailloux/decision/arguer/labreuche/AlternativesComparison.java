@@ -24,24 +24,34 @@ public class AlternativesComparison {
 	private Alternative y;
 
 	/**
+	 * The parameters must be such that x and y do not have the same evaluation.
+	 *
 	 * @param x
 	 * @param y
-	 * @param weights may be empty.
+	 * @param weights
 	 */
 	public AlternativesComparison(Alternative x, Alternative y, Map<Criterion, Double> weights) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
 		this.weights = ImmutableMap.copyOf(requireNonNull(weights));
+		/** TODO check that value ≠. */
+		assert !weights.isEmpty();
 	}
 
-	public ImmutableSet<Criterion> getCriteriaAgainst() {
+	/**
+	 * @return the criteria in favor of y better than x.
+	 */
+	public ImmutableSet<Criterion> getNegativeCriteria() {
 		Map<Criterion, Double> evalX = this.x.getEvaluations();
 		Map<Criterion, Double> evalY = this.y.getEvaluations();
 
 		return getFilteredCriteria((crit) -> evalX.get(crit) < evalY.get(crit));
 	}
 
-	public ImmutableSet<Criterion> getCriteriaInFavor() {
+	/**
+	 * @return the criteria in favor of x better than y.
+	 */
+	public ImmutableSet<Criterion> getPositiveCriteria() {
 		Map<Criterion, Double> evalX = this.x.getEvaluations();
 		Map<Criterion, Double> evalY = this.y.getEvaluations();
 
@@ -81,6 +91,9 @@ public class AlternativesComparison {
 		return criteriaFiltered;
 	}
 
+	/**
+	 * @return non empty.
+	 */
 	public ImmutableSet<Criterion> getCriteria() {
 		return weights.keySet();
 	}

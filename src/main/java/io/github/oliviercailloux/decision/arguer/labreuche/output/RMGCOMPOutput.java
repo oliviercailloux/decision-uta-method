@@ -1,5 +1,6 @@
 package io.github.oliviercailloux.decision.arguer.labreuche.output;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
@@ -10,11 +11,12 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class RMGCOMPOutput implements LabreucheOutput {
 
 	private AlternativesComparison alternativesComparison;
-	private Double epsilon;
+	private double epsilon;
 
-	public RMGCOMPOutput(AlternativesComparison alternativesComparison, Double epsilon) {
+	public RMGCOMPOutput(AlternativesComparison alternativesComparison, double epsilon) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.epsilon = requireNonNull(epsilon);
+		checkArgument(Double.isFinite(epsilon));
 	}
 
 	@Override
@@ -27,21 +29,24 @@ public class RMGCOMPOutput implements LabreucheOutput {
 		return this.alternativesComparison;
 	}
 
-	public Double getEpsilon() {
+	public double getEpsilon() {
 		return epsilon;
 	}
 
-	public Double getMax_w() {
-		Double max_w = Double.MIN_VALUE;
+	/**
+	 * @return the value corresponding to W calligraphic.
+	 */
+	public double getMaxW() {
+		double maxW = Double.MIN_VALUE;
 
 		for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-			Double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
+			double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
 
-			if (v > max_w) {
-				max_w = v;
+			if (v > maxW) {
+				maxW = v;
 			}
 		}
 
-		return max_w;
+		return maxW;
 	}
 }

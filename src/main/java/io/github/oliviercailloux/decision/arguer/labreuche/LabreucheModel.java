@@ -467,7 +467,7 @@ public class LabreucheModel {
 			Double addSentence = 0.0;
 
 			for (Criterion c : alcoNOA.getCriteria()) {
-				if (!phi_noa.getSetC().contains(c)) {
+				if (!phi_noa.getNoaCriteria().contains(c)) {
 					addSentence += alcoNOA.getDelta().get(c) * alcoNOA.getWeight().get(c);
 				}
 			}
@@ -527,17 +527,17 @@ public class LabreucheModel {
 
 			AlternativesComparison alcoRMGCOMP = phi_rmgcomp.getAlternativesComparison();
 
-			Double maxW = phi_rmgcomp.getMax_w();
+			Double maxW = phi_rmgcomp.getMaxW();
 			Double eps = phi_rmgcomp.getEpsilon();
 			if (maxW > eps) {
 				if (maxW <= eps * 2) {
 					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 							+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
 							+ alcoRMGCOMP.getY().getName() + " on \n"
-							+ Tools.showCriteria(alcoRMGCOMP.getCriteriaInFavor())
+							+ Tools.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 							+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName()
 							+ " over " + alcoRMGCOMP.getX().getName() + " on \n"
-							+ Tools.showCriteria(alcoRMGCOMP.getCriteriaAgainst())
+							+ Tools.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 							+ ", and all the criteria have more or less the same weights.";
 
 					return explanation;
@@ -546,9 +546,9 @@ public class LabreucheModel {
 
 			explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getCriteriaInFavor())
+					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 					+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getCriteriaAgainst())
+					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 					+ ".";
 
 			return explanation;
