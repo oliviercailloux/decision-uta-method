@@ -26,6 +26,7 @@ public class IVTOutput implements LabreucheOutput {
 
 	/**
 	 * @param r_star2 may not be empty.
+	 * @param epsilon > 0.
 	 */
 	public IVTOutput(AlternativesComparison alternativesComparison, List<Couple<Criterion, Criterion>> r_star2,
 			double epsilon) {
@@ -34,12 +35,17 @@ public class IVTOutput implements LabreucheOutput {
 		checkArgument(!r_star2.isEmpty());
 		this.epsilon = requireNonNull(epsilon);
 		checkArgument(Double.isFinite(epsilon));
+		checkArgument(epsilon > 0);
 		this.firstcall = false;
 	}
 
 	@Override
 	public Anchor getAnchor() {
 		return Anchor.IVT;
+	}
+
+	boolean isJustSmaller(double w1, double w2) {
+		return w1 < w2 && w2 - w1 < epsilon;
 	}
 
 	@Override
@@ -170,6 +176,10 @@ public class IVTOutput implements LabreucheOutput {
 				}
 			}
 		}
+	}
+
+	boolean isMuchSmaller(double w1, double w2) {
+		return w2 - w1 > epsilon;
 	}
 
 }
