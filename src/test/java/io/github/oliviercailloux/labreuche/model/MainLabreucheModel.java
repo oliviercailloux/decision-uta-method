@@ -32,16 +32,16 @@ public class MainLabreucheModel {
 	public  void main(String[] args) {
 		MainLabreucheModel main = new MainLabreucheModel();
 		
-		main.lm5.resolved(false);
-		main.lm6.resolved(false);
-		main.lm9.resolved(false);
-		main.lm10.resolved(false);
-		main.lm13.resolved(false);
-		main.lm14.resolved(false);
-		main.lm15.resolved(false);
-		main.lm16.resolved(false);
-		main.lm17.resolved(false);
-		main.lm18.resolved(false);
+		main.lm5.startproblem(false);
+		main.lm6.startproblem(false);
+		main.lm9.startproblem(false);
+		main.lm10.startproblem(false);
+		main.lm13.startproblem(false);
+		main.lm14.startproblem(false);
+		main.lm15.startproblem(false);
+		main.lm16.startproblem(false);
+		main.lm17.startproblem(false);
+		main.lm18.startproblem(false);
 	}
 	
 	public void generateProblems(){
@@ -233,15 +233,15 @@ public class MainLabreucheModel {
 		}
 		
 		// problems generate
-		lm5  = new LabreucheModel(new AlternativesComparison(x_5,y_5,weightsEx5));
-		lm6  = new LabreucheModel(new AlternativesComparison(x_6,y_6,weightsEx6));
-		lm9  = new LabreucheModel(new AlternativesComparison(x_9,y_9,weightsEx9));
-		lm10 = new LabreucheModel(new AlternativesComparison(x_10,y_10,weightsEx10));
-		lm13 = new LabreucheModel(new AlternativesComparison(x_13,y_13,weightsEx13));
-		lm14 = new LabreucheModel(new AlternativesComparison(x_14,y_14,weightsEx14));
-		lm15 = new LabreucheModel(new AlternativesComparison(x_15,y_15,weightsEx15));
-		lm16 = new LabreucheModel(new AlternativesComparison(x_16,y_16,weightsEx16));
-		lm17 = new LabreucheModel(new AlternativesComparison(x_17,y_17,weightsEx17));
-		lm18 = new LabreucheModel(new AlternativesComparison(x_18,y_18,weightsEx18));	
+		lm5  = new LabreucheModel(x_5,y_5,weightsEx5);
+		lm6  = new LabreucheModel(x_6,y_6,weightsEx6);
+		lm9  = new LabreucheModel(x_9,y_9,weightsEx9);
+		lm10 = new LabreucheModel(x_10,y_10,weightsEx10);
+		lm13 = new LabreucheModel(x_13,y_13,weightsEx13);
+		lm14 = new LabreucheModel(x_14,y_14,weightsEx14);
+		lm15 = new LabreucheModel(x_15,y_15,weightsEx15);
+		lm16 = new LabreucheModel(x_16,y_16,weightsEx16);
+		lm17 = new LabreucheModel(x_17,y_17,weightsEx17);
+		lm18 = new LabreucheModel(x_18,y_18,weightsEx18);	
 	}
 }

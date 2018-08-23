@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.nunesmodel;
+package io.github.oliviercailloux.decision.arguer.nunes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class NunesModel {
 	public List<Criterion> criteria;
 	public List<Alternative> alternatives;
 	public Map<Criterion,Double> weights;
-	public List<Constrain> constrains;
+	public List<Constraint> constrains;
 	public Map<Criterion,Double> deltas;
 	public Map<Double,Alternative> scoreboard;
 	public List<Criterion> positiveArguments;
@@ -27,7 +27,7 @@ public class NunesModel {
 	public List<Alternative> alt_rejected;
 	
 	
-	public NunesModel(List<Criterion> criteria, List<Alternative> x,List<Constrain> c, Map<Criterion,Double> weights){
+	public NunesModel(List<Criterion> criteria, List<Alternative> x,List<Constraint> c, Map<Criterion,Double> weights){
 		this.criteria = criteria;
 		this.weights = weights;
 		this.constrains = c;

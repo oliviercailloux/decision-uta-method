@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.nunesmodel;
+package io.github.oliviercailloux.decision.arguer.nunes;
 
 import java.util.Map;
 

@@ -2,8 +2,10 @@ package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -26,7 +28,7 @@ public class AlternativesComparison {
 	 */
 	public AlternativesComparison(Alternative x, Alternative y, Map<Criterion, Double> weights) {
 		this.x = requireNonNull(x);
-		this.y = y;
+		this.y = requireNonNull(y);
 		this.weights = weights;
 	}
 
@@ -75,6 +77,14 @@ public class AlternativesComparison {
 		Stream<Criterion> criteriaFilteredStream = allCriteriaStream.filter(predicate);
 		Set<Criterion> criteriaFiltered = criteriaFilteredStream.collect(Collectors.toCollection(LinkedHashSet::new));
 		return criteriaFiltered;
+	}
+	
+	public List<Criterion> getCriteria() {
+		List<Criterion> res = new ArrayList<>();
+		for (Criterion c : this.weights.keySet()) {
+			res.add(c);
+		}
+		return res;
 	}
 
 }
