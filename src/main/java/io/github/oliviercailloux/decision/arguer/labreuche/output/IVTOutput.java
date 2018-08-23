@@ -25,8 +25,7 @@ public class IVTOutput implements LabreucheOutput {
 	private boolean firstcall;
 
 	/**
-	 * @param r_star2
-	 *            may not be empty.
+	 * @param r_star2 may not be empty.
 	 */
 	public IVTOutput(AlternativesComparison alternativesComparison, List<Couple<Criterion, Criterion>> r_star2,
 			double epsilon) {

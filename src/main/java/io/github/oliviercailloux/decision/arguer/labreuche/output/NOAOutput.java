@@ -21,8 +21,7 @@ public class NOAOutput implements LabreucheOutput {
 	private ImmutableSet<Criterion> noaCriteria;
 
 	/**
-	 * @param noaCriteria
-	 *            may not be empty.
+	 * @param noaCriteria may not be empty.
 	 */
 	public NOAOutput(AlternativesComparison alternativesComparison, Set<Criterion> noaCriteria) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
