@@ -1,9 +1,9 @@
 package io.github.oliviercailloux.uta_calculator.model;
 
-import io.github.oliviercailloux.uta_calculator.utils.NumbersGenerator;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.oliviercailloux.uta_calculator.utils.NumbersGenerator;
 
 public class ValueFunctionGenerator {
 

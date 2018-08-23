@@ -1,12 +1,12 @@
 package io.github.oliviercailloux.uta_calculator.view;
 
+import java.util.Scanner;
+
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
 import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
 import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
-
-import java.util.Scanner;
 
 public class MainRandomProblem {
 

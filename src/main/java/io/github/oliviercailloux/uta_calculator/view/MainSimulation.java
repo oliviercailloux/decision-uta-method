@@ -1,12 +1,5 @@
 package io.github.oliviercailloux.uta_calculator.view;
 
-import io.github.oliviercailloux.uta_calculator.math.Statistics;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
-import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
-import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
-import io.github.oliviercailloux.uta_calculator.model.ValueFunctionGenerator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +7,13 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.github.oliviercailloux.uta_calculator.math.Statistics;
+import io.github.oliviercailloux.uta_calculator.model.Alternative;
+import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
+import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
+import io.github.oliviercailloux.uta_calculator.model.ValueFunctionGenerator;
 
 public class MainSimulation {
 

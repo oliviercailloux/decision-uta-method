@@ -1,13 +1,5 @@
 package io.github.oliviercailloux.uta_calculator.view;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
-import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
-import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
-import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
-import io.github.oliviercailloux.uta_calculator.utils.ScaleGenerator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,6 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import io.github.oliviercailloux.uta_calculator.model.Alternative;
+import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
+import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
+import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
+import io.github.oliviercailloux.uta_calculator.utils.ScaleGenerator;
 
 public class MainBuyingNewCar {
 

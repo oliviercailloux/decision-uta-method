@@ -1,12 +1,12 @@
 package io.github.oliviercailloux.uta_calculator.model;
 
-import io.github.oliviercailloux.uta_calculator.utils.ScaleGenerator;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import io.github.oliviercailloux.uta_calculator.utils.ScaleGenerator;
 
 public class ProblemGenerator {
 

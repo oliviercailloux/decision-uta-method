@@ -2,7 +2,6 @@ package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;

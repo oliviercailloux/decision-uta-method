@@ -2,16 +2,10 @@ package io.github.oliviercailloux.decision.arguer.labreuche.output;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class NOAOutput implements LabreucheOutput {

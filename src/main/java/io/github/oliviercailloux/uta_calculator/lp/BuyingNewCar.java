@@ -1,11 +1,12 @@
 package io.github.oliviercailloux.uta_calculator.lp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPVariable;
-
-import java.util.*;
 
 public class BuyingNewCar {
 	static { System.loadLibrary("jniortools"); }
