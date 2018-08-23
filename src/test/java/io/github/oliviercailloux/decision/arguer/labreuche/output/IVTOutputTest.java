@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -22,17 +23,10 @@ class IVTOutputTest {
 
 	@Test
 	void testSmaller() {
-		ProblemGenerator gen = new ProblemGenerator();
-		gen.generateCriteria(2, 0, 10, 1);
-		gen.generateAlternatives(2);
-		List<Alternative> alternatives = gen.getAlternatives();
-		Alternative x = alternatives.get(0);
-		Alternative y = alternatives.get(1);
-		List<Criterion> criteria = gen.getCriteria();
-		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
-		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights);
-		Criterion c1 = criteria.get(0);
-		Criterion c2 = criteria.get(1);
+		AlternativesComparison altsComp = newAlternativesComparison();
+		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
+		Criterion c1 = critIt.next();
+		Criterion c2 = critIt.next();
 		Couple<Criterion, Criterion> pair = new Couple<>(c1, c2);
 		IVTOutput output = new IVTOutput(altsComp, ImmutableList.of(pair), 0.1);
 
@@ -45,6 +39,19 @@ class IVTOutputTest {
 		assertTrue(output.isMuchSmaller(0.5, 0.75));
 		assertFalse(output.isMuchSmaller(0.9, 0.75));
 		assertFalse(output.isMuchSmaller(0.9, 0.2));
+	}
+
+	public AlternativesComparison newAlternativesComparison() {
+		ProblemGenerator gen = new ProblemGenerator();
+		gen.generateCriteria(2, 0, 10, 1);
+		gen.generateAlternatives(2);
+		List<Alternative> alternatives = gen.getAlternatives();
+		Alternative x = alternatives.get(0);
+		Alternative y = alternatives.get(1);
+		List<Criterion> criteria = gen.getCriteria();
+		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
+		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights);
+		return altsComp;
 	}
 
 	public ImmutableMap<Criterion, Double> genEqualWeights(Collection<Criterion> criteria) {
