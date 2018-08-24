@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.ImmutableGraph;
 
@@ -541,18 +542,18 @@ public class LabreucheModel {
 
 			AlternativesComparison alcoIVT = phiIVT.getAlternativesComparison();
 
-			ImmutableGraph<Criterion> k_nrw = phiIVT.getNegativeRelativelyWeak();
-			ImmutableGraph<Criterion> k_nw = phiIVT.getNegativeWeak();
-			ImmutableGraph<Criterion> k_prs = phiIVT.getPositiveRelativelyStrong();
-			ImmutableGraph<Criterion> k_ps = phiIVT.getPositiveStrong();
+			ImmutableSet<Criterion> k_nrw = phiIVT.getNegativeRelativelyWeak();
+			ImmutableSet<Criterion> k_nw = phiIVT.getNegativeWeak();
+			ImmutableSet<Criterion> k_prs = phiIVT.getPositiveRelativelyStrong();
+			ImmutableSet<Criterion> k_ps = phiIVT.getPositiveStrong();
 			ImmutableGraph<Criterion> k_pn = phiIVT.getPositiveNegative();
 
 			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-					+ Tools.showGraph(k_ps) + " that are important " + "\n" + "and on the criteria "
-					+ Tools.showGraph(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
-					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Tools.showGraph(k_nw)
-					+ "\n" + "that are not important and on the criteria " + Tools.showGraph(k_nrw)
+					+ Tools.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
+					+ Tools.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
+					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Tools.showCriteria(k_nw)
+					+ "\n" + "that are not important and on the criteria " + Tools.showCriteria(k_nrw)
 					+ " that are not really important.";
 
 			if (!k_pn.edges().isEmpty()) {

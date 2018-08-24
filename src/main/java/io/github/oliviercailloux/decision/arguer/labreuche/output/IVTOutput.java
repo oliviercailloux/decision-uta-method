@@ -15,6 +15,7 @@ import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
+import com.google.common.graph.SuccessorsFunction;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
@@ -30,10 +31,10 @@ public class IVTOutput implements LabreucheOutput {
 	private AlternativesComparison alternativesComparison;
 	private ImmutableGraph<Criterion> rStar;
 	private double epsilon;
-	private ImmutableGraph<Criterion> kNRW;
-	private ImmutableGraph<Criterion> kNW;
-	private ImmutableGraph<Criterion> kPRS;
-	private ImmutableGraph<Criterion> kPS;
+	private ImmutableSet<Criterion> kNRW;
+	private ImmutableSet<Criterion> kNW;
+	private ImmutableSet<Criterion> kPRS;
+	private ImmutableSet<Criterion> kPS;
 	private ImmutableGraph<Criterion> kPN;
 
 	/**
@@ -66,7 +67,7 @@ public class IVTOutput implements LabreucheOutput {
 		return this.alternativesComparison;
 	}
 
-	public ImmutableGraph<Criterion> getNegativeRelativelyWeak() {
+	public ImmutableSet<Criterion> getNegativeRelativelyWeak() {
 
 		if (this.kNRW == null) {
 			computeKset();
@@ -75,7 +76,7 @@ public class IVTOutput implements LabreucheOutput {
 		return kNRW;
 	}
 
-	public ImmutableGraph<Criterion> getNegativeWeak() {
+	public ImmutableSet<Criterion> getNegativeWeak() {
 
 		if (this.kNRW == null) {
 			computeKset();
@@ -93,7 +94,7 @@ public class IVTOutput implements LabreucheOutput {
 		return kPN;
 	}
 
-	public ImmutableGraph<Criterion> getPositiveRelativelyStrong() {
+	public ImmutableSet<Criterion> getPositiveRelativelyStrong() {
 
 		if (this.kNRW == null) {
 			computeKset();
@@ -102,7 +103,7 @@ public class IVTOutput implements LabreucheOutput {
 		return kPRS;
 	}
 
-	public ImmutableGraph<Criterion> getPositiveStrong() {
+	public ImmutableSet<Criterion> getPositiveStrong() {
 
 		if (this.kNRW == null) {
 			computeKset();
@@ -116,10 +117,10 @@ public class IVTOutput implements LabreucheOutput {
 	}
 
 	private void computeKset() {
-		MutableGraph<Criterion> buildkPS = GraphBuilder.directed().build();
-		MutableGraph<Criterion> buildkPRS = GraphBuilder.directed().build();
-		MutableGraph<Criterion> buildkNW = GraphBuilder.directed().build();
-		MutableGraph<Criterion> buildkNRW = GraphBuilder.directed().build();
+		Builder<Criterion> buildkPS = ImmutableSet.builder();
+		Builder<Criterion> buildkPRS = ImmutableSet.builder();
+		Builder<Criterion> buildkNW = ImmutableSet.builder();
+		Builder<Criterion> buildkNRW = ImmutableSet.builder();
 		MutableGraph<Criterion> buildkPN = GraphBuilder.directed().build();
 
 		ImmutableMap<Criterion, Double> w = alternativesComparison.getWeight();
@@ -135,8 +136,8 @@ public class IVTOutput implements LabreucheOutput {
 
 			if (deltaJ > 0 && deltaI < 0) {
 				if (wI <= 1.0 / n && 1.0 / n < wJ) {
-					buildkPS.addNode(j);
-					buildkNW.addNode(i);
+					buildkPS.add(j);
+					buildkNW.add(i);
 				}
 				if (isMuchSmaller(wI, wJ) && wJ < 1.0 / n) {
 					buildkPN.putEdge(i,j);
@@ -145,36 +146,36 @@ public class IVTOutput implements LabreucheOutput {
 					buildkPN.putEdge(i,j);
 				}
 				if (isJustSmaller(wI, wJ) && wJ < 1.0 / n) {
-					buildkNW.addNode(i);
+					buildkNW.add(i);
 				}
 				if (1.0 / n < wI && isJustSmaller(wI, wJ)) {
-					buildkPS.addNode(j);
+					buildkPS.add(j);
 				}
 			}
 
 			if (deltaJ > 0 && deltaI > 0) {
 				if (wJ >= 1.0 / n) {
-					buildkPS.addNode(j);
+					buildkPS.add(j);
 				}
 				if (1.0 / n > wJ) {
-					buildkPRS.addNode(j);
+					buildkPRS.add(j);
 				}
 			}
 
 			if (deltaJ < 0 && deltaI < 0) {
 				if (wI > 1.0 / n) {
-					buildkNRW.addNode(i);
+					buildkNRW.add(i);
 				}
 				if (1.0 / n >= wI) {
-					buildkNW.addNode(i);
+					buildkNW.add(i);
 				}
 			}
 		}
 
-		kPS = ImmutableGraph.copyOf(buildkPS);
-		kPRS = ImmutableGraph.copyOf(buildkPRS);
-		kNW = ImmutableGraph.copyOf(buildkNW);
-		kNRW = ImmutableGraph.copyOf(buildkNRW);
+		kPS = buildkPS.build();
+		kPRS = buildkPRS.build();
+		kNW = buildkNW.build();
+		kNRW = buildkNRW.build();
 		kPN = ImmutableGraph.copyOf(buildkPN);
 	}
 
