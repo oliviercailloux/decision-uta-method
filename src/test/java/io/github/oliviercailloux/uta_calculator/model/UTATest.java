@@ -1,13 +1,15 @@
 package io.github.oliviercailloux.uta_calculator.model;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.view.MainBuyingNewCar;
 
-import org.junit.Test;
 
 public class UTATest {
 
@@ -18,7 +20,8 @@ public class UTATest {
 		List<Alternative> correctAlternatives = buyingNewCarExercice.getMainAlternatives();
 		List<Alternative> utaAlternatives = buyingNewCarExercice.getAlternativeSorted();
 
-		assertEquals("Does the buying new car work fines ?", correctAlternatives, utaAlternatives);
+		//"Does the buying new car work fines ?"
+		assertEquals(correctAlternatives, utaAlternatives);
 	}
 
 }

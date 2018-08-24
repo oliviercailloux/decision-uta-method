@@ -30,7 +30,7 @@ public class RMGCOMPOutput implements LabreucheOutput {
 	}
 
 	public double getEpsilon() {
-		return epsilon;
+		return this.epsilon;
 	}
 
 	/**
@@ -38,9 +38,10 @@ public class RMGCOMPOutput implements LabreucheOutput {
 	 */
 	public double getMaxW() {
 		double maxW = Double.MIN_VALUE;
-
-		for (Map.Entry<Criterion, Double> entry : this.alternativesComparison.getWeight().entrySet()) {
-			double v = Math.abs(entry.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
+		double n = alternativesComparison.getCriteria().size();
+		
+		for (Map.Entry<Criterion, Double> entry : alternativesComparison.getWeight().entrySet()) {
+			double v = Math.abs(entry.getValue() - (1.0 / n));
 
 			if (v > maxW) {
 				maxW = v;

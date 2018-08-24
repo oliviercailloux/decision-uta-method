@@ -19,7 +19,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Tools {
 
-	public static Double score(Alternative x, Map<Criterion, Double> w) {
+	static Double score(Alternative x, Map<Criterion, Double> w) {
 		Double score = 0.0;
 
 		// Sum w_i * x_i
@@ -35,7 +35,7 @@ public class Tools {
 	 */
 
 	// return all permutations of size "size" in list.
-	public static List<List<Criterion>> allPi(List<Criterion> subset, int size) {
+	static List<List<Criterion>> allPi(List<Criterion> subset, int size) {
 		List<List<Criterion>> cycles = new ArrayList<>();
 
 		for (int i = 0; i < size; i++) {
@@ -72,14 +72,14 @@ public class Tools {
 		return cycles;
 	}
 
-	public static List<Criterion> add(List<Criterion> l, Criterion c) {
+	static List<Criterion> add(List<Criterion> l, Criterion c) {
 		List<Criterion> new_l = new ArrayList<>(l);
 		new_l.add(c);
 		return new_l;
 	}
 
 	// return all permutations of list
-	public static List<List<Criterion>> allPi(List<Criterion> subset) {
+	static List<List<Criterion>> allPi(List<Criterion> subset) {
 		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 
@@ -93,7 +93,7 @@ public class Tools {
 		return result;
 	}
 
-	public static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, int flag, Map<Criterion, Double> w,
+	static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, int flag, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		double first_part = 0.0;
 
@@ -126,7 +126,7 @@ public class Tools {
 	}
 
 	// return the permutation that minimize Sum pi(i) delta_i, for all i in "list"
-	public static List<Criterion> pi_min(List<Criterion> subset, Map<Criterion, Double> w,
+	static List<Criterion> pi_min(List<Criterion> subset, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		List<List<Criterion>> pis = allPi(subset);
 		Map<Criterion, Double> w_modified = new LinkedHashMap<>();
@@ -160,7 +160,7 @@ public class Tools {
 	}
 
 	// returned weight vector modified by cycle
-	public static Map<Criterion, Double> modified_w(List<Criterion> cycle, Map<Criterion, Double> w) {
+	static Map<Criterion, Double> modified_w(List<Criterion> cycle, Map<Criterion, Double> w) {
 		Map<Criterion, Double> pi_w = new LinkedHashMap<>(w);
 		Double tmp_pi = 0.0;
 
@@ -177,7 +177,7 @@ public class Tools {
 	}
 
 	// return all the subset of size "size" in set
-	public static List<List<Criterion>> allSubset(List<Criterion> set, int size) {
+	static List<List<Criterion>> allSubset(List<Criterion> set, int size) {
 		List<List<Criterion>> subsets = new ArrayList<>();
 
 		for (int i = 0; i < size; i++) {
@@ -230,7 +230,7 @@ public class Tools {
 	}
 
 	// return all the subset
-	public static List<List<Criterion>> allSubset(List<Criterion> immutableSet) {
+	static List<List<Criterion>> allSubset(List<Criterion> immutableSet) {
 		List<List<Criterion>> result = new ArrayList<>();
 		List<List<Criterion>> tmp;
 
@@ -251,7 +251,7 @@ public class Tools {
 
 	// return true if the intersection of "list_l" and "l" is empty, and false
 	// otherwise
-	public static boolean isCapEmpty(List<List<Criterion>> list_l, List<Criterion> l) {
+	static boolean isCapEmpty(List<List<Criterion>> list_l, List<Criterion> l) {
 		if (list_l.isEmpty())
 			return true;
 
@@ -276,7 +276,7 @@ public class Tools {
 	}
 
 	// return list sorted in a sense of lexi
-	public static List<List<Criterion>> sortLexi(List<List<Criterion>> list, Map<Criterion, Double> w,
+	static List<List<Criterion>> sortLexi(List<List<Criterion>> list, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		List<List<Criterion>> sorted = new ArrayList<>();
 		int min_size = Integer.MAX_VALUE;
@@ -332,7 +332,7 @@ public class Tools {
 	}
 
 	// return true if a is include in b in a sense en include_discri
-	public static boolean includeDiscri(List<List<Criterion>> a, List<List<Criterion>> b, Map<Criterion, Double> w,
+	static boolean includeDiscri(List<List<Criterion>> a, List<List<Criterion>> b, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		boolean result = true;
 
@@ -419,7 +419,7 @@ public class Tools {
 	 * * * * * * * * * * * * * * *
 	 */
 
-	public static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> l, Map<Criterion, Double> w,
+	static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 		List<Couple<Criterion, Criterion>> cpl = new ArrayList<>();
 
@@ -435,7 +435,7 @@ public class Tools {
 		return cpl;
 	}
 
-	public static List<Couple<Criterion, Criterion>> r_top(List<Couple<Criterion, Criterion>> list_c) {
+	static List<Couple<Criterion, Criterion>> r_top(List<Couple<Criterion, Criterion>> list_c) {
 		boolean change_flag = false; // -> list_c have a new couple added, falg = true;
 		List<Couple<Criterion, Criterion>> copy = new ArrayList<>(list_c);
 		List<Couple<Criterion, Criterion>> light = new ArrayList<>(); // -> used to avoid to check the same couples
@@ -476,7 +476,7 @@ public class Tools {
 		return copy;
 	}
 
-	public static ImmutableGraph<Criterion> buildRStar(List<Couple<Criterion, Criterion>> cpls) {
+	static ImmutableGraph<Criterion> buildRStar(List<Couple<Criterion, Criterion>> cpls) {
 		List<List<Couple<Criterion, Criterion>>> subsets = allSubsetCouple(cpls);
 		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 
@@ -495,7 +495,7 @@ public class Tools {
 		return ImmutableGraph.copyOf(result);
 	}
 
-	public static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set,
+	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set,
 			int size) {
 		List<List<Couple<Criterion, Criterion>>> subsets = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
@@ -532,7 +532,7 @@ public class Tools {
 		return subsets;
 	}
 
-	public static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set) {
+	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set) {
 		List<List<Couple<Criterion, Criterion>>> result = new ArrayList<>();
 		List<List<Couple<Criterion, Criterion>>> tmp;
 
@@ -546,7 +546,7 @@ public class Tools {
 		return result;
 	}
 
-	public static List<Couple<Criterion, Criterion>> addCouple(List<Couple<Criterion, Criterion>> l,
+	static List<Couple<Criterion, Criterion>> addCouple(List<Couple<Criterion, Criterion>> l,
 			Couple<Criterion, Criterion> c) {
 		List<Couple<Criterion, Criterion>> new_l = new ArrayList<>(l);
 		new_l.add(c);
@@ -620,7 +620,7 @@ public class Tools {
 		for (Set<Criterion> l : big_a)
 			str += showCriteria(l) + " ";
 
-		str += " }";
+		str += "}";
 
 		return str;
 	}
@@ -634,6 +634,17 @@ public class Tools {
 		string += " }";
 
 		return string;
+	}
+
+	public static String showGraph(ImmutableGraph<Criterion> graph) {
+		String res = "{ ";
+		
+		for(Criterion c : graph.nodes())
+			res += c.getName()+ " ";
+		
+		res += "}";
+			
+		return res;
 	}
 
 }

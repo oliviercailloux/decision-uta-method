@@ -1,8 +1,10 @@
-package io.github.oliviercailloux.labreuche.model;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.platform.engine.TestTag;
 
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.GraphBuilder;
@@ -10,14 +12,18 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
-import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
 
 public class Testouille {
 
-	public static void main(String[] args) {
+	public void main(String[] args) {
 
+		//testGraph();
+		
+	}
+	
+	void testGraph() {
 		ProblemGenerator pg = new ProblemGenerator();
 
 		pg.generateCriteria(10, 0, 10, 1);
@@ -43,9 +49,10 @@ public class Testouille {
 
 		for (EndpointPair<Criterion> ep : immutableGraph.edges())
 			System.out.println(ep.nodeU().getName() + " , " + ep.nodeV().getName());
+		
 	}
 
-	private static Set<Couple<Criterion, Criterion>> generateCouples(int number, List<Criterion> criteria) {
+	static Set<Couple<Criterion, Criterion>> generateCouples(int number, List<Criterion> criteria) {
 		Set<Couple<Criterion, Criterion>> res = new LinkedHashSet<>();
 		for (int i = 0; i < number; i++) {
 			int alea1 = (int) (Math.random() * criteria.size());

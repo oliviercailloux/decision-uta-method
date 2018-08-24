@@ -1,24 +1,20 @@
-package io.github.oliviercailloux.labreuche.model;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.view.MainBuyingNewCar;
 
 public class MainLabreucheModel {
 
 	LabreucheModel lm;
 
 	public MainLabreucheModel() {
-		this.lm = generateProblems(5);
+		this.lm = generateProblems();
 	}
 
 	public static void main(String[] args) {
@@ -38,7 +34,7 @@ public class MainLabreucheModel {
 		// main.lm18.startproblem(false);
 	}
 
-	public LabreucheModel generateProblems(int indice) {
+	public LabreucheModel generateProblems() {
 
 		// example 5 for NOA -> validate!
 		Double[] w5 = { 0.41, 0.06, 0.24, 0.29 };

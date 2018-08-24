@@ -68,7 +68,7 @@ public class MainBuyingNewCar {
 	private static <K, V> Map<K, V> sortByValue(Map<K, V> map) {
 		List<Entry<K, V>> list = new LinkedList<>(map.entrySet());
 		Collections.sort(list, new Comparator<Object>() {
-			@SuppressWarnings("unchecked")
+			@Override
 			public int compare(Object o2, Object o1) {
 				return ((Comparable<V>) ((Map.Entry<K, V>) (o1)).getValue())
 						.compareTo(((Map.Entry<K, V>) (o2)).getValue());
@@ -106,10 +106,10 @@ public class MainBuyingNewCar {
 		return alternatives;
 	}
 
-	public Map<Alternative, Double> getAlternativeValues(ValueFunction vf, List<Alternative> alternatives) {
+	public Map<Alternative, Double> getAlternativeValues(ValueFunction valuefunction, List<Alternative> alternatives) {
 		Map<Alternative, Double> result = new HashMap<>();
 		for (Alternative alternative : alternatives) {
-			result.put(alternative, vf.getValue(alternative));
+			result.put(alternative, valuefunction.getValue(alternative));
 		}
 		return result;
 	}
@@ -154,8 +154,8 @@ public class MainBuyingNewCar {
 		Alternative p308 = new Alternative(4, "Peugeot 308 Berline", evaluation);
 		alternatives.add(p308);
 
-		ProblemGenerator problem = new ProblemGenerator(criteria, alternatives);
-		return problem;
+		ProblemGenerator pb = new ProblemGenerator(criteria, alternatives);
+		return pb;
 	}
 
 }

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+import com.google.common.graph.EndpointPair;
 import com.google.common.graph.ImmutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
@@ -28,7 +30,6 @@ public class LabreucheModel {
 	private Alternative y;
 	private Map<Criterion, Double> weight;
 	private Map<Criterion, Double> weightsReferences;
-	private Map<Double, Alternative> scoreboard;
 
 	private AlternativesComparison alternativesComparison;
 
@@ -46,7 +47,6 @@ public class LabreucheModel {
 		this.weight = requireNonNull(weight);
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
-		this.scoreboard = new HashMap<>();
 		this.setCIVT = new ArrayList<>();
 		this.epsilon = 0.2 / this.weight.keySet().size();
 		this.weightsReferences = new HashMap<>();
@@ -73,10 +73,6 @@ public class LabreucheModel {
 		return this.weight;
 	}
 
-	public Map<Double, Alternative> getScoreboard() {
-		return this.scoreboard;
-	}
-
 	public List<List<Criterion>> getsetCIVT() {
 		return this.setCIVT;
 	}
@@ -97,18 +93,11 @@ public class LabreucheModel {
 	 * * METHODS * *
 	 ****************************************************************************************/
 
-	// associate the score for all the alternatives and stock them on the
-	// scoreboard.
-	public void scoringAlternatives() {
-		this.scoreboard.put(Tools.score(this.x, this.weight), this.x);
-		this.scoreboard.put(Tools.score(this.y, this.weight), this.y);
-	}
-
 	/**
 	 * @return the minimal set of permutation that inverse the decision between x
 	 *         and y.
 	 */
-	public List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
+	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
 		// System.out.println(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k
 		// = " + k);
 
@@ -182,7 +171,7 @@ public class LabreucheModel {
 	 * * * * * * * * * * * *
 	 */
 
-	public void startproblem(boolean show) {
+	private void startproblem(boolean show) {
 
 		String display = "****************************************************************";
 		display += "\n" + "*                                                              *";
@@ -205,20 +194,21 @@ public class LabreucheModel {
 
 		// long start = System.currentTimeMillis();
 
-		this.scoringAlternatives();
+		double scoreX = Tools.score(x, weight);
+		double scoreY = Tools.score(y, weight);
+				
+		if(scoreX >= scoreY) {
+			alternativesComparison = new AlternativesComparison(x, y, weight);
+		}
+		else {
+			alternativesComparison = new AlternativesComparison(y, x, weight);
 
-		display = "\n" + "Top of alternatives : ";
+		}	
+		
+		display = "\n" + "			Alternatives ranked";
+		display += "\n" + alternativesComparison.getX().getName() + " = " + Tools.score(alternativesComparison.getX(), weight);
+		display += "\n" + alternativesComparison.getY().getName() + " = " + Tools.score(alternativesComparison.getY(), weight);
 
-		ArrayList<Double> scores = new ArrayList<>(this.scoreboard.keySet());
-		Collections.sort(scores);
-
-		for (int i = scores.size() - 1; i >= 0; i--)
-			display += "\n " + " " + this.scoreboard.get(scores.get(i)).getName() + " : " + scores.get(i);
-
-		this.x = this.scoreboard.get(scores.get(scores.size() - 1));
-		this.y = this.scoreboard.get(scores.get(scores.size() - 2));
-
-		this.alternativesComparison = new AlternativesComparison(this.x, this.y, this.weight);
 
 		if (show)
 			System.out.println(display + "\n");
@@ -430,7 +420,7 @@ public class LabreucheModel {
 			return isAnchorRMGCOMPApplicable();
 
 		default:
-			System.out.println("Anchor unknown");
+			System.out.println("Anchor given unknown");
 			return false;
 		}
 	}
@@ -454,41 +444,57 @@ public class LabreucheModel {
 		return false;
 	}
 
+	
+	/**
+	 * @return elements of argumentation if the anchor ALL is applicable
+	 * or throw IllegalStateException with a the message mess otherwise.
+	 * */
 	public ALLOutput getALLExplanation() {
-
-		if (isAnchorALLApplicable()) {
-			return phiALL;
-		}
-		throw new NullPointerException();
+		String mess = "This anchor is not the one applicable";
+		Preconditions.checkState(isAnchorALLApplicable(), mess);
+		return phiALL;
 	}
 
+	/**
+	 * @return elements of argumentation if the anchor NOA is applicable
+	 * or throw IllegalStateException with a the message mess otherwise.
+	 * */
 	public NOAOutput getNOAExplanation() {
-		if (isAnchorNOAApplicable()) {
-			return phiNOA;
-		}
-		throw new NullPointerException();
+		String message = "This anchor is not the one applicable";
+		Preconditions.checkState(isAnchorNOAApplicable(), message);
+		return phiNOA;
 	}
-
+	
+	/**
+	 * @return elements of argumentation if the anchor IVT is applicable
+	 * or throw IllegalStateException with a the message mess otherwise.
+	 * */
 	public IVTOutput getIVTExplanation() {
-		if (isAnchorIVTApplicable()) {
-			return phiIVT;
-		}
-		throw new NullPointerException();
+		String message = "This anchor is not the one applicable";
+		Preconditions.checkState(isAnchorIVTApplicable(), message);
+		return phiIVT;
 	}
-
+	
+	/**
+	 * @return elements of argumentation if the anchor RMGAVG is applicable
+	 * or throw IllegalStateException with a the message mess otherwise.
+	 * */
 	public RMGAVGOutput getRMGAVGExplanation() {
-		if (isAnchorRMGAVGApplicable()) {
-			return phiRMGAVG;
-		}
-		throw new NullPointerException();
+		String message = "This anchor is not the one applicable";
+		Preconditions.checkState(isAnchorRMGAVGApplicable(), message);
+		return phiRMGAVG;
 	}
 
+	/**
+	 * @return elements of argumentation if the anchor RMGCOMP is applicable
+	 * or throw IllegalStateException with a the message mess otherwise.
+	 * */
 	public RMGCOMPOutput getRMGCOMPExplanation() {
-		if (isAnchorRMGCOMPApplicable()) {
-			return phiRMGCOMP;
-		}
-		throw new NullPointerException();
+		String message = "This anchor is not the one applicable";
+		Preconditions.checkState(isAnchorRMGCOMPApplicable(), message);
+		return phiRMGCOMP;
 	}
+	
 
 	public String arguer() {
 		String explanation = "";
@@ -535,28 +541,28 @@ public class LabreucheModel {
 
 			AlternativesComparison alcoIVT = phiIVT.getAlternativesComparison();
 
-			Set<Criterion> k_nrw = phiIVT.getkNRW();
-			Set<Criterion> k_nw = phiIVT.getkNW();
-			Set<Criterion> k_prs = phiIVT.getkPRS();
-			Set<Criterion> k_ps = phiIVT.getkPS();
-			Set<Couple<Criterion, Criterion>> k_pn = phiIVT.getkPN();
+			ImmutableGraph<Criterion> k_nrw = phiIVT.getNegativeRelativelyWeak();
+			ImmutableGraph<Criterion> k_nw = phiIVT.getNegativeWeak();
+			ImmutableGraph<Criterion> k_prs = phiIVT.getPositiveRelativelyStrong();
+			ImmutableGraph<Criterion> k_ps = phiIVT.getPositiveStrong();
+			ImmutableGraph<Criterion> k_pn = phiIVT.getPositiveNegative();
 
 			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-					+ Tools.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
-					+ Tools.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
-					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Tools.showCriteria(k_nw)
-					+ "\n" + "that are not important and on the criteria " + Tools.showCriteria(k_nrw)
+					+ Tools.showGraph(k_ps) + " that are important " + "\n" + "and on the criteria "
+					+ Tools.showGraph(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
+					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Tools.showGraph(k_nw)
+					+ "\n" + "that are not important and on the criteria " + Tools.showGraph(k_nrw)
 					+ " that are not really important.";
 
-			if (!k_pn.isEmpty()) {
+			if (!k_pn.edges().isEmpty()) {
 				explanation += "And ";
 
-				for (Couple<Criterion, Criterion> couple : k_pn) {
+				for (EndpointPair<Criterion> couple : k_pn.edges()) {
 
-					explanation += couple.getRight().getName() + " for wich " + alcoIVT.getX().getName()
+					explanation += couple.nodeV().getName() + " for wich " + alcoIVT.getX().getName()
 							+ " is better than " + alcoIVT.getY().getName() + " is more important than criterion "
-							+ couple.getLeft().getName() + " for wich " + alcoIVT.getX().getName() + " is worse than "
+							+ couple.nodeU().getName() + " for wich " + alcoIVT.getX().getName() + " is worse than "
 							+ alcoIVT.getY().getName() + " ";
 				}
 
@@ -578,9 +584,9 @@ public class LabreucheModel {
 		case RMGCOMP:
 
 			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
-
 			Double maxW = phiRMGCOMP.getMaxW();
 			Double eps = phiRMGCOMP.getEpsilon();
+			
 			if (maxW > eps) {
 				if (maxW <= eps * 2) {
 					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
