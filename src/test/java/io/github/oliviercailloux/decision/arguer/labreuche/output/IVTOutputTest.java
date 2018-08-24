@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.ImmutableGraph;
+import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
@@ -27,8 +30,11 @@ class IVTOutputTest {
 		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();
-		Couple<Criterion, Criterion> pair = new Couple<>(c1, c2);
-		IVTOutput output = new IVTOutput(altsComp, ImmutableList.of(pair), 0.1);
+		
+		MutableGraph<Criterion> graph = GraphBuilder.directed().build();
+		graph.putEdge(c1, c2);
+		
+		IVTOutput output = new IVTOutput(altsComp, ImmutableGraph.copyOf(graph), 0.1);
 
 		assertTrue(output.isJustSmaller(0.7, 0.75));
 		assertFalse(output.isJustSmaller(0.4, 0.75));
