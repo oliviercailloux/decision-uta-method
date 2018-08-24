@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.EndpointPair;
@@ -22,6 +25,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
+import io.github.oliviercailloux.uta_calculator.App;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -43,6 +47,7 @@ public class LabreucheModel {
 	private RMGAVGOutput phiRMGAVG;
 	private RMGCOMPOutput phiRMGCOMP;
 	private LabreucheOutput labreucheOutput;
+	private Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
 
 	public LabreucheModel(Alternative x, Alternative y, Map<Criterion, Double> weight) {
 		this.weight = requireNonNull(weight);
@@ -99,7 +104,7 @@ public class LabreucheModel {
 	 *         and y.
 	 */
 	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
-		// System.out.println(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k
+		// logger.info(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k
 		// = " + k);
 
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
@@ -107,7 +112,7 @@ public class LabreucheModel {
 		List<List<Criterion>> f = new ArrayList<>();
 
 		for (int i = k; i < this.setCIVT.size(); i++) { // L1
-			System.out.println(k + " " + i + " T_i = " + Tools.showCriteria(this.setCIVT.get(i)) + " i = " + i);
+			logger.info(k + " " + i + " T_i = " + Tools.showCriteria(this.setCIVT.get(i)) + " i = " + i);
 			System.out
 					.println(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(this.setCIVT.get(i))
 							+ " empty  : " + Tools.isCapEmpty(a, this.setCIVT.get(i)));
@@ -127,29 +132,29 @@ public class LabreucheModel {
 
 				Double hache = Tools.score(this.alternativesComparison.getX(), this.alternativesComparison.getWeight())
 						- Tools.score(this.alternativesComparison.getY(), this.alternativesComparison.getWeight());
-				// System.out.println(k +" " + i +" sum better than hache? "+sum +" >= "+
+				// logger.info(k +" " + i +" sum better than hache? "+sum +" >= "+
 				// hache);
 				if (sum >= hache) { // L3
-					// System.out.println(k+" " + i +" Adding to F"+
+					// logger.info(k+" " + i +" Adding to F"+
 					// this.showCriteria(this.setCIVT.get(i)));
 					a_copy.add(this.setCIVT.get(i));
 					f = new ArrayList<>(a_copy); // L4
 				} else { // L5
 					a_copy.add(this.setCIVT.get(i));
-					// System.out.println(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+"
+					// logger.info(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+"
 					// "+this.showSet(b)+" , "+ (i+1));
 					f = algoEU(a_copy, b_copy, (i + 1)); // L6
 
 				}
-				// System.out.println(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+
+				// logger.info(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+
 				// b_copy.isEmpty()+" or "+ this.includeDiscri(f,b) +" ]");
 				if (!f.isEmpty() && (b_copy.isEmpty() || Tools.includeDiscri(f, b_copy,
 						this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta()))) { // L8
-					// System.out.println(k+" " + i +" UPDATE");
+					// logger.info(k+" " + i +" UPDATE");
 					b_copy = new ArrayList<>(f); // L8
 				}
-				System.out.println(k + " " + i + " A" + Tools.showSet(a)); // System.out.println(k+" " + i +" B" +
-																			// this.showSet(b));//System.out.println(k+"
+				logger.info(k + " " + i + " A" + Tools.showSet(a)); // logger.info(k+" " + i +" B" +
+																			// this.showSet(b));//logger.info(k+"
 																			// " + i +" Test for return B :" +
 																			// !b.isEmpty()+" and
 																			// "+!this.includeDiscri(a_copy,b));
@@ -163,7 +168,7 @@ public class LabreucheModel {
 		}
 		List<List<Criterion>> empty = new ArrayList<>();
 
-		// System.out.println("#### END ALGO EU : k = "+k);
+		// logger.info("#### END ALGO EU : k = "+k);
 		return empty;
 	}
 
@@ -191,7 +196,7 @@ public class LabreucheModel {
 		display += "\n" + "	" + this.y.getName() + " " + " : " + Tools.displayAsVector(this.y);
 
 		if (show)
-			System.out.println(display);
+			logger.info(display);
 
 		// long start = System.currentTimeMillis();
 
@@ -212,7 +217,7 @@ public class LabreucheModel {
 
 
 		if (show)
-			System.out.println(display + "\n");
+			logger.info(display + "\n");
 
 		display = "Explanation why " + this.x.getName() + " is better than " + this.y.getName() + " :";
 
@@ -225,7 +230,7 @@ public class LabreucheModel {
 		// display += "\n \n" + "Problem solved in : " + time + " milliseconds";
 
 		if (show)
-			System.out.println(display);
+			logger.info(display);
 	}
 
 	public LabreucheOutput getExplanation() {
@@ -233,15 +238,15 @@ public class LabreucheModel {
 		if (isAnchorALLApplicable()) {
 			labreucheOutput = phiALL;
 		} else {
-			System.out.println("noa");
+			logger.info("noa");
 			if (isAnchorNOAApplicable()) {
 				labreucheOutput = phiNOA;
 			} else {
-				System.out.println("ivt");
+				logger.info("ivt");
 				if (isAnchorIVTApplicable()) {
 					labreucheOutput = phiIVT;
 				} else {
-					System.out.println("rmg");
+					logger.info("rmg");
 					if (isAnchorRMGAVGApplicable()) {
 						labreucheOutput = phiRMGAVG;
 					} else {
@@ -310,7 +315,7 @@ public class LabreucheModel {
 		Double d_eu = null;
 		List<Criterion> pi = new ArrayList<>();
 
-		// System.out.println("Delta " + this.alternativesComparison.getX().getName() +
+		// logger.info("Delta " + this.alternativesComparison.getX().getName() +
 		// " > " + this.alternativesComparison.getY().getName() + " : "
 		// + Tools.showVector(alternativesComparison.getDelta()) + "\n");
 
@@ -340,9 +345,9 @@ public class LabreucheModel {
 			this.setCIVT = Tools.sortLexi(this.setCIVT, this.alternativesComparison.getWeight(),
 					alternativesComparison.getDelta());
 
-			// System.out.println("setCIVT : ");
+			// logger.info("setCIVT : ");
 			// for(List<Criterion> l : this.setCIVT)
-			// System.out.println(Tools.showCriteria(l)); // + " " + this.d_eu(l,0) + " " +
+			// logger.info(Tools.showCriteria(l)); // + " " + this.d_eu(l,0) + " " +
 			// this.d_eu(l,1) + " " + this.d_eu(l,5) + " " +
 			// this.showCriteria(this.pi_min(l)));
 
@@ -360,7 +365,7 @@ public class LabreucheModel {
 		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
 		List<Couple<Criterion, Criterion>> r_s = new ArrayList<>();
 
-		System.out.println("Minimal permutation : " + Tools.showSet(big_c) + "\n");
+		logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
 			r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta());
@@ -421,7 +426,7 @@ public class LabreucheModel {
 			return isAnchorRMGCOMPApplicable();
 
 		default:
-			System.out.println("Anchor given unknown");
+			logger.info("Anchor given unknown");
 			return false;
 		}
 	}
