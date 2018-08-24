@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.ImmutableGraph;
+import com.google.common.graph.MutableGraph;
+
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -472,9 +476,10 @@ public class Tools {
 		return copy;
 	}
 
-	public static List<Couple<Criterion, Criterion>> r_star(List<Couple<Criterion, Criterion>> cpls) {
+	public static ImmutableGraph<Criterion> buildRStar(List<Couple<Criterion, Criterion>> cpls) {
 		List<List<Couple<Criterion, Criterion>>> subsets = allSubsetCouple(cpls);
-		List<Couple<Criterion, Criterion>> result = new ArrayList<>();
+		MutableGraph<Criterion> result = GraphBuilder.directed().build();
+
 		List<Couple<Criterion, Criterion>> tmp_top;
 
 		for (List<Couple<Criterion, Criterion>> c_list : subsets) {
@@ -482,12 +487,12 @@ public class Tools {
 
 			if (tmp_top.equals(c_list)) {
 				for (Couple<Criterion, Criterion> c : c_list) {
-					if (!result.contains(c))
-						result.add(c);
+					result.putEdge(c.getLeft(), c.getRight());
 				}
 			}
 		}
-		return result;
+
+		return ImmutableGraph.copyOf(result);
 	}
 
 	public static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set,

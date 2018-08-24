@@ -21,7 +21,7 @@ public class MainLabreucheModel {
 		this.lm = generateProblems(5);
 	}
 
-	public void main(String[] args) {
+	public static void main(String[] args) {
 		// MainLabreucheModel main = new MainLabreucheModel();
 
 		System.out.println("Starting problmes!");

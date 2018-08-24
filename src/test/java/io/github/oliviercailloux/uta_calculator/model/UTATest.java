@@ -12,7 +12,7 @@ import org.junit.Test;
 public class UTATest {
 
 	@Test
-	public void utaLearningFromExamplesShouldReproduceThoseExample(){
+	public void utaLearningFromExamplesShouldReproduceThoseExample() {
 
 		MainBuyingNewCar buyingNewCarExercice = new MainBuyingNewCar();
 		List<Alternative> correctAlternatives = buyingNewCarExercice.getMainAlternatives();

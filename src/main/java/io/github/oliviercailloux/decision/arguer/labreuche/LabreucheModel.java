@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.graph.ImmutableGraph;
+
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
@@ -30,21 +33,21 @@ public class LabreucheModel {
 	private AlternativesComparison alternativesComparison;
 
 	private Double epsilon;
-	private List<List<Criterion>> c_set;
+	private List<List<Criterion>> setCIVT;
 
-	private ALLOutput phi_all;
-	private NOAOutput phi_noa;
-	private IVTOutput phi_ivt;
-	private RMGAVGOutput phi_rmgavg;
-	private RMGCOMPOutput phi_rmgcomp;
-	private LabreucheOutput lop;
+	private ALLOutput phiALL;
+	private NOAOutput phiNOA;
+	private IVTOutput phiIVT;
+	private RMGAVGOutput phiRMGAVG;
+	private RMGCOMPOutput phiRMGCOMP;
+	private LabreucheOutput labreucheOutput;
 
 	public LabreucheModel(Alternative x, Alternative y, Map<Criterion, Double> weight) {
 		this.weight = requireNonNull(weight);
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
 		this.scoreboard = new HashMap<>();
-		this.c_set = new ArrayList<>();
+		this.setCIVT = new ArrayList<>();
 		this.epsilon = 0.2 / this.weight.keySet().size();
 		this.weightsReferences = new HashMap<>();
 
@@ -52,7 +55,12 @@ public class LabreucheModel {
 			this.weightsReferences.put(c, 1.0 / this.weight.keySet().size());
 		}
 
-		System.out.println("youpi!");
+		this.phiALL = null;
+		this.phiNOA = null;
+		this.phiIVT = null;
+		this.phiRMGAVG = null;
+		this.phiRMGCOMP = null;
+		this.labreucheOutput = null;
 
 		(this).startproblem(false);
 	}
@@ -69,8 +77,8 @@ public class LabreucheModel {
 		return this.scoreboard;
 	}
 
-	public List<List<Criterion>> getC_set() {
-		return this.c_set;
+	public List<List<Criterion>> getsetCIVT() {
+		return this.setCIVT;
 	}
 
 	public Double getEpsilon() {
@@ -100,7 +108,7 @@ public class LabreucheModel {
 	 * @return the minimal set of permutation that inverse the decision between x
 	 *         and y.
 	 */
-	public List<List<Criterion>> algo_EU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
+	public List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
 		// System.out.println(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k
 		// = " + k);
 
@@ -108,12 +116,13 @@ public class LabreucheModel {
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
 		List<List<Criterion>> f = new ArrayList<>();
 
-		for (int i = k; i < this.c_set.size(); i++) { // L1
-			System.out.println(k + " " + i + " T_i = " + Tools.showCriteria(this.c_set.get(i)) + " i = " + i);
-			System.out.println(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(this.c_set.get(i))
-					+ " empty  : " + Tools.isCapEmpty(a, this.c_set.get(i)));
+		for (int i = k; i < this.setCIVT.size(); i++) { // L1
+			System.out.println(k + " " + i + " T_i = " + Tools.showCriteria(this.setCIVT.get(i)) + " i = " + i);
+			System.out
+					.println(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(this.setCIVT.get(i))
+							+ " empty  : " + Tools.isCapEmpty(a, this.setCIVT.get(i)));
 
-			if (Tools.isCapEmpty(a, this.c_set.get(i))) { // L2
+			if (Tools.isCapEmpty(a, this.setCIVT.get(i))) { // L2
 				Double sum = 0.0;
 
 				if (!a.isEmpty()) {
@@ -123,7 +132,7 @@ public class LabreucheModel {
 								.getLeft();
 					}
 				}
-				sum += Tools.d_eu(this.c_set.get(i), 5, this.alternativesComparison.getWeight(),
+				sum += Tools.d_eu(this.setCIVT.get(i), 5, this.alternativesComparison.getWeight(),
 						this.alternativesComparison.getDelta()).getLeft();
 
 				Double hache = Tools.score(this.alternativesComparison.getX(), this.alternativesComparison.getWeight())
@@ -132,14 +141,14 @@ public class LabreucheModel {
 				// hache);
 				if (sum >= hache) { // L3
 					// System.out.println(k+" " + i +" Adding to F"+
-					// this.showCriteria(this.c_set.get(i)));
-					a_copy.add(this.c_set.get(i));
+					// this.showCriteria(this.setCIVT.get(i)));
+					a_copy.add(this.setCIVT.get(i));
 					f = new ArrayList<>(a_copy); // L4
 				} else { // L5
-					a_copy.add(this.c_set.get(i));
+					a_copy.add(this.setCIVT.get(i));
 					// System.out.println(k+" " + i +" Calling algo_eu"+this.showSet(a_copy)+"
 					// "+this.showSet(b)+" , "+ (i+1));
-					f = algo_EU(a_copy, b_copy, (i + 1)); // L6
+					f = algoEU(a_copy, b_copy, (i + 1)); // L6
 
 				}
 				// System.out.println(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+
@@ -231,27 +240,27 @@ public class LabreucheModel {
 	public LabreucheOutput getExplanation() {
 
 		if (isAnchorALLApplicable()) {
-			lop = phi_all;
+			labreucheOutput = phiALL;
 		} else {
 			System.out.println("noa");
 			if (isAnchorNOAApplicable()) {
-				lop = phi_noa;
+				labreucheOutput = phiNOA;
 			} else {
 				System.out.println("ivt");
 				if (isAnchorIVTApplicable()) {
-					lop = phi_ivt;
+					labreucheOutput = phiIVT;
 				} else {
 					System.out.println("rmg");
 					if (isAnchorRMGAVGApplicable()) {
-						lop = phi_rmgavg;
+						labreucheOutput = phiRMGAVG;
 					} else {
-						lop = phi_rmgcomp;
+						labreucheOutput = phiRMGCOMP;
 					}
 				}
 			}
 		}
 
-		return lop;
+		return labreucheOutput;
 	}
 
 	public boolean isAnchorALLApplicable() {
@@ -262,7 +271,7 @@ public class LabreucheModel {
 			}
 		}
 
-		phi_all = new ALLOutput(this.alternativesComparison);
+		phiALL = new ALLOutput(this.alternativesComparison);
 
 		return true;
 	}
@@ -295,7 +304,7 @@ public class LabreucheModel {
 		} while (Tools.score(this.alternativesComparison.getX(), wcomposed) < Tools
 				.score(this.alternativesComparison.getY(), wcomposed));
 
-		phi_noa = new NOAOutput(this.alternativesComparison, setC);
+		phiNOA = new NOAOutput(this.alternativesComparison, setC);
 
 		return true;
 	}
@@ -321,7 +330,7 @@ public class LabreucheModel {
 			big_b.clear();
 			big_c.clear();
 			subsets.clear();
-			this.c_set.clear();
+			this.setCIVT.clear();
 
 			subsets = Tools.allSubset(new ArrayList<>(this.alternativesComparison.getCriteria()));
 
@@ -331,22 +340,22 @@ public class LabreucheModel {
 				pi = Tools.pi_min(subset, this.alternativesComparison.getWeight(),
 						this.alternativesComparison.getDelta());
 				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
-					this.c_set.add(subset);
+					this.setCIVT.add(subset);
 				}
 
 				pi.clear();
 			}
 
-			this.c_set = Tools.sortLexi(this.c_set, this.alternativesComparison.getWeight(),
+			this.setCIVT = Tools.sortLexi(this.setCIVT, this.alternativesComparison.getWeight(),
 					alternativesComparison.getDelta());
 
-			// System.out.println("C_set : ");
-			// for(List<Criterion> l : this.c_set)
+			// System.out.println("setCIVT : ");
+			// for(List<Criterion> l : this.setCIVT)
 			// System.out.println(Tools.showCriteria(l)); // + " " + this.d_eu(l,0) + " " +
 			// this.d_eu(l,1) + " " + this.d_eu(l,5) + " " +
 			// this.showCriteria(this.pi_min(l)));
 
-			big_c = this.algo_EU(big_a, big_b, 0);
+			big_c = this.algoEU(big_a, big_b, 0);
 			size++;
 
 		} while (big_c.isEmpty() && size <= this.alternativesComparison.getCriteria().size());
@@ -374,11 +383,11 @@ public class LabreucheModel {
 			r_s.clear();
 		}
 
-		List<Couple<Criterion, Criterion>> r_star = Tools.r_star(cpls);
+		ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
 
 		// R* determined
 
-		phi_ivt = new IVTOutput(this.alternativesComparison, r_star, this.epsilon);
+		phiIVT = new IVTOutput(this.alternativesComparison, rStar, this.epsilon);
 
 		return true;
 	}
@@ -395,11 +404,35 @@ public class LabreucheModel {
 		}
 
 		if (max_w <= this.epsilon) {
-			phi_rmgavg = new RMGAVGOutput(this.alternativesComparison);
+			phiRMGAVG = new RMGAVGOutput(this.alternativesComparison);
 			return true;
 		}
 
 		return false;
+	}
+
+	public boolean isApplicable(Anchor anchor) {
+		switch (anchor) {
+
+		case ALL:
+			return isAnchorALLApplicable();
+
+		case NOA:
+			return isAnchorNOAApplicable();
+
+		case IVT:
+			return isAnchorIVTApplicable();
+
+		case RMGAVG:
+			return isAnchorRMGAVGApplicable();
+
+		case RMGCOMP:
+			return isAnchorRMGCOMPApplicable();
+
+		default:
+			System.out.println("Anchor unknown");
+			return false;
+		}
 	}
 
 	public boolean isAnchorRMGCOMPApplicable() {
@@ -414,7 +447,7 @@ public class LabreucheModel {
 		}
 
 		if (max_w > this.epsilon) {
-			phi_rmgcomp = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
+			phiRMGCOMP = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
 			return true;
 		}
 
@@ -422,32 +455,48 @@ public class LabreucheModel {
 	}
 
 	public ALLOutput getALLExplanation() {
-		return phi_all;
+
+		if (isAnchorALLApplicable()) {
+			return phiALL;
+		}
+		throw new NullPointerException();
 	}
 
 	public NOAOutput getNOAExplanation() {
-		return phi_noa;
+		if (isAnchorNOAApplicable()) {
+			return phiNOA;
+		}
+		throw new NullPointerException();
 	}
 
 	public IVTOutput getIVTExplanation() {
-		return phi_ivt;
+		if (isAnchorIVTApplicable()) {
+			return phiIVT;
+		}
+		throw new NullPointerException();
 	}
 
 	public RMGAVGOutput getRMGAVGExplanation() {
-		return phi_rmgavg;
+		if (isAnchorRMGAVGApplicable()) {
+			return phiRMGAVG;
+		}
+		throw new NullPointerException();
 	}
 
 	public RMGCOMPOutput getRMGCOMPExplanation() {
-		return phi_rmgcomp;
+		if (isAnchorRMGCOMPApplicable()) {
+			return phiRMGCOMP;
+		}
+		throw new NullPointerException();
 	}
 
 	public String arguer() {
 		String explanation = "";
 
-		switch (lop.getAnchor()) {
+		switch (labreucheOutput.getAnchor()) {
 		case ALL:
 
-			AlternativesComparison alcoALL = phi_all.getAlternativesComparison();
+			AlternativesComparison alcoALL = phiALL.getAlternativesComparison();
 
 			explanation = alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
 					+ alcoALL.getX().getName() + " is better then " + alcoALL.getY().getName() + " on ALL criteria.";
@@ -456,9 +505,9 @@ public class LabreucheModel {
 
 		case NOA:
 
-			AlternativesComparison alcoNOA = phi_noa.getAlternativesComparison();
-			Set<Criterion> ConPA = phi_noa.getPositiveNoaCriteria();
-			Set<Criterion> ConNA = phi_noa.getNegativeNoaCriteria();
+			AlternativesComparison alcoNOA = phiNOA.getAlternativesComparison();
+			Set<Criterion> ConPA = phiNOA.getPositiveNoaCriteria();
+			Set<Criterion> ConNA = phiNOA.getNegativeNoaCriteria();
 
 			explanation = "Even though " + alcoNOA.getY().getName() + " is better than " + alcoNOA.getX().getName()
 					+ " on average, " + alcoNOA.getX().getName() + " is preferred to " + alcoNOA.getY().getName()
@@ -470,7 +519,7 @@ public class LabreucheModel {
 			Double addSentence = 0.0;
 
 			for (Criterion c : alcoNOA.getCriteria()) {
-				if (!phi_noa.getNoaCriteria().contains(c)) {
+				if (!phiNOA.getNoaCriteria().contains(c)) {
 					addSentence += alcoNOA.getDelta().get(c) * alcoNOA.getWeight().get(c);
 				}
 			}
@@ -484,13 +533,13 @@ public class LabreucheModel {
 
 		case IVT:
 
-			AlternativesComparison alcoIVT = phi_ivt.getAlternativesComparison();
+			AlternativesComparison alcoIVT = phiIVT.getAlternativesComparison();
 
-			Set<Criterion> k_nrw = phi_ivt.getK_nrw();
-			Set<Criterion> k_nw = phi_ivt.getK_nw();
-			Set<Criterion> k_prs = phi_ivt.getK_prs();
-			Set<Criterion> k_ps = phi_ivt.getK_ps();
-			Set<Couple<Criterion, Criterion>> k_pn = phi_ivt.getK_pn();
+			Set<Criterion> k_nrw = phiIVT.getkNRW();
+			Set<Criterion> k_nw = phiIVT.getkNW();
+			Set<Criterion> k_prs = phiIVT.getkPRS();
+			Set<Criterion> k_ps = phiIVT.getkPS();
+			Set<Couple<Criterion, Criterion>> k_pn = phiIVT.getkPN();
 
 			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
@@ -518,7 +567,7 @@ public class LabreucheModel {
 
 		case RMGAVG:
 
-			AlternativesComparison alcoRMGAVG = phi_rmgavg.getAlternativesComparison();
+			AlternativesComparison alcoRMGAVG = phiRMGAVG.getAlternativesComparison();
 
 			explanation = alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
 					+ alcoRMGAVG.getX().getName() + " is on average better than " + alcoRMGAVG.getY().getName() + "\n"
@@ -528,10 +577,10 @@ public class LabreucheModel {
 
 		case RMGCOMP:
 
-			AlternativesComparison alcoRMGCOMP = phi_rmgcomp.getAlternativesComparison();
+			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
 
-			Double maxW = phi_rmgcomp.getMaxW();
-			Double eps = phi_rmgcomp.getEpsilon();
+			Double maxW = phiRMGCOMP.getMaxW();
+			Double eps = phiRMGCOMP.getEpsilon();
 			if (maxW > eps) {
 				if (maxW <= eps * 2) {
 					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()

@@ -77,7 +77,7 @@ public class MainBuyingNewCar {
 
 		Map<K, V> result = new LinkedHashMap<>();
 		for (Iterator<Entry<K, V>> it = list.iterator(); it.hasNext();) {
-			Map.Entry<K, V> entry = (Map.Entry<K, V>) it.next();
+			Map.Entry<K, V> entry = it.next();
 			result.put(entry.getKey(), entry.getValue());
 		}
 
