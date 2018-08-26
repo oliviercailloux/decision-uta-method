@@ -132,3 +132,4 @@ For the exercice Buying New Car, you should run the following commands :
 javac -d objs -cp lib/com.google.ortools.jar;lib/protobuf.jar examples/BuyingNewCar.java
 java -Djava.library.path=lib -cp objs;lib/com.google.ortools.jar com.lamsade.lp.BuyingNewCar
 ```
+

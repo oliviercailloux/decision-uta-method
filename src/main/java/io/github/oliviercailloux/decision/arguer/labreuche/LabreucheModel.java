@@ -2,6 +2,8 @@ package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static java.util.Objects.requireNonNull;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,55 +33,38 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheModel {
 
-	private Alternative x;
-	private Alternative y;
-	private Map<Criterion, Double> weight;
-	private Map<Criterion, Double> weightsReferences;
-
 	private AlternativesComparison alternativesComparison;
-
-	private Double epsilon;
+	private double epsilon;
 	private List<List<Criterion>> setCIVT;
-
-	private ALLOutput phiALL;
-	private NOAOutput phiNOA;
-	private IVTOutput phiIVT;
-	private RMGAVGOutput phiRMGAVG;
-	private RMGCOMPOutput phiRMGCOMP;
 	private LabreucheOutput labreucheOutput;
-	private Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
+	private Logger logger;
 
-	public LabreucheModel(Alternative x, Alternative y, Map<Criterion, Double> weight) {
-		this.weight = requireNonNull(weight);
-		this.x = requireNonNull(x);
-		this.y = requireNonNull(y);
+	public LabreucheModel(AlternativesComparison alternativesComparaison) {
+		this.alternativesComparison = requireNonNull(alternativesComparaison);
+		
 		this.setCIVT = new ArrayList<>();
-		this.epsilon = 0.2 / this.weight.keySet().size();
-		this.weightsReferences = new HashMap<>();
+		this.epsilon = 0.2 / this.alternativesComparison.getWeight().keySet().size();
 
-		for (Criterion c : this.weight.keySet()) {
-			this.weightsReferences.put(c, 1.0 / this.weight.keySet().size());
-		}
-
-		this.phiALL = null;
-		this.phiNOA = null;
-		this.phiIVT = null;
-		this.phiRMGAVG = null;
-		this.phiRMGCOMP = null;
 		this.labreucheOutput = null;
+		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
+	}
+	
+	public LabreucheModel(AlternativesComparison alternativesComparaison, double epsilon) {
+		this.alternativesComparison = requireNonNull(alternativesComparaison);
+		this.epsilon = requireNonNull(epsilon);
 
-		(this).startproblem(false);
+		this.setCIVT = new ArrayList<>();
+
+		this.labreucheOutput = null;
+		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
 	}
 
 	/***************************************************************************************
 	 * * GETTERS & SETTERS * *
 	 *************************************************************************************/
 
-	public Map<Criterion, Double> getWeight() {
-		return this.weight;
-	}
 
-	public List<List<Criterion>> getsetCIVT() {
+	public List<List<Criterion>> getSetCIVT() {
 		return this.setCIVT;
 	}
 
@@ -87,12 +72,8 @@ public class LabreucheModel {
 		return this.epsilon;
 	}
 
-	public Alternative getX() {
-		return this.x;
-	}
-
-	public Alternative getY() {
-		return this.y;
+	public AlternativesComparison getAlternativesComparison() {
+		return this.alternativesComparison;
 	}
 
 	/****************************************************************************************
@@ -177,277 +158,218 @@ public class LabreucheModel {
 	 * * * * * * * * * * * *
 	 */
 
-	private void startproblem(boolean show) {
-
-		String display = "****************************************************************";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "*         Recommender system based on Labreuche Model          *";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "****************************************************************" + "\n";
-
-		display += "\n    Criteria    <-   Weight : \n";
-
-		for (Criterion c : this.weight.keySet())
-			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + this.weight.get(c);
-
-		display += "\n \n Alternatives : ";
-
-		display += "\n" + "	" + this.x.getName() + " " + " : " + Tools.displayAsVector(this.x);
-		display += "\n" + "	" + this.y.getName() + " " + " : " + Tools.displayAsVector(this.y);
-
-		if (show)
-			logger.info(display);
-
-		// long start = System.currentTimeMillis();
-
-		double scoreX = Tools.score(x, weight);
-		double scoreY = Tools.score(y, weight);
-				
-		if(scoreX >= scoreY) {
-			alternativesComparison = new AlternativesComparison(x, y, weight);
-		}
-		else {
-			alternativesComparison = new AlternativesComparison(y, x, weight);
-
-		}	
-		
-		display = "\n" + "			Alternatives ranked";
-		display += "\n" + alternativesComparison.getX().getName() + " = " + Tools.score(alternativesComparison.getX(), weight);
-		display += "\n" + alternativesComparison.getY().getName() + " = " + Tools.score(alternativesComparison.getY(), weight);
-
-
-		if (show)
-			logger.info(display + "\n");
-
-		display = "Explanation why " + this.x.getName() + " is better than " + this.y.getName() + " :";
-
-		// getExplanation();
-
-		// String explanation = arguer();
-
-		// display = "\n" + explanation;
-		// long time = System.currentTimeMillis() - start;
-		// display += "\n \n" + "Problem solved in : " + time + " milliseconds";
-
-		if (show)
-			logger.info(display);
-	}
-
+	
 	public LabreucheOutput getExplanation() {
 
-		if (isAnchorALLApplicable()) {
-			labreucheOutput = phiALL;
-		} else {
-			logger.info("noa");
-			if (isAnchorNOAApplicable()) {
-				labreucheOutput = phiNOA;
-			} else {
-				logger.info("ivt");
-				if (isAnchorIVTApplicable()) {
-					labreucheOutput = phiIVT;
-				} else {
-					logger.info("rmg");
-					if (isAnchorRMGAVGApplicable()) {
-						labreucheOutput = phiRMGAVG;
-					} else {
-						labreucheOutput = phiRMGCOMP;
-					}
-				}
-			}
+		if (labreucheOutput != null) {
+			return labreucheOutput;
 		}
-
-		return labreucheOutput;
+		
+		if (isApplicable(Anchor.ALL)) {
+			return labreucheOutput;
+		}
+		
+		logger.info("noa");
+		if (isApplicable(Anchor.NOA)) {
+			return labreucheOutput;
+		}
+		
+		logger.info("ivt");
+		if (isApplicable(Anchor.IVT)) {
+			return labreucheOutput;
+		}
+		
+		logger.info("rmgavg");
+		if (isApplicable(Anchor.RMGAVG)) {
+			return labreucheOutput;
+		}
+		
+		logger.info("rmgcomp");
+		if(isApplicable(Anchor.RMGCOMP)) {
+			return labreucheOutput;
+		}
+		
+		return null;
 	}
-
-	public boolean isAnchorALLApplicable() {
-
-		for (Map.Entry<Criterion, Double> d : this.alternativesComparison.getDelta().entrySet()) {
-			if (d.getValue() < 0.0) {
-				return false;
-			}
-		}
-
-		phiALL = new ALLOutput(this.alternativesComparison);
-
-		return true;
-	}
-
-	public boolean isAnchorNOAApplicable() {
-
-		if (Tools.score(this.alternativesComparison.getX(), this.weightsReferences) > Tools
-				.score(this.alternativesComparison.getY(), this.weightsReferences)) {
-			return false;
-		}
-
-		Map<Double, Criterion> temp = new HashMap<>();
-		Set<Criterion> setC = new LinkedHashSet<>();
-
-		for (Map.Entry<Criterion, Double> w_i : this.alternativesComparison.getWeight().entrySet()) {
-			temp.put((w_i.getValue() - 1.0 / this.alternativesComparison.getCriteria().size())
-					* this.alternativesComparison.getDelta().get(w_i.getKey()), w_i.getKey());
-		}
-
-		ArrayList<Double> keys = new ArrayList<>(temp.keySet());
-		Collections.sort(keys);
-
-		Map<Criterion, Double> wcomposed = this.weightsReferences;
-		int p = keys.size() - 1;
-
-		do {
-			wcomposed.put(temp.get(keys.get(p)), this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
-			setC.add(temp.get(keys.get(p)));
-			p--;
-		} while (Tools.score(this.alternativesComparison.getX(), wcomposed) < Tools
-				.score(this.alternativesComparison.getY(), wcomposed));
-
-		phiNOA = new NOAOutput(this.alternativesComparison, setC);
-
-		return true;
-	}
-
-	public boolean isAnchorIVTApplicable() {
-
-		int size = 2;
-		List<List<Criterion>> subsets = new ArrayList<>();
-		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
-		List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo_eu calls
-		List<List<Criterion>> big_c = new ArrayList<>(); // result of algo_eu
-		Double d_eu = null;
-		List<Criterion> pi = new ArrayList<>();
-
-		// logger.info("Delta " + this.alternativesComparison.getX().getName() +
-		// " > " + this.alternativesComparison.getY().getName() + " : "
-		// + Tools.showVector(alternativesComparison.getDelta()) + "\n");
-
-		do {
-			d_eu = null;
-			pi.clear();
-			big_a.clear();
-			big_b.clear();
-			big_c.clear();
-			subsets.clear();
-			this.setCIVT.clear();
-
-			subsets = Tools.allSubset(new ArrayList<>(this.alternativesComparison.getCriteria()));
-
-			for (List<Criterion> subset : subsets) {
-				d_eu = Tools.d_eu(subset, 5, this.alternativesComparison.getWeight(),
-						this.alternativesComparison.getDelta()).getLeft();
-				pi = Tools.pi_min(subset, this.alternativesComparison.getWeight(),
-						this.alternativesComparison.getDelta());
-				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
-					this.setCIVT.add(subset);
-				}
-
-				pi.clear();
-			}
-
-			this.setCIVT = Tools.sortLexi(this.setCIVT, this.alternativesComparison.getWeight(),
-					alternativesComparison.getDelta());
-
-			// logger.info("setCIVT : ");
-			// for(List<Criterion> l : this.setCIVT)
-			// logger.info(Tools.showCriteria(l)); // + " " + this.d_eu(l,0) + " " +
-			// this.d_eu(l,1) + " " + this.d_eu(l,5) + " " +
-			// this.showCriteria(this.pi_min(l)));
-
-			big_c = this.algoEU(big_a, big_b, 0);
-			size++;
-
-		} while (big_c.isEmpty() && size <= this.alternativesComparison.getCriteria().size());
-
-		if (big_c.isEmpty()) {
-			return false;
-		}
-
-		// Start to determine R*
-
-		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
-		List<Couple<Criterion, Criterion>> r_s = new ArrayList<>();
-
-		logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
-
-		for (List<Criterion> l : big_c) {
-			r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta());
-
-			for (Couple<Criterion, Criterion> c : r_s) {
-				if (!cpls.contains(c)) {
-					cpls.add(c);
-				}
-			}
-
-			r_s.clear();
-		}
-
-		ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
-
-		// R* determined
-
-		phiIVT = new IVTOutput(this.alternativesComparison, rStar, this.epsilon);
-
-		return true;
-	}
-
-	public boolean isAnchorRMGAVGApplicable() {
-		Double max_w = Double.MIN_VALUE;
-
-		for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-			Double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
-
-			if (v > max_w) {
-				max_w = v;
-			}
-		}
-
-		if (max_w <= this.epsilon) {
-			phiRMGAVG = new RMGAVGOutput(this.alternativesComparison);
-			return true;
-		}
-
-		return false;
-	}
-
+	
+	
 	public boolean isApplicable(Anchor anchor) {
+		
+		if(labreucheOutput != null) {
+			if( labreucheOutput.getAnchor() == anchor) {
+				return true;
+			}
+			return false;
+		}
+		
+		
 		switch (anchor) {
 
 		case ALL:
-			return isAnchorALLApplicable();
+			for (Map.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
+				if (d.getValue() < 0.0) {
+					return false;
+				}
+			}
+
+			labreucheOutput = new ALLOutput(alternativesComparison);
+
+			return true;
 
 		case NOA:
-			return isAnchorNOAApplicable();
+			if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) > Tools
+					.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
+				return false;
+			}
+
+			Map<Double, Criterion> temp = new HashMap<>();
+			Set<Criterion> setC = new LinkedHashSet<>();
+
+			for (Map.Entry<Criterion, Double> w_i : this.alternativesComparison.getWeight().entrySet()) {
+				temp.put((w_i.getValue() - 1.0 / this.alternativesComparison.getCriteria().size())
+						* this.alternativesComparison.getDelta().get(w_i.getKey()), w_i.getKey());
+			}
+
+			ArrayList<Double> keys = new ArrayList<>(temp.keySet());
+			Collections.sort(keys);
+
+			Map<Criterion, Double> wcomposed = alternativesComparison.getWeightReference();
+			int p = keys.size() - 1;
+
+			do {
+				wcomposed.put(temp.get(keys.get(p)), this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
+				setC.add(temp.get(keys.get(p)));
+				p--;
+			} while (Tools.score(this.alternativesComparison.getX(), wcomposed) < Tools
+					.score(this.alternativesComparison.getY(), wcomposed));
+
+			labreucheOutput = new NOAOutput(this.alternativesComparison, setC);
+
+			return true;
 
 		case IVT:
-			return isAnchorIVTApplicable();
+			int size = 2;
+			List<List<Criterion>> subsets = new ArrayList<>();
+			List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
+			List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo_eu calls
+			List<List<Criterion>> big_c = new ArrayList<>(); // result of algo_eu
+			Double d_eu = null;
+			List<Criterion> pi = new ArrayList<>();
+
+			// logger.info("Delta " + this.alternativesComparison.getX().getName() +
+			// " > " + this.alternativesComparison.getY().getName() + " : "
+			// + Tools.showVector(alternativesComparison.getDelta()) + "\n");
+
+			do {
+				d_eu = null;
+				pi.clear();
+				big_a.clear();
+				big_b.clear();
+				big_c.clear();
+				subsets.clear();
+				this.setCIVT.clear();
+
+				subsets = Tools.allSubset(new ArrayList<>(this.alternativesComparison.getCriteria()));
+
+				for (List<Criterion> subset : subsets) {
+					d_eu = Tools.d_eu(subset, 5, this.alternativesComparison.getWeight(),
+							this.alternativesComparison.getDelta()).getLeft();
+					pi = Tools.pi_min(subset, this.alternativesComparison.getWeight(),
+							this.alternativesComparison.getDelta());
+					if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
+						this.setCIVT.add(subset);
+					}
+
+					pi.clear();
+				}
+
+				this.setCIVT = Tools.sortLexi(this.setCIVT, this.alternativesComparison.getWeight(),
+						alternativesComparison.getDelta());
+
+				// logger.info("setCIVT : ");
+				// for(List<Criterion> l : this.setCIVT)
+				// logger.info(Tools.showCriteria(l)); // + " " + this.d_eu(l,0) + " " +
+				// this.d_eu(l,1) + " " + this.d_eu(l,5) + " " +
+				// this.showCriteria(this.pi_min(l)));
+
+				big_c = this.algoEU(big_a, big_b, 0);
+				size++;
+
+			} while (big_c.isEmpty() && size <= this.alternativesComparison.getCriteria().size());
+
+			if (big_c.isEmpty()) {
+				return false;
+			}
+
+			// Start to determine R*
+
+			List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
+			List<Couple<Criterion, Criterion>> r_s = new ArrayList<>();
+
+			logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
+
+			for (List<Criterion> l : big_c) {
+				r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta());
+
+				for (Couple<Criterion, Criterion> c : r_s) {
+					if (!cpls.contains(c)) {
+						cpls.add(c);
+					}
+				}
+
+				r_s.clear();
+			}
+
+			ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
+
+			// R* determined
+
+			labreucheOutput = new IVTOutput(this.alternativesComparison, rStar, this.epsilon);
+
+			return true;
 
 		case RMGAVG:
-			return isAnchorRMGAVGApplicable();
+			double max_w = Double.MIN_VALUE;
+
+			for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
+				double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
+
+				if (v > max_w) {
+					max_w = v;
+				}
+			}
+
+			if (max_w <= this.epsilon) {
+				labreucheOutput = new RMGAVGOutput(this.alternativesComparison);
+				
+				return true;
+			}
+
+			return false;
 
 		case RMGCOMP:
-			return isAnchorRMGCOMPApplicable();
+			double max_w1 = Double.MIN_VALUE;
+
+			for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
+				double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
+
+				if (v > max_w1) {
+					max_w1 = v;
+				}
+			}
+
+			if (max_w1 > this.epsilon) {
+				labreucheOutput = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
+				
+				return true;
+			}
+
+			return false;
 
 		default:
 			logger.info("Anchor given unknown");
 			return false;
 		}
-	}
-
-	public boolean isAnchorRMGCOMPApplicable() {
-		Double max_w = Double.MIN_VALUE;
-
-		for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-			Double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
-
-			if (v > max_w) {
-				max_w = v;
-			}
-		}
-
-		if (max_w > this.epsilon) {
-			phiRMGCOMP = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
-			return true;
-		}
-
-		return false;
 	}
 
 	
@@ -457,19 +379,37 @@ public class LabreucheModel {
 	 * */
 	public ALLOutput getALLExplanation() {
 		String mess = "This anchor is not the one applicable";
-		Preconditions.checkState(isAnchorALLApplicable(), mess);
-		return phiALL;
+
+		if(labreucheOutput != null) {
+			if(labreucheOutput.getAnchor() == Anchor.ALL) {
+				return (ALLOutput) labreucheOutput;
+			}
+			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, mess);
+		}
+			
+		Preconditions.checkState(isApplicable(Anchor.ALL), mess);
+		return (ALLOutput) labreucheOutput;
 	}
 
+	
 	/**
 	 * @return elements of argumentation if the anchor NOA is applicable
 	 * or throw IllegalStateException with a the message mess otherwise.
 	 * */
 	public NOAOutput getNOAExplanation() {
 		String message = "This anchor is not the one applicable";
-		Preconditions.checkState(isAnchorNOAApplicable(), message);
-		return phiNOA;
+		
+		if(labreucheOutput != null) {
+			if(labreucheOutput.getAnchor() == Anchor.NOA) {
+				return (NOAOutput) labreucheOutput;
+			}
+			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
+		}
+		
+		Preconditions.checkState(isApplicable(Anchor.NOA), message);
+		return (NOAOutput) labreucheOutput;
 	}
+	
 	
 	/**
 	 * @return elements of argumentation if the anchor IVT is applicable
@@ -477,8 +417,16 @@ public class LabreucheModel {
 	 * */
 	public IVTOutput getIVTExplanation() {
 		String message = "This anchor is not the one applicable";
-		Preconditions.checkState(isAnchorIVTApplicable(), message);
-		return phiIVT;
+		
+		if(labreucheOutput != null) {
+			if(labreucheOutput.getAnchor() == Anchor.IVT) {
+				return (IVTOutput) labreucheOutput;
+			}
+			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
+		}
+		
+		Preconditions.checkState(isApplicable(Anchor.IVT), message);
+		return (IVTOutput) labreucheOutput;
 	}
 	
 	/**
@@ -487,18 +435,35 @@ public class LabreucheModel {
 	 * */
 	public RMGAVGOutput getRMGAVGExplanation() {
 		String message = "This anchor is not the one applicable";
-		Preconditions.checkState(isAnchorRMGAVGApplicable(), message);
-		return phiRMGAVG;
+		
+		if(labreucheOutput != null) {
+			if(labreucheOutput.getAnchor() == Anchor.RMGAVG) {
+				return (RMGAVGOutput) labreucheOutput;
+			}
+			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
+		}
+		
+		Preconditions.checkState(isApplicable(Anchor.RMGAVG), message);
+		return (RMGAVGOutput) labreucheOutput;
 	}
 
+	
 	/**
 	 * @return elements of argumentation if the anchor RMGCOMP is applicable
 	 * or throw IllegalStateException with a the message mess otherwise.
 	 * */
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		String message = "This anchor is not the one applicable";
-		Preconditions.checkState(isAnchorRMGCOMPApplicable(), message);
-		return phiRMGCOMP;
+		
+		if(labreucheOutput != null) {
+			if(labreucheOutput.getAnchor() == Anchor.RMGCOMP) {
+				return (RMGCOMPOutput) labreucheOutput;
+			}
+			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
+		}
+		
+		Preconditions.checkState(isApplicable(Anchor.RMGCOMP), message);
+		return (RMGCOMPOutput) labreucheOutput;
 	}
 	
 
@@ -507,7 +472,8 @@ public class LabreucheModel {
 
 		switch (labreucheOutput.getAnchor()) {
 		case ALL:
-
+			ALLOutput phiALL = (ALLOutput) labreucheOutput;
+			
 			AlternativesComparison alcoALL = phiALL.getAlternativesComparison();
 
 			explanation = alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
@@ -516,6 +482,7 @@ public class LabreucheModel {
 			return explanation;
 
 		case NOA:
+			NOAOutput phiNOA = (NOAOutput) labreucheOutput;
 
 			AlternativesComparison alcoNOA = phiNOA.getAlternativesComparison();
 			Set<Criterion> ConPA = phiNOA.getPositiveNoaCriteria();
@@ -544,6 +511,7 @@ public class LabreucheModel {
 			return explanation;
 
 		case IVT:
+			IVTOutput phiIVT = (IVTOutput) labreucheOutput;
 
 			AlternativesComparison alcoIVT = phiIVT.getAlternativesComparison();
 
@@ -578,6 +546,7 @@ public class LabreucheModel {
 			return explanation;
 
 		case RMGAVG:
+			RMGAVGOutput phiRMGAVG = (RMGAVGOutput) labreucheOutput;
 
 			AlternativesComparison alcoRMGAVG = phiRMGAVG.getAlternativesComparison();
 
@@ -588,6 +557,7 @@ public class LabreucheModel {
 			return explanation;
 
 		case RMGCOMP:
+			RMGCOMPOutput phiRMGCOMP = (RMGCOMPOutput) labreucheOutput;
 
 			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
 			Double maxW = phiRMGCOMP.getMaxW();
