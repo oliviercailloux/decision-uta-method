@@ -19,10 +19,10 @@ public class Testouille {
 
 	public void main(String[] args) {
 
-		//testGraph();
-		
+		// testGraph();
+
 	}
-	
+
 	void testGraph() {
 		ProblemGenerator pg = new ProblemGenerator();
 
@@ -49,7 +49,7 @@ public class Testouille {
 
 		for (EndpointPair<Criterion> ep : immutableGraph.edges())
 			System.out.println(ep.nodeU().getName() + " , " + ep.nodeV().getName());
-		
+
 	}
 
 	static Set<Couple<Criterion, Criterion>> generateCouples(int number, List<Criterion> criteria) {

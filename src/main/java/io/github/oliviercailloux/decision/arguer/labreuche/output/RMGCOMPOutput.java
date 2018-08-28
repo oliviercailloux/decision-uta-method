@@ -39,7 +39,7 @@ public class RMGCOMPOutput implements LabreucheOutput {
 	public double getMaxW() {
 		double maxW = Double.MIN_VALUE;
 		double n = alternativesComparison.getCriteria().size();
-		
+
 		for (Map.Entry<Criterion, Double> entry : alternativesComparison.getWeight().entrySet()) {
 			double v = Math.abs(entry.getValue() - (1.0 / n));
 

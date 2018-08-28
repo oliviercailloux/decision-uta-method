@@ -25,31 +25,33 @@ public class LabreucheModelTest {
 		MainLabreucheModel mlm = new MainLabreucheModel();
 
 		ProblemGenerator pb = new ProblemGenerator();
-		
+
 		pb.generateCriteria(5, 0, 10, 1);
 		pb.generateAlternatives(2);
-		
+
 		Alternative x = pb.getAlternatives().get(0);
 		Alternative y = pb.getAlternatives().get(1);
 		List<Criterion> criteria = pb.getCriteria();
-		ImmutableMap<Criterion,Double> weights = computeWeights(criteria,10);
-		
+		ImmutableMap<Criterion, Double> weights = computeWeights(criteria, 10);
+
 		LabreucheModel lm = new LabreucheModel(x, y, weights);
 		System.out.println(" w = " + Tools.showVector(weights));
-		System.out.println(x.getName() + " = " + Tools.showVector(x.getEvaluations()) + " : " + Tools.score(x, weights));
-		System.out.println(y.getName() + " = " + Tools.showVector(y.getEvaluations()) + " : " + Tools.score(y, weights));
-		
+		System.out
+				.println(x.getName() + " = " + Tools.showVector(x.getEvaluations()) + " : " + Tools.score(x, weights));
+		System.out
+				.println(y.getName() + " = " + Tools.showVector(y.getEvaluations()) + " : " + Tools.score(y, weights));
+
 		lm.getExplanation();
-		
+
 		assertFalse(mlm.lm.isAnchorALLApplicable());
 		assertTrue(mlm.lm.isAnchorNOAApplicable());
 		assertNotNull(lm.getExplanation());
 		assertNotNull(lm.arguer());
-		
+
 		System.out.println(lm.arguer());
 	}
-	
-	public ImmutableMap<Criterion, Double> computeWeights(Collection<Criterion> criteria,int value) {
+
+	public ImmutableMap<Criterion, Double> computeWeights(Collection<Criterion> criteria, int value) {
 		Builder<Criterion, Double> builder = ImmutableMap.builder();
 		double weight = value;
 		for (Criterion criterion : criteria) {

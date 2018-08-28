@@ -41,14 +41,14 @@ public class LabreucheModel {
 
 	public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
-		
+
 		this.setCIVT = new ArrayList<>();
 		this.epsilon = 0.2 / this.alternativesComparison.getWeight().keySet().size();
 
 		this.labreucheOutput = null;
 		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
 	}
-	
+
 	public LabreucheModel(AlternativesComparison alternativesComparaison, double epsilon) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 		this.epsilon = requireNonNull(epsilon);
@@ -62,7 +62,6 @@ public class LabreucheModel {
 	/***************************************************************************************
 	 * * GETTERS & SETTERS * *
 	 *************************************************************************************/
-
 
 	public List<List<Criterion>> getSetCIVT() {
 		return this.setCIVT;
@@ -135,10 +134,10 @@ public class LabreucheModel {
 					b_copy = new ArrayList<>(f); // L8
 				}
 				logger.info(k + " " + i + " A" + Tools.showSet(a)); // logger.info(k+" " + i +" B" +
-																			// this.showSet(b));//logger.info(k+"
-																			// " + i +" Test for return B :" +
-																			// !b.isEmpty()+" and
-																			// "+!this.includeDiscri(a_copy,b));
+																	// this.showSet(b));//logger.info(k+"
+																	// " + i +" Test for return B :" +
+																	// !b.isEmpty()+" and
+																	// "+!this.includeDiscri(a_copy,b));
 				if (!b_copy.isEmpty() && !Tools.includeDiscri(a_copy, b_copy, this.alternativesComparison.getWeight(),
 						this.alternativesComparison.getDelta())) { // L10
 					return b_copy;
@@ -158,51 +157,48 @@ public class LabreucheModel {
 	 * * * * * * * * * * * *
 	 */
 
-	
 	public LabreucheOutput getExplanation() {
 
 		if (labreucheOutput != null) {
 			return labreucheOutput;
 		}
-		
+
 		if (isApplicable(Anchor.ALL)) {
 			return labreucheOutput;
 		}
-		
+
 		logger.info("noa");
 		if (isApplicable(Anchor.NOA)) {
 			return labreucheOutput;
 		}
-		
+
 		logger.info("ivt");
 		if (isApplicable(Anchor.IVT)) {
 			return labreucheOutput;
 		}
-		
+
 		logger.info("rmgavg");
 		if (isApplicable(Anchor.RMGAVG)) {
 			return labreucheOutput;
 		}
-		
+
 		logger.info("rmgcomp");
-		if(isApplicable(Anchor.RMGCOMP)) {
+		if (isApplicable(Anchor.RMGCOMP)) {
 			return labreucheOutput;
 		}
-		
+
 		return null;
 	}
-	
-	
+
 	public boolean isApplicable(Anchor anchor) {
-		
-		if(labreucheOutput != null) {
-			if( labreucheOutput.getAnchor() == anchor) {
+
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == anchor) {
 				return true;
 			}
 			return false;
 		}
-		
-		
+
 		switch (anchor) {
 
 		case ALL:
@@ -237,7 +233,8 @@ public class LabreucheModel {
 			int p = keys.size() - 1;
 
 			do {
-				wcomposed.put(temp.get(keys.get(p)), this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
+				wcomposed.put(temp.get(keys.get(p)),
+						this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
 				setC.add(temp.get(keys.get(p)));
 				p--;
 			} while (Tools.score(this.alternativesComparison.getX(), wcomposed) < Tools
@@ -309,7 +306,8 @@ public class LabreucheModel {
 			logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
 
 			for (List<Criterion> l : big_c) {
-				r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta());
+				r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(),
+						this.alternativesComparison.getDelta());
 
 				for (Couple<Criterion, Criterion> c : r_s) {
 					if (!cpls.contains(c)) {
@@ -341,7 +339,7 @@ public class LabreucheModel {
 
 			if (max_w <= this.epsilon) {
 				labreucheOutput = new RMGAVGOutput(this.alternativesComparison);
-				
+
 				return true;
 			}
 
@@ -360,7 +358,7 @@ public class LabreucheModel {
 
 			if (max_w1 > this.epsilon) {
 				labreucheOutput = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
-				
+
 				return true;
 			}
 
@@ -372,100 +370,95 @@ public class LabreucheModel {
 		}
 	}
 
-	
 	/**
-	 * @return elements of argumentation if the anchor ALL is applicable
-	 * or throw IllegalStateException with a the message mess otherwise.
-	 * */
+	 * @return elements of argumentation if the anchor ALL is applicable or throw
+	 *         IllegalStateException with a the message mess otherwise.
+	 */
 	public ALLOutput getALLExplanation() {
 		String mess = "This anchor is not the one applicable";
 
-		if(labreucheOutput != null) {
-			if(labreucheOutput.getAnchor() == Anchor.ALL) {
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == Anchor.ALL) {
 				return (ALLOutput) labreucheOutput;
 			}
 			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, mess);
 		}
-			
+
 		Preconditions.checkState(isApplicable(Anchor.ALL), mess);
 		return (ALLOutput) labreucheOutput;
 	}
 
-	
 	/**
-	 * @return elements of argumentation if the anchor NOA is applicable
-	 * or throw IllegalStateException with a the message mess otherwise.
-	 * */
+	 * @return elements of argumentation if the anchor NOA is applicable or throw
+	 *         IllegalStateException with a the message mess otherwise.
+	 */
 	public NOAOutput getNOAExplanation() {
 		String message = "This anchor is not the one applicable";
-		
-		if(labreucheOutput != null) {
-			if(labreucheOutput.getAnchor() == Anchor.NOA) {
+
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == Anchor.NOA) {
 				return (NOAOutput) labreucheOutput;
 			}
 			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
 		}
-		
+
 		Preconditions.checkState(isApplicable(Anchor.NOA), message);
 		return (NOAOutput) labreucheOutput;
 	}
-	
-	
+
 	/**
-	 * @return elements of argumentation if the anchor IVT is applicable
-	 * or throw IllegalStateException with a the message mess otherwise.
-	 * */
+	 * @return elements of argumentation if the anchor IVT is applicable or throw
+	 *         IllegalStateException with a the message mess otherwise.
+	 */
 	public IVTOutput getIVTExplanation() {
 		String message = "This anchor is not the one applicable";
-		
-		if(labreucheOutput != null) {
-			if(labreucheOutput.getAnchor() == Anchor.IVT) {
+
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == Anchor.IVT) {
 				return (IVTOutput) labreucheOutput;
 			}
 			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
 		}
-		
+
 		Preconditions.checkState(isApplicable(Anchor.IVT), message);
 		return (IVTOutput) labreucheOutput;
 	}
-	
+
 	/**
-	 * @return elements of argumentation if the anchor RMGAVG is applicable
-	 * or throw IllegalStateException with a the message mess otherwise.
-	 * */
+	 * @return elements of argumentation if the anchor RMGAVG is applicable or throw
+	 *         IllegalStateException with a the message mess otherwise.
+	 */
 	public RMGAVGOutput getRMGAVGExplanation() {
 		String message = "This anchor is not the one applicable";
-		
-		if(labreucheOutput != null) {
-			if(labreucheOutput.getAnchor() == Anchor.RMGAVG) {
+
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == Anchor.RMGAVG) {
 				return (RMGAVGOutput) labreucheOutput;
 			}
 			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
 		}
-		
+
 		Preconditions.checkState(isApplicable(Anchor.RMGAVG), message);
 		return (RMGAVGOutput) labreucheOutput;
 	}
 
-	
 	/**
-	 * @return elements of argumentation if the anchor RMGCOMP is applicable
-	 * or throw IllegalStateException with a the message mess otherwise.
-	 * */
+	 * @return elements of argumentation if the anchor RMGCOMP is applicable or
+	 *         throw IllegalStateException with a the message mess otherwise.
+	 */
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		String message = "This anchor is not the one applicable";
-		
-		if(labreucheOutput != null) {
-			if(labreucheOutput.getAnchor() == Anchor.RMGCOMP) {
+
+		if (labreucheOutput != null) {
+			if (labreucheOutput.getAnchor() == Anchor.RMGCOMP) {
 				return (RMGCOMPOutput) labreucheOutput;
 			}
 			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
 		}
-		
+
 		Preconditions.checkState(isApplicable(Anchor.RMGCOMP), message);
 		return (RMGCOMPOutput) labreucheOutput;
 	}
-	
 
 	public String arguer() {
 		String explanation = "";
@@ -473,7 +466,7 @@ public class LabreucheModel {
 		switch (labreucheOutput.getAnchor()) {
 		case ALL:
 			ALLOutput phiALL = (ALLOutput) labreucheOutput;
-			
+
 			AlternativesComparison alcoALL = phiALL.getAlternativesComparison();
 
 			explanation = alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
@@ -562,7 +555,7 @@ public class LabreucheModel {
 			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
 			Double maxW = phiRMGCOMP.getMaxW();
 			Double eps = phiRMGCOMP.getEpsilon();
-			
+
 			if (maxW > eps) {
 				if (maxW <= eps * 2) {
 					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()

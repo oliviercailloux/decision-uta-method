@@ -30,10 +30,10 @@ class IVTOutputTest {
 		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();
-		
+
 		MutableGraph<Criterion> graph = GraphBuilder.directed().build();
 		graph.putEdge(c1, c2);
-		
+
 		IVTOutput output = new IVTOutput(altsComp, ImmutableGraph.copyOf(graph), 0.1);
 
 		assertTrue(output.isJustSmaller(0.7, 0.75));

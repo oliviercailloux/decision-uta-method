@@ -23,7 +23,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class Tools {
 
 	private Logger logger = LoggerFactory.getLogger(Tools.class);
-	
+
 	static Double score(Alternative x, Map<Criterion, Double> w) {
 		Double score = 0.0;
 
@@ -131,8 +131,7 @@ public class Tools {
 	}
 
 	// return the permutation that minimize Sum pi(i) delta_i, for all i in "list"
-	static List<Criterion> pi_min(List<Criterion> subset, Map<Criterion, Double> w,
-			Map<Criterion, Double> delta) {
+	static List<Criterion> pi_min(List<Criterion> subset, Map<Criterion, Double> w, Map<Criterion, Double> delta) {
 		List<List<Criterion>> pis = allPi(subset);
 		Map<Criterion, Double> w_modified = new LinkedHashMap<>();
 		Double min_pi_value = Double.MAX_VALUE;
@@ -500,8 +499,7 @@ public class Tools {
 		return ImmutableGraph.copyOf(result);
 	}
 
-	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set,
-			int size) {
+	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set, int size) {
 		List<List<Couple<Criterion, Criterion>>> subsets = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			if (i == 0) {
@@ -643,12 +641,12 @@ public class Tools {
 
 	public static String showGraph(ImmutableGraph<Criterion> graph) {
 		String res = "{ ";
-		
-		for(Criterion c : graph.nodes())
-			res += c.getName()+ " ";
-		
+
+		for (Criterion c : graph.nodes())
+			res += c.getName() + " ";
+
 		res += "}";
-			
+
 		return res;
 	}
 

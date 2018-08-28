@@ -140,10 +140,10 @@ public class IVTOutput implements LabreucheOutput {
 					buildkNW.add(i);
 				}
 				if (isMuchSmaller(wI, wJ) && wJ < 1.0 / n) {
-					buildkPN.putEdge(i,j);
+					buildkPN.putEdge(i, j);
 				}
 				if (1.0 / n < wI && isMuchSmaller(wI, wJ)) {
-					buildkPN.putEdge(i,j);
+					buildkPN.putEdge(i, j);
 				}
 				if (isJustSmaller(wI, wJ) && wJ < 1.0 / n) {
 					buildkNW.add(i);

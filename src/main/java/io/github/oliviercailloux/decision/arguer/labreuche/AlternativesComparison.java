@@ -41,7 +41,7 @@ public class AlternativesComparison {
 		/** TODO check that value ≠. */
 		assert !weights.isEmpty();
 		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
-		
+
 		(this).reorderXY();
 	}
 
@@ -104,29 +104,29 @@ public class AlternativesComparison {
 	public ImmutableSet<Criterion> getCriteria() {
 		return weights.keySet();
 	}
-	
+
 	private void reorderXY() {
 		double scoreX = Tools.score(x, weights);
 		double scoreY = Tools.score(y, weights);
-				
-		if(scoreY > scoreX) {
+
+		if (scoreY > scoreX) {
 			Alternative tmp = this.x;
 			this.x = this.y;
 			this.y = tmp;
 		}
 	}
-	
-	public ImmutableMap<Criterion, Double> getWeightReference(){
-		Builder<Criterion,Double> weightsReference = ImmutableMap.builder();
-		
-		for(Criterion c : weights.keySet()) {
-			weightsReference.put(c, 1.0/weights.keySet().size());
+
+	public ImmutableMap<Criterion, Double> getWeightReference() {
+		Builder<Criterion, Double> weightsReference = ImmutableMap.builder();
+
+		for (Criterion c : weights.keySet()) {
+			weightsReference.put(c, 1.0 / weights.keySet().size());
 		}
-		
+
 		return weightsReference.build();
 	}
-	
- 	public void showProblem() {
+
+	public void showProblem() {
 
 		String display = "****************************************************************";
 		display += "\n" + "*                                                              *";
@@ -143,8 +143,7 @@ public class AlternativesComparison {
 
 		display += "\n" + "	" + this.x.getName() + " " + " : " + Tools.displayAsVector(this.x);
 		display += "\n" + "	" + this.y.getName() + " " + " : " + Tools.displayAsVector(this.y);
-			
-		
+
 		display += "\n" + "			Alternatives ranked";
 		display += "\n" + x.getName() + " = " + Tools.score(x, weights);
 		display += "\n" + y.getName() + " = " + Tools.score(y, weights);
@@ -154,5 +153,4 @@ public class AlternativesComparison {
 		logger.info(display);
 	}
 
-	
 }
