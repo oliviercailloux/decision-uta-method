@@ -13,9 +13,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.uta_calculator.view.MainLabreucheModel;
 
 public class LabreucheModelTest {
 
@@ -34,7 +36,9 @@ public class LabreucheModelTest {
 		List<Criterion> criteria = pb.getCriteria();
 		ImmutableMap<Criterion, Double> weights = computeWeights(criteria, 10);
 
-		LabreucheModel lm = new LabreucheModel(x, y, weights);
+		AlternativesComparison alts = new AlternativesComparison(x, y, weights); 
+		
+		LabreucheModel lm = new LabreucheModel(alts);
 		System.out.println(" w = " + Tools.showVector(weights));
 		System.out
 				.println(x.getName() + " = " + Tools.showVector(x.getEvaluations()) + " : " + Tools.score(x, weights));
@@ -43,8 +47,8 @@ public class LabreucheModelTest {
 
 		lm.getExplanation();
 
-		assertFalse(mlm.lm.isAnchorALLApplicable());
-		assertTrue(mlm.lm.isAnchorNOAApplicable());
+		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
+		assertTrue(mlm.lm.isApplicable(Anchor.NOA));
 		assertNotNull(lm.getExplanation());
 		assertNotNull(lm.arguer());
 

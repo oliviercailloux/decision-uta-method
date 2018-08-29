@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer.labreuche;
+package io.github.oliviercailloux.uta_calculator.view;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -6,12 +6,14 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class MainLabreucheModel {
 
-	LabreucheModel lm;
+	public LabreucheModel lm;
 
 	public MainLabreucheModel() {
 		this.lm = generateProblems();
@@ -61,7 +63,9 @@ public class MainLabreucheModel {
 		Alternative x_5 = new Alternative(1, "X", x_perfEx5);
 		Alternative y_5 = new Alternative(2, "Y", y_perfEx5);
 
-		return new LabreucheModel(x_5, y_5, weightsEx5);
+		AlternativesComparison alts = new AlternativesComparison(x_5, y_5, weightsEx5);
+		
+		return new LabreucheModel(alts);
 
 		/*
 		 * else { //example 6 for NOA -> validate! Double[] w6 = {0.18, 0.11, 0.12,

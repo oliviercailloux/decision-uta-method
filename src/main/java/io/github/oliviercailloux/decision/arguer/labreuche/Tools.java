@@ -346,8 +346,7 @@ public class Tools {
 		if (b.isEmpty()) {
 			if (!a.isEmpty())
 				return false;
-			else
-				return true;
+			return true;
 		}
 
 		if (a.size() > b.size())

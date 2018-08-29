@@ -33,6 +33,10 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheModel {
 
+	/**
+	 * @param labreuchOutput equal null iff it is not initialized.
+	 * */
+	
 	private AlternativesComparison alternativesComparison;
 	private double epsilon;
 	private List<List<Criterion>> setCIVT;
