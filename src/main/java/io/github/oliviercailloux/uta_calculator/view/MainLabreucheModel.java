@@ -16,61 +16,67 @@ public class MainLabreucheModel {
 	public LabreucheModel lm;
 
 	public MainLabreucheModel() {
-		this.lm = generateProblems();
+		this.lm = generateProblems(5);
 	}
 
 	public static void main(String[] args) {
-		// MainLabreucheModel main = new MainLabreucheModel();
+		MainLabreucheModel main = new MainLabreucheModel();
 
 		System.out.println("Starting problmes!");
 
-		// main.lm5.startproblem(false);
-		// main.lm6.startproblem(false);
-		// main.lm9.startproblem(false);
-		// main.lm10.startproblem(false);
-		// main.lm13.startproblem(false);
-		// main.lm14.startproblem(false);
-		// main.lm15.startproblem(false);
-		// main.lm16.startproblem(false);
-		// main.lm17.startproblem(false);
-		// main.lm18.startproblem(false);
+		main.lm.getExplanation();
+		
+		System.out.println(main.lm.arguer());
+		
+		// main.lm5;
+		// main.lm6;
+		// main.lm9;
+		// main.lm10;
+		// main.lm13;
+		// main.lm14;
+		// main.lm15;
+		// main.lm16;
+		// main.lm17;
+		// main.lm18;
 	}
 
-	public LabreucheModel generateProblems() {
-
-		// example 5 for NOA -> validate!
-		Double[] w5 = { 0.41, 0.06, 0.24, 0.29 };
-		Double[] x5 = { 0.42, 0.66, 0.66, 0.57 };
-		Double[] y5 = { 0.54, 0.04, 0.89, 0.76 };
-
-		Set<Criterion> criteriaEx5 = new LinkedHashSet<>();
-
-		for (int i = 0; i < w5.length; i++)
-			criteriaEx5.add(new Criterion(i + 1, "c" + (i + 1), new ArrayList<Double>()));
-
-		Map<Criterion, Double> x_perfEx5 = new LinkedHashMap<>();
-		Map<Criterion, Double> y_perfEx5 = new LinkedHashMap<>();
-		Map<Criterion, Double> weightsEx5 = new LinkedHashMap<>();
-
-		int i = 0;
-		for (Criterion c : criteriaEx5) {
-			x_perfEx5.put(c, x5[i]);
-			y_perfEx5.put(c, y5[i]);
-			weightsEx5.put(c, w5[i]);
-			i++;
-		}
-
-		Alternative x_5 = new Alternative(1, "X", x_perfEx5);
-		Alternative y_5 = new Alternative(2, "Y", y_perfEx5);
-
-		AlternativesComparison alts = new AlternativesComparison(x_5, y_5, weightsEx5);
+	public LabreucheModel generateProblems(int example) {
+		LabreucheModel labmod = null;
 		
-		return new LabreucheModel(alts);
+		if(example == 5) {
+			// example 5 for NOA -> validate!
+			Double[] w5 = { 0.41, 0.06, 0.24, 0.29 };
+			Double[] x5 = { 0.42, 0.66, 0.66, 0.57 };
+			Double[] y5 = { 0.54, 0.04, 0.89, 0.76 };
 
+			Set<Criterion> criteriaEx5 = new LinkedHashSet<>();
+
+			for (int i = 0; i < w5.length; i++)
+				criteriaEx5.add(new Criterion(i + 1, "c" + (i + 1), new ArrayList<Double>()));
+
+			Map<Criterion, Double> x_perfEx5 = new LinkedHashMap<>();
+			Map<Criterion, Double> y_perfEx5 = new LinkedHashMap<>();
+			Map<Criterion, Double> weightsEx5 = new LinkedHashMap<>();
+
+			int i = 0;
+			for (Criterion c : criteriaEx5) {
+				x_perfEx5.put(c, x5[i]);
+				y_perfEx5.put(c, y5[i]);
+				weightsEx5.put(c, w5[i]);
+				i++;
+			}
+
+			Alternative x_5 = new Alternative(1, "X", x_perfEx5);
+			Alternative y_5 = new Alternative(2, "Y", y_perfEx5);
+			AlternativesComparison alts = new AlternativesComparison(x_5, y_5, weightsEx5);
+		
+			labmod = new LabreucheModel(alts);
+		}
 		/*
-		 * else { //example 6 for NOA -> validate! Double[] w6 = {0.18, 0.11, 0.12,
-		 * 0.24, 0.35}; Double[] x6 = {0.95, 0.67, 0.64, 0.27, 0.39}; Double[] y6 =
-		 * {0.30, 0.37, 0.41, 0.94, 0.49};
+		 * else { //example 6 for NOA -> validate!
+		 * Double[] w6 = {0.18, 0.11, 0.12, 0.24, 0.35}; 
+		 * Double[] x6 = {0.95, 0.67, 0.64, 0.27, 0.39}; 
+		 * Double[] y6 = {0.30, 0.37, 0.41, 0.94, 0.49};
 		 * 
 		 * // example 9 for IVT Double[] w9 = {0.06, 0.11, 0.21, 0.29, 0.33}; Double[]
 		 * x9 = {0.89, 0.03, 0.07, 0.32, 0.38}; Double[] y9 = {0.36, 0.76, 0.60, 0.25,
@@ -194,5 +200,7 @@ public class MainLabreucheModel {
 		 * LabreucheModel(x_end,y_end,weightsEx17); lm18 = new
 		 * LabreucheModel(x_end,y_end,weightsEx18); }
 		 */
+		
+		return labmod;
 	}
 }

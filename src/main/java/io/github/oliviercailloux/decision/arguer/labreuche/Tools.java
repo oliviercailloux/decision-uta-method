@@ -13,6 +13,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
@@ -256,12 +257,14 @@ public class Tools {
 	// return true if the intersection of "list_l" and "l" is empty, and false
 	// otherwise
 	static boolean isCapEmpty(List<List<Criterion>> list_l, List<Criterion> l) {
-		if (list_l.isEmpty())
+		if (list_l.isEmpty()) {
 			return true;
-
-		if (l.isEmpty())
+		}
+		
+		if (l.isEmpty()) {
 			return true;
-
+		}
+		
 		List<Criterion> union_l = new ArrayList<>();
 
 		for (List<Criterion> list : list_l) {

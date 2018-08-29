@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -26,15 +28,59 @@ public class ToolsTest {
 		List<List<Criterion>> setA = new ArrayList<>();
 		List<List<Criterion>> setB = new ArrayList<>();
 
-		setA.add((List<Criterion>) altsComp.getCriteria());
+		setA.add(toList(altsComp.getCriteria()));
 		
-		assertTrue(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));	
 	}
 	
+	@Test
+	void testIsCapEmpty() {
+		AlternativesComparison alts = newAlternativesComparison();
+
+		Iterator<Criterion> critIt = alts.getCriteria().iterator();
+		
+		Criterion c1 = critIt.next();
+		Criterion c2 = critIt.next();
+		Criterion c3 = critIt.next();
+		Criterion c4 = critIt.next();
+		Criterion c5 = critIt.next();
+		Criterion c6 = critIt.next();
+		
+		List<Criterion> list1 = new ArrayList<>();
+		List<Criterion> list2 = new ArrayList<>();
+		List<List<Criterion>> list3 = new ArrayList<>();
+		List<Criterion> list4 = new ArrayList<>();
+		List<Criterion> list5 = new ArrayList<>();
+
+		list1.add(c1);
+		list1.add(c4);
+		list2.add(c2);
+		list2.add(c3);
+		list3.add(list1);
+		list3.add(list2);
+		list4.add(c5);
+		list4.add(c4);
+		list5.add(c5);
+		list5.add(c6);
+		
+		assertFalse(Tools.isCapEmpty(list3, list4));
+		assertTrue(Tools.isCapEmpty(list3, list5));
+	}
+	
+	private List<Criterion> toList(ImmutableSet<Criterion> criteria) {
+		List<Criterion> l = new ArrayList<>();
+		
+		for(Criterion c : criteria)
+			l.add(c);
+		
+		return l;
+	}
+
 	public AlternativesComparison newAlternativesComparison() {
 		ProblemGenerator gen = new ProblemGenerator();
-		gen.generateCriteria(2, 0, 10, 1);
+		gen.generateCriteria(6, 0, 10, 1);
 		gen.generateAlternatives(2);
 		List<Alternative> alternatives = gen.getAlternatives();
 		Alternative x = alternatives.get(0);

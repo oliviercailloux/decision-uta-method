@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
@@ -78,6 +79,10 @@ public class LabreucheModel {
 
 	public AlternativesComparison getAlternativesComparison() {
 		return this.alternativesComparison;
+	}
+
+	public LabreucheOutput getLabreucheOutput() {
+		return this.labreucheOutput;
 	}
 
 	/****************************************************************************************
@@ -207,12 +212,14 @@ public class LabreucheModel {
 		switch (anchor) {
 
 		case ALL:
-			for (Map.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
+			for (ImmutableMap.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
 				if (d.getValue() < 0.0) {
+					logger.info("ALL false");
 					return false;
 				}
 			}
 
+			logger.info("ALL true");
 			labreucheOutput = new ALLOutput(alternativesComparison);
 
 			return true;
@@ -220,6 +227,7 @@ public class LabreucheModel {
 		case NOA:
 			if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
 					.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
+				logger.info("NOA false");
 				return false;
 			}
 
@@ -236,14 +244,19 @@ public class LabreucheModel {
 
 			Map<Criterion, Double> wcomposed = Maps.newHashMap(alternativesComparison.getWeightReference());
 			int p = keys.size() - 1;
+			double scoreX = 0.0;
+			double scoreY = 0.0;
 
 			do {
 				wcomposed.put(temp.get(keys.get(p)),
 						this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
 				setC.add(temp.get(keys.get(p)));
+				
+				scoreX = Tools.score(this.alternativesComparison.getX(),wcomposed);
+				scoreY = Tools.score(this.alternativesComparison.getY(), wcomposed);
+				
 				p--;
-			} while (Tools.score(this.alternativesComparison.getX(), wcomposed) < Tools
-					.score(this.alternativesComparison.getY(), wcomposed));
+			} while (scoreX < scoreY);
 
 			labreucheOutput = new NOAOutput(this.alternativesComparison, setC);
 
@@ -300,6 +313,7 @@ public class LabreucheModel {
 			} while (big_c.isEmpty() && size <= this.alternativesComparison.getCriteria().size());
 
 			if (big_c.isEmpty()) {
+				logger.info("IVT false");
 				return false;
 			}
 
@@ -347,6 +361,8 @@ public class LabreucheModel {
 
 				return true;
 			}
+			
+			logger.info("RMGAVG false");
 
 			return false;
 
@@ -367,6 +383,8 @@ public class LabreucheModel {
 				return true;
 			}
 
+			logger.info("RMGCOMP false");
+			
 			return false;
 
 		default:

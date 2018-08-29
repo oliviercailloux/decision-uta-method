@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -24,44 +26,27 @@ public class LabreucheModelTest {
 	@Test
 	public void labreucheModelTests() {
 
+		Logger log = LoggerFactory.getLogger(LabreucheModel.class);
+
 		MainLabreucheModel mlm = new MainLabreucheModel();
 
-		ProblemGenerator pb = new ProblemGenerator();
+		AlternativesComparison alts = mlm.lm.getAlternativesComparison();
+		log.info(" w = " + Tools.showVector(alts.getWeight()));
+		log.info(alts.getX().getName() + " = " + Tools.showVector(alts.getX().getEvaluations()) + " : " + Tools.score(alts.getX(),alts.getWeight()));
+		log.info(alts.getY().getName() + " = " + Tools.showVector(alts.getY().getEvaluations()) + " : " + Tools.score(alts.getY(),alts.getWeight()));
 
-		pb.generateCriteria(5, 0, 10, 1);
-		pb.generateAlternatives(2);
-
-		Alternative x = pb.getAlternatives().get(0);
-		Alternative y = pb.getAlternatives().get(1);
-		List<Criterion> criteria = pb.getCriteria();
-		ImmutableMap<Criterion, Double> weights = computeWeights(criteria, 10);
-
-		AlternativesComparison alts = new AlternativesComparison(x, y, weights); 
-		
-		LabreucheModel lm = new LabreucheModel(alts);
-		System.out.println(" w = " + Tools.showVector(weights));
-		System.out
-				.println(x.getName() + " = " + Tools.showVector(x.getEvaluations()) + " : " + Tools.score(x, weights));
-		System.out
-				.println(y.getName() + " = " + Tools.showVector(y.getEvaluations()) + " : " + Tools.score(y, weights));
-
-		lm.getExplanation();
 
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
 		assertTrue(mlm.lm.isApplicable(Anchor.NOA));
 		assertFalse(mlm.lm.isApplicable(Anchor.IVT));
 		assertFalse(mlm.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm.lm.isApplicable(Anchor.RMGCOMP));
-		assertNotNull(lm.getExplanation());
-		assertNotNull(lm.arguer());
+		assertNotNull(mlm.lm.getExplanation());
+		assertNotNull(mlm.lm.arguer());
 
-		System.out.println(lm.arguer());
+		log.info(mlm.lm.arguer());
 	}
 	
-	
-	
-	
-
 	public ImmutableMap<Criterion, Double> computeWeights(Collection<Criterion> criteria, int value) {
 		Builder<Criterion, Double> builder = ImmutableMap.builder();
 		double weight = value;
