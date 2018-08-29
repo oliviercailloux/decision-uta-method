@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>io.github.oliviercailloux</groupId>
 			<artifactId>google-or-tools</artifactId>
-			<version>6.7.2.a-SNAPSHOT</version>
+			<version>6.7.2</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.ImmutableGraph;
 
@@ -217,7 +218,7 @@ public class LabreucheModel {
 			return true;
 
 		case NOA:
-			if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) > Tools
+			if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
 					.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
 				return false;
 			}
@@ -233,7 +234,7 @@ public class LabreucheModel {
 			ArrayList<Double> keys = new ArrayList<>(temp.keySet());
 			Collections.sort(keys);
 
-			Map<Criterion, Double> wcomposed = alternativesComparison.getWeightReference();
+			Map<Criterion, Double> wcomposed = Maps.newHashMap(alternativesComparison.getWeightReference());
 			int p = keys.size() - 1;
 
 			do {

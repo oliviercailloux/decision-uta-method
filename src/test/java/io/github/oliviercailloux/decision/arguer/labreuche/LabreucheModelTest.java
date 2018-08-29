@@ -49,11 +49,18 @@ public class LabreucheModelTest {
 
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
 		assertTrue(mlm.lm.isApplicable(Anchor.NOA));
+		assertFalse(mlm.lm.isApplicable(Anchor.IVT));
+		assertFalse(mlm.lm.isApplicable(Anchor.RMGAVG));
+		assertFalse(mlm.lm.isApplicable(Anchor.RMGCOMP));
 		assertNotNull(lm.getExplanation());
 		assertNotNull(lm.arguer());
 
 		System.out.println(lm.arguer());
 	}
+	
+	
+	
+	
 
 	public ImmutableMap<Criterion, Double> computeWeights(Collection<Criterion> criteria, int value) {
 		Builder<Criterion, Double> builder = ImmutableMap.builder();

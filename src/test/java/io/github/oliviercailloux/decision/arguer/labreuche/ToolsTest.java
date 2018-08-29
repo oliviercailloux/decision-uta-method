@@ -28,8 +28,8 @@ public class ToolsTest {
 
 		setA.add((List<Criterion>) altsComp.getCriteria());
 		
-		assertFalse(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
-		assertTrue(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
 	}
 	
 	public AlternativesComparison newAlternativesComparison() {
