@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tonyseg/DebaTheoDeci.svg?branch=master)](https://travis-ci.org/tonyseg/DebaTheoDeci)
+image:https://travis-ci.org/tonyseg/DebaTheoDeci.svg?branch=master["Build Status", link="https://travis-ci.org/tonyseg/DebaTheoDeci"]
 
 # decision-uta-method
 A repository containing the work done during my research about UTA method (Internship at LAMSADE - Dauphine).
@@ -26,27 +26,6 @@ An improved version of the UTA is the UTASTAR. In UTA we used a single error in 
 In the internship-report, you will find a section that explain the UTA method, illustrated with an example. 
 
 # UTA Calculator - Criteria
-You should install the following jar file: com.google.ortools.jar and protobuf.jar. You can find them in the lib folder and execute the 2 following commands: 
-
-#### on windows
-```bash
-mvn install:install-file -Dfile=lib\com.google.ortools.jar -DgroupId=com.google.ortools -DartifactId=ortools -Dversion=2015.08 -Dpackaging=jar
-mvn install:install-file -Dfile=lib\protobuf.jar -DgroupId=protobuf -DartifactId=protobuf -Dversion=3.3.0 -Dpackaging=jar
-```
-
-After installing the 2 libraries, you should specify in the Eclipse the location of the Native Library Location. By going to the properties of the project > Java Build Path > Source Tabulation and Editing the location of Native library like the image below.
-<p align="center">
-  <img src="/docs/images/readme/Capture.PNG?raw=true" alt="step 1"/>
-</p>
-And then specify the location of the library folder by clicking on the External Folder button 
-<p align="center">
-  <img src="/docs/images/readme/Capture2.PNG?raw=true" alt="step 2"/>
-</p>
-And finally navigate through the repository and select the folder lib
-<p align="center">
-  <img src="/docs/images/readme/Capture3.PNG?raw=true" alt="step 3"/>
-</p>
-
 
 To build the class of this program, you should execute the following command: 
 #### on windows
@@ -110,8 +89,8 @@ For the ChoiceTransportation exercice, you should run the following commands :
 
 #### on windows
 ```bash
-javac -d objs -cp lib/com.google.ortools.jar;lib/protobuf.jar examples/ChoiceTransportation.java
-java -Djava.library.path=lib -cp objs;lib/com.google.ortools.jar com.lamsade.lp.ChoiceTransportation
+javac -d objs -cp examples/ChoiceTransportation.java
+java -Djava.library.path=lib -cp  com.lamsade.lp.ChoiceTransportation
 ```
 
 # Linear Program for the exercice Buying New Car [UTA]
@@ -119,7 +98,7 @@ For the exercice Buying New Car, you should run the following commands :
 
 #### on windows
 ```bash
-javac -d objs -cp lib/com.google.ortools.jar;lib/protobuf.jar examples/BuyingNewCar.java
-java -Djava.library.path=lib -cp objs;lib/com.google.ortools.jar com.lamsade.lp.BuyingNewCar
+javac -d objs -cp examples/BuyingNewCar.java
+java -Djava.library.path=lib -cp com.lamsade.lp.BuyingNewCar
 ```
 
