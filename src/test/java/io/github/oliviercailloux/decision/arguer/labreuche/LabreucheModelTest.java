@@ -32,9 +32,10 @@ public class LabreucheModelTest {
 
 		AlternativesComparison alts = mlm.lm.getAlternativesComparison();
 		log.info(" w = " + Tools.showVector(alts.getWeight().values()));
-		log.info(alts.getX().getName() + " = " + Tools.showVector(alts.getX().getEvaluations().values()) + " : " + Tools.score(alts.getX(),alts.getWeight()));
-		log.info(alts.getY().getName() + " = " + Tools.showVector(alts.getY().getEvaluations().values()) + " : " + Tools.score(alts.getY(),alts.getWeight()));
-
+		log.info(alts.getX().getName() + " = " + Tools.showVector(alts.getX().getEvaluations().values()) + " : "
+				+ Tools.score(alts.getX(), alts.getWeight()));
+		log.info(alts.getY().getName() + " = " + Tools.showVector(alts.getY().getEvaluations().values()) + " : "
+				+ Tools.score(alts.getY(), alts.getWeight()));
 
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
 		assertTrue(mlm.lm.isApplicable(Anchor.NOA));
@@ -46,7 +47,7 @@ public class LabreucheModelTest {
 
 		log.info(mlm.lm.arguer());
 	}
-	
+
 	public ImmutableMap<Criterion, Double> computeWeights(Collection<Criterion> criteria, int value) {
 		Builder<Criterion, Double> builder = ImmutableMap.builder();
 		double weight = value;

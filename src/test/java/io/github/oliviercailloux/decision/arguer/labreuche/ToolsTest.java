@@ -19,35 +19,35 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
 
 public class ToolsTest {
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	void testIncludeDiscri() {
 		AlternativesComparison altsComp = newAlternativesComparison();
-		
+
 		List<List<Criterion>> setA = new ArrayList<>();
 		List<List<Criterion>> setB = new ArrayList<>();
 
 		setA.add(toList(altsComp.getCriteria()));
-		
+
 		assertFalse(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
 		assertTrue(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertTrue(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));	
+		assertTrue(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
 	}
-	
+
 	@Test
 	void testIsCapEmpty() {
 		AlternativesComparison alts = newAlternativesComparison();
 
 		Iterator<Criterion> critIt = alts.getCriteria().iterator();
-		
+
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();
 		Criterion c3 = critIt.next();
 		Criterion c4 = critIt.next();
 		Criterion c5 = critIt.next();
 		Criterion c6 = critIt.next();
-		
+
 		List<Criterion> list1 = new ArrayList<>();
 		List<Criterion> list2 = new ArrayList<>();
 		List<List<Criterion>> list3 = new ArrayList<>();
@@ -64,17 +64,17 @@ public class ToolsTest {
 		list4.add(c4);
 		list5.add(c5);
 		list5.add(c6);
-		
+
 		assertFalse(Tools.isCapEmpty(list3, list4));
 		assertTrue(Tools.isCapEmpty(list3, list5));
 	}
-	
+
 	private List<Criterion> toList(ImmutableSet<Criterion> criteria) {
 		List<Criterion> l = new ArrayList<>();
-		
-		for(Criterion c : criteria)
+
+		for (Criterion c : criteria)
 			l.add(c);
-		
+
 		return l;
 	}
 
@@ -100,6 +100,4 @@ public class ToolsTest {
 		return builder.build();
 	}
 
-	
 }
-

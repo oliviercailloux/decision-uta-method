@@ -25,9 +25,9 @@ public class MainLabreucheModel {
 		System.out.println("Starting problmes!");
 
 		main.lm.getExplanation();
-		
+
 		System.out.println(main.lm.arguer());
-		
+
 		// main.lm5;
 		// main.lm6;
 		// main.lm9;
@@ -42,8 +42,8 @@ public class MainLabreucheModel {
 
 	public LabreucheModel generateProblems(int example) {
 		LabreucheModel labmod = null;
-		
-		if(example == 5) {
+
+		if (example == 5) {
 			// example 5 for NOA -> validate!
 			Double[] w5 = { 0.41, 0.06, 0.24, 0.29 };
 			Double[] x5 = { 0.42, 0.66, 0.66, 0.57 };
@@ -69,14 +69,13 @@ public class MainLabreucheModel {
 			Alternative x_5 = new Alternative(1, "X", x_perfEx5);
 			Alternative y_5 = new Alternative(2, "Y", y_perfEx5);
 			AlternativesComparison alts = new AlternativesComparison(x_5, y_5, weightsEx5);
-		
+
 			labmod = new LabreucheModel(alts);
 		}
 		/*
-		 * else { //example 6 for NOA -> validate!
-		 * Double[] w6 = {0.18, 0.11, 0.12, 0.24, 0.35}; 
-		 * Double[] x6 = {0.95, 0.67, 0.64, 0.27, 0.39}; 
-		 * Double[] y6 = {0.30, 0.37, 0.41, 0.94, 0.49};
+		 * else { //example 6 for NOA -> validate! Double[] w6 = {0.18, 0.11, 0.12,
+		 * 0.24, 0.35}; Double[] x6 = {0.95, 0.67, 0.64, 0.27, 0.39}; Double[] y6 =
+		 * {0.30, 0.37, 0.41, 0.94, 0.49};
 		 * 
 		 * // example 9 for IVT Double[] w9 = {0.06, 0.11, 0.21, 0.29, 0.33}; Double[]
 		 * x9 = {0.89, 0.03, 0.07, 0.32, 0.38}; Double[] y9 = {0.36, 0.76, 0.60, 0.25,
@@ -200,7 +199,7 @@ public class MainLabreucheModel {
 		 * LabreucheModel(x_end,y_end,weightsEx17); lm18 = new
 		 * LabreucheModel(x_end,y_end,weightsEx18); }
 		 */
-		
+
 		return labmod;
 	}
 }

@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -20,7 +21,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
+import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
+import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
@@ -36,15 +39,15 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class LabreucheModel {
 
 	/**
-	 * @param labreuchOutput equal null iff it is not initialized.
-	 * */
-	
+	 * @param labreuchOutput
+	 *            equal null iff it is not initialized.
+	 */
+
 	private AlternativesComparison alternativesComparison;
 	private double epsilon;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
 	private static final Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
-
 
 	public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
@@ -90,64 +93,70 @@ public class LabreucheModel {
 	 * @return the minimal set of permutation that inverse the decision between x
 	 *         and y.
 	 */
+
 	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
-		
+
 		logger.debug(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k = " + k);
 
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
 		List<List<Criterion>> f = new ArrayList<>();
-		
 
-		for (int i = k; i < this.setCIVT.size(); i++) { // L1
-			
-			logger.debug(k + " " + i + " T_i = " + Tools.showCriteria(this.setCIVT.get(i)) + " i = " + i);
-			logger.debug(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(this.setCIVT.get(i))
-							+ " empty  : " + Tools.isCapEmpty(a, this.setCIVT.get(i)));
+		for (int i = k; i < setCIVT.size(); i++) { // L1
 
-			if (Tools.isCapEmpty(a, this.setCIVT.get(i))) { // L2
+			logger.debug(k + " " + i + " T_i = " + Tools.showCriteria(setCIVT.get(i)) + " i = " + i);
+			logger.debug(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(setCIVT.get(i))
+					+ " empty  : " + Tools.isCapEmpty(a, setCIVT.get(i)));
+
+			if (Tools.isCapEmpty(a, setCIVT.get(i))) { // L2
 				Double sum = 0.0;
 
 				if (!a.isEmpty()) {
 					for (List<Criterion> l : a) {
-						sum += Tools
-								.d_eu(l, 5, this.alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						sum += Tools.d_eu(l, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 								.getLeft();
 					}
 				}
-				sum += Tools.d_eu(this.setCIVT.get(i), 5, this.alternativesComparison.getWeight(),
-						this.alternativesComparison.getDelta()).getLeft();
+				sum += Tools
+						.d_eu(setCIVT.get(i), 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						.getLeft();
 
-				Double hache = Tools.score(this.alternativesComparison.getX(), this.alternativesComparison.getWeight())
-						- Tools.score(this.alternativesComparison.getY(), this.alternativesComparison.getWeight());
-				
-				logger.debug(k +" " + i +" sum better than hache? "+sum +" >= "+ hache);
-				
+				Double hache = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
+						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+
+				logger.debug(k + " " + i + " sum better than hache? " + sum + " >= " + hache);
+
 				if (sum >= hache) { // L3
-					logger.debug(k+" " + i +" Adding to F"+ Tools.showCriteria(this.setCIVT.get(i)));
-					a_copy.add(this.setCIVT.get(i));
+					logger.debug(k + " " + i + " Adding to F" + Tools.showCriteria(setCIVT.get(i)));
+					a_copy.add(setCIVT.get(i));
 					f = new ArrayList<>(a_copy); // L4
 				} else { // L5
-					a_copy.add(this.setCIVT.get(i));
-					logger.debug(k+" " + i +" Calling algo_eu"+ Tools.showSet(a_copy)+" "+ Tools.showSet(b)+" , "+ (i+1));
+					a_copy.add(setCIVT.get(i));
+					logger.debug(k + " " + i + " Calling algo_eu" + Tools.showSet(a_copy) + " " + Tools.showSet(b)
+							+ " , " + (i + 1));
 					f = algoEU(a_copy, b_copy, (i + 1)); // L6
 
 				}
-				
-				logger.debug(k+" " + i +" Test for update :"+ !f.isEmpty() + " and [ "+ b_copy.isEmpty()+" or "+ Tools.includeDiscri(f,b,alternativesComparison.getWeight(),alternativesComparison.getDelta()) +" ]");
-				
+
+				logger.debug(k + " " + i + " Test for update :" + !f.isEmpty() + " and [ " + b_copy.isEmpty() + " or "
+						+ Tools.includeDiscri(f, b, alternativesComparison.getWeight(),
+								alternativesComparison.getDelta())
+						+ " ]");
+
 				if (!f.isEmpty() && (b_copy.isEmpty() || Tools.includeDiscri(f, b_copy,
-						this.alternativesComparison.getWeight(), this.alternativesComparison.getDelta()))) { // L8
-					logger.debug(k+" " + i +" UPDATE");
+						alternativesComparison.getWeight(), alternativesComparison.getDelta()))) { // L8
+					logger.debug(k + " " + i + " UPDATE");
 					b_copy = new ArrayList<>(f); // L8
 				}
-				
-				logger.debug(k + " " + i + " A" + Tools.showSet(a)); 
-				logger.debug(k+" " + i +" B" + Tools.showSet(b));
-				logger.debug(k+" " + i +" Test for return B :" + !b.isEmpty()+" and "+! Tools.includeDiscri(a_copy,b,alternativesComparison.getWeight(),alternativesComparison.getDelta()));
-				
-				if (!b_copy.isEmpty() && !Tools.includeDiscri(a_copy, b_copy, this.alternativesComparison.getWeight(),
-						this.alternativesComparison.getDelta())) { // L10
+
+				logger.debug(k + " " + i + " A" + Tools.showSet(a));
+				logger.debug(k + " " + i + " B" + Tools.showSet(b));
+				logger.debug(
+						k + " " + i + " Test for return B :" + !b.isEmpty() + " and " + !Tools.includeDiscri(a_copy, b,
+								alternativesComparison.getWeight(), alternativesComparison.getDelta()));
+
+				if (!b_copy.isEmpty() && !Tools.includeDiscri(a_copy, b_copy, alternativesComparison.getWeight(),
+						alternativesComparison.getDelta())) { // L10
 					return b_copy;
 				}
 			}
@@ -156,8 +165,8 @@ public class LabreucheModel {
 		}
 		List<List<Criterion>> empty = new ArrayList<>();
 
-		logger.debug("#### END ALGO EU : k = "+k);
-		
+		logger.debug("#### END ALGO EU : k = " + k);
+
 		return empty;
 	}
 
@@ -167,320 +176,259 @@ public class LabreucheModel {
 	 */
 
 	public LabreucheOutput getExplanation() {
-
 		if (labreucheOutput != null) {
 			return labreucheOutput;
 		}
+		return computeExplanation();
+	}
 
-		if (isApplicable(Anchor.ALL)) {
+	/**
+	 * @return the right explanation of the problem given in alternativesComparison.
+	 * @throws IllegalException
+	 *             if none anchors applicable This function can be called only if
+	 *             labreucheOutput is null.
+	 */
+	private LabreucheOutput computeExplanation() {
+		Preconditions.checkState(labreucheOutput == null);
+
+		if (tryALL()) {
 			return labreucheOutput;
 		}
-
-		logger.info("noa");
-		if (isApplicable(Anchor.NOA)) {
+		if (tryNOA()) {
 			return labreucheOutput;
 		}
-
-		logger.info("ivt");
-		if (isApplicable(Anchor.IVT)) {
+		if (tryIVT()) {
 			return labreucheOutput;
 		}
-
-		logger.info("rmgavg");
-		if (isApplicable(Anchor.RMGAVG)) {
+		if (tryRMGAVG()) {
 			return labreucheOutput;
 		}
-
-		logger.info("rmgcomp");
-		if (isApplicable(Anchor.RMGCOMP)) {
+		if (tryRMGCOMP()) {
 			return labreucheOutput;
 		}
+		throw new IllegalStateException();
+	}
 
-		return null;
+	private boolean tryALL() {
+		for (ImmutableMap.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
+			if (d.getValue() < 0.0) {
+				logger.info("ALL false");
+				return false;
+			}
+		}
+
+		logger.info("ALL true");
+		labreucheOutput = new ALLOutput(alternativesComparison);
+
+		return true;
+	}
+
+	private boolean tryNOA() {
+		if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
+				.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
+			logger.info("NOA false");
+			return false;
+		}
+
+		Map<Double, Criterion> temp = new HashMap<>();
+		Set<Criterion> setC = new LinkedHashSet<>();
+
+		for (Map.Entry<Criterion, Double> w_i : alternativesComparison.getWeight().entrySet()) {
+			temp.put((w_i.getValue() - 1.0 / alternativesComparison.getCriteria().size())
+					* alternativesComparison.getDelta().get(w_i.getKey()), w_i.getKey());
+		}
+
+		ArrayList<Double> keys = new ArrayList<>(temp.keySet());
+		Collections.sort(keys);
+
+		Map<Criterion, Double> wcomposed = Maps.newHashMap(alternativesComparison.getWeightReference());
+		int p = keys.size() - 1;
+		double scoreX = 0.0;
+		double scoreY = 0.0;
+
+		do {
+			wcomposed.put(temp.get(keys.get(p)), alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
+			setC.add(temp.get(keys.get(p)));
+
+			scoreX = Tools.score(alternativesComparison.getX(), wcomposed);
+			scoreY = Tools.score(alternativesComparison.getY(), wcomposed);
+
+			p--;
+		} while (scoreX < scoreY);
+
+		labreucheOutput = new NOAOutput(alternativesComparison, setC);
+
+		return true;
+
+	}
+
+	private boolean tryIVT() {
+		int size = 2;
+		List<List<Criterion>> subsets = new ArrayList<>();
+		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
+		List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo_eu calls
+		List<List<Criterion>> big_c = new ArrayList<>(); // result of algo_eu
+		Double d_eu = null;
+		List<Criterion> pi = new ArrayList<>();
+
+		logger.debug(
+				"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
+						+ " : " + Tools.showVector(alternativesComparison.getDelta().values()) + "\n");
+
+		do {
+			d_eu = null;
+			pi.clear();
+			big_a.clear();
+			big_b.clear();
+			big_c.clear();
+			subsets.clear();
+			setCIVT.clear();
+
+			subsets = Tools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
+
+			for (List<Criterion> subset : subsets) {
+				d_eu = Tools.d_eu(subset, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						.getLeft();
+				pi = Tools.pi_min(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
+					setCIVT.add(subset);
+				}
+
+				pi.clear();
+			}
+
+			setCIVT = Tools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+
+			logger.info("setCIVT : ");
+			for (List<Criterion> l : setCIVT)
+				logger.debug(Tools.showCriteria(l) + " "
+						+ Tools.d_eu(l, 0, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
+						+ Tools.d_eu(l, 1, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
+						+ Tools.d_eu(l, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
+						+ Tools.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
+								alternativesComparison.getDelta())));
+
+			big_c = algoEU(big_a, big_b, 0);
+			size++;
+
+		} while (big_c.isEmpty() && size <= alternativesComparison.getCriteria().size());
+
+		if (big_c.isEmpty()) {
+			logger.info("IVT false");
+			return false;
+		}
+
+		// Start to determine R*
+
+		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
+		List<Couple<Criterion, Criterion>> r_s;
+
+		logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
+
+		for (List<Criterion> l : big_c) {
+			r_s = Tools.couples_of(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+
+			for (Couple<Criterion, Criterion> cp : r_s) {
+				if (!cpls.contains(cp)) {
+					cpls.add(cp);
+				}
+			}
+
+			r_s = null;
+		}
+
+		ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
+
+		// R* determined
+
+		labreucheOutput = new IVTOutput(alternativesComparison, rStar, epsilon);
+
+		return true;
+	}
+
+	private boolean tryRMGAVG() {
+		double max_w = Double.MIN_VALUE;
+
+		for (Map.Entry<Criterion, Double> c : alternativesComparison.getWeight().entrySet()) {
+			double v = Math.abs(c.getValue() - (1.0 / alternativesComparison.getCriteria().size()));
+
+			if (v > max_w) {
+				max_w = v;
+			}
+		}
+
+		if (max_w <= epsilon) {
+			labreucheOutput = new RMGAVGOutput(alternativesComparison);
+
+			return true;
+		}
+
+		logger.info("RMGAVG false");
+
+		return false;
+	}
+
+	private boolean tryRMGCOMP() {
+		double max_w1 = Double.MIN_VALUE;
+
+		for (Map.Entry<Criterion, Double> c : alternativesComparison.getWeight().entrySet()) {
+			double v = Math.abs(c.getValue() - (1.0 / alternativesComparison.getCriteria().size()));
+
+			if (v > max_w1) {
+				max_w1 = v;
+			}
+		}
+
+		if (max_w1 > epsilon) {
+			labreucheOutput = new RMGCOMPOutput(alternativesComparison, epsilon);
+
+			return true;
+		}
+
+		logger.info("RMGCOMP false");
+
+		return false;
 	}
 
 	public boolean isApplicable(Anchor anchor) {
-		
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == anchor) {
-				return true;
-			}
-			return false;
+		getExplanation();
+
+		if (labreucheOutput.getAnchor() == anchor) {
+			return true;
 		}
-
-		switch (anchor) {
-
-		case ALL:
-			for (ImmutableMap.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
-				if (d.getValue() < 0.0) {
-					logger.info("ALL false");
-					return false;
-				}
-			}
-
-			logger.info("ALL true");
-			labreucheOutput = new ALLOutput(alternativesComparison);
-
-			return true;
-
-		case NOA:
-			if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
-					.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
-				logger.info("NOA false");
-				return false;
-			}
-
-			Map<Double, Criterion> temp = new HashMap<>();
-			Set<Criterion> setC = new LinkedHashSet<>();
-
-			for (Map.Entry<Criterion, Double> w_i : this.alternativesComparison.getWeight().entrySet()) {
-				temp.put((w_i.getValue() - 1.0 / this.alternativesComparison.getCriteria().size())
-						* this.alternativesComparison.getDelta().get(w_i.getKey()), w_i.getKey());
-			}
-
-			ArrayList<Double> keys = new ArrayList<>(temp.keySet());
-			Collections.sort(keys);
-
-			Map<Criterion, Double> wcomposed = Maps.newHashMap(alternativesComparison.getWeightReference());
-			int p = keys.size() - 1;
-			double scoreX = 0.0;
-			double scoreY = 0.0;
-
-			do {
-				wcomposed.put(temp.get(keys.get(p)),
-						this.alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
-				setC.add(temp.get(keys.get(p)));
-				
-				scoreX = Tools.score(this.alternativesComparison.getX(),wcomposed);
-				scoreY = Tools.score(this.alternativesComparison.getY(), wcomposed);
-				
-				p--;
-			} while (scoreX < scoreY);
-
-			labreucheOutput = new NOAOutput(this.alternativesComparison, setC);
-
-			return true;
-
-		case IVT:
-			int size = 2;
-			List<List<Criterion>> subsets = new ArrayList<>();
-			List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
-			List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo_eu calls
-			List<List<Criterion>> big_c = new ArrayList<>(); // result of algo_eu
-			Double d_eu = null;
-			List<Criterion> pi = new ArrayList<>();
-
-			logger.debug("Delta " + this.alternativesComparison.getX().getName() +
-			" > " + this.alternativesComparison.getY().getName() + " : "
-			+ Tools.showVector(alternativesComparison.getDelta().values()) + "\n");
-
-			do {
-				d_eu = null;
-				pi.clear();
-				big_a.clear();
-				big_b.clear();
-				big_c.clear();
-				subsets.clear();
-				this.setCIVT.clear();
-
-				subsets = Tools.allSubset(new ArrayList<>(this.alternativesComparison.getCriteria()));
-
-				for (List<Criterion> subset : subsets) {
-					d_eu = Tools.d_eu(subset, 5, this.alternativesComparison.getWeight(),
-							this.alternativesComparison.getDelta()).getLeft();
-					pi = Tools.pi_min(subset, this.alternativesComparison.getWeight(),
-							this.alternativesComparison.getDelta());
-					if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
-						this.setCIVT.add(subset);
-					}
-
-					pi.clear();
-				}
-
-				this.setCIVT = Tools.sortLexi(this.setCIVT, this.alternativesComparison.getWeight(),
-						alternativesComparison.getDelta());
-
-				logger.info("setCIVT : ");
-				for(List<Criterion> l : this.setCIVT)
-					logger.debug(Tools.showCriteria(l) + " " + Tools.d_eu(l,0,alternativesComparison.getWeight(),alternativesComparison.getDelta()) + " " +
-					Tools.d_eu(l,1,alternativesComparison.getWeight(),alternativesComparison.getDelta()) + " " + Tools.d_eu(l,5,alternativesComparison.getWeight(),alternativesComparison.getDelta()) + " " +
-					Tools.showCriteria(Tools.pi_min(l,alternativesComparison.getWeight(),alternativesComparison.getDelta())));
-
-				big_c = this.algoEU(big_a, big_b, 0);
-				size++;
-
-			} while (big_c.isEmpty() && size <= this.alternativesComparison.getCriteria().size());
-
-			if (big_c.isEmpty()) {
-				logger.info("IVT false");
-				return false;
-			}
-
-			// Start to determine R*
-
-			List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
-			List<Couple<Criterion, Criterion>> r_s = new ArrayList<>();
-
-			logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
-
-			for (List<Criterion> l : big_c) {
-				r_s = Tools.couples_of(l, this.alternativesComparison.getWeight(),
-						this.alternativesComparison.getDelta());
-
-				for (Couple<Criterion, Criterion> c : r_s) {
-					if (!cpls.contains(c)) {
-						cpls.add(c);
-					}
-				}
-
-				r_s.clear();
-			}
-
-			ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
-
-			// R* determined
-
-			labreucheOutput = new IVTOutput(this.alternativesComparison, rStar, this.epsilon);
-
-			return true;
-
-		case RMGAVG:
-			double max_w = Double.MIN_VALUE;
-
-			for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-				double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
-
-				if (v > max_w) {
-					max_w = v;
-				}
-			}
-
-			if (max_w <= this.epsilon) {
-				labreucheOutput = new RMGAVGOutput(this.alternativesComparison);
-
-				return true;
-			}
-			
-			logger.info("RMGAVG false");
-
-			return false;
-
-		case RMGCOMP:
-			double max_w1 = Double.MIN_VALUE;
-
-			for (Map.Entry<Criterion, Double> c : this.alternativesComparison.getWeight().entrySet()) {
-				double v = Math.abs(c.getValue() - (1.0 / this.alternativesComparison.getCriteria().size()));
-
-				if (v > max_w1) {
-					max_w1 = v;
-				}
-			}
-
-			if (max_w1 > this.epsilon) {
-				labreucheOutput = new RMGCOMPOutput(this.alternativesComparison, this.epsilon);
-
-				return true;
-			}
-
-			logger.info("RMGCOMP false");
-			
-			return false;
-
-		default:
-			logger.info("Anchor given unknown");
-			return false;
-		}
+		return false;
 	}
 
 	/**
-	 * @return elements of argumentation if the anchor ALL is applicable or throw
-	 *         IllegalStateException with a the message mess otherwise.
+	 * @param anchor
+	 *            : the type of Anchor explanation claimed
+	 * @throws IllegalArgumentException
+	 *             if anchor type is not the same a labreucheOutput value.
 	 */
+	private LabreucheOutput getCheckExplanation(Anchor ancrage) {
+		getExplanation();
+		Preconditions.checkState(labreucheOutput.getAnchor() == ancrage, "This anchor is not the one applicable");
+		return labreucheOutput;
+	}
+
 	public ALLOutput getALLExplanation() {
-		String mess = "This anchor is not the one applicable";
-
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == Anchor.ALL) {
-				return (ALLOutput) labreucheOutput;
-			}
-			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, mess);
-		}
-
-		Preconditions.checkState(isApplicable(Anchor.ALL), mess);
-		
-		return (ALLOutput) labreucheOutput;
+		return (ALLOutput) getCheckExplanation(Anchor.ALL);
 	}
 
-	/**
-	 * @return elements of argumentation if the anchor NOA is applicable or throw
-	 *         IllegalStateException with a the message mess otherwise.
-	 */
 	public NOAOutput getNOAExplanation() {
-		String message = "This anchor is not the one applicable";
-
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == Anchor.NOA) {
-				return (NOAOutput) labreucheOutput;
-			}
-			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
-		}
-
-		Preconditions.checkState(isApplicable(Anchor.NOA), message);
-		return (NOAOutput) labreucheOutput;
+		return (NOAOutput) getCheckExplanation(Anchor.NOA);
 	}
 
-	/**
-	 * @return elements of argumentation if the anchor IVT is applicable or throw
-	 *         IllegalStateException with a the message mess otherwise.
-	 */
 	public IVTOutput getIVTExplanation() {
-		String message = "This anchor is not the one applicable";
-
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == Anchor.IVT) {
-				return (IVTOutput) labreucheOutput;
-			}
-			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
-		}
-
-		Preconditions.checkState(isApplicable(Anchor.IVT), message);
-		return (IVTOutput) labreucheOutput;
+		return (IVTOutput) getCheckExplanation(Anchor.IVT);
 	}
 
-	/**
-	 * @return elements of argumentation if the anchor RMGAVG is applicable or throw
-	 *         IllegalStateException with a the message mess otherwise.
-	 */
 	public RMGAVGOutput getRMGAVGExplanation() {
-		String message = "This anchor is not the one applicable";
-
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == Anchor.RMGAVG) {
-				return (RMGAVGOutput) labreucheOutput;
-			}
-			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
-		}
-
-		Preconditions.checkState(isApplicable(Anchor.RMGAVG), message);
-		return (RMGAVGOutput) labreucheOutput;
+		return (RMGAVGOutput) getCheckExplanation(Anchor.RMGAVG);
 	}
 
-	/**
-	 * @return elements of argumentation if the anchor RMGCOMP is applicable or
-	 *         throw IllegalStateException with a the message mess otherwise.
-	 */
 	public RMGCOMPOutput getRMGCOMPExplanation() {
-		String message = "This anchor is not the one applicable";
-
-		if (labreucheOutput != null) {
-			if (labreucheOutput.getAnchor() == Anchor.RMGCOMP) {
-				return (RMGCOMPOutput) labreucheOutput;
-			}
-			Preconditions.checkState(labreucheOutput.getAnchor() == Anchor.ALL, message);
-		}
-
-		Preconditions.checkState(isApplicable(Anchor.RMGCOMP), message);
-		return (RMGCOMPOutput) labreucheOutput;
+		return (RMGCOMPOutput) getCheckExplanation(Anchor.RMGCOMP);
 	}
 
 	public String arguer() {
@@ -607,7 +555,6 @@ public class LabreucheModel {
 			return "No possible argumentation found";
 		}
 	}
-	
 
 	public void showProblem() {
 
@@ -620,30 +567,36 @@ public class LabreucheModel {
 		display += "\n    Criteria    <-   Weight : \n";
 
 		for (Criterion c : alternativesComparison.getWeight().keySet())
-			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + alternativesComparison.getWeight().get(c);
+			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = "
+					+ alternativesComparison.getWeight().get(c);
 
 		display += "\n \n Alternatives : ";
 
-		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : " + Tools.displayAsVector(alternativesComparison.getX());
-		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : " + Tools.displayAsVector(alternativesComparison.getY());
+		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
+				+ Tools.showVector(alternativesComparison.getX().getEvaluations().values());
+		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
+				+ Tools.showVector(alternativesComparison.getY().getEvaluations().values());
 
 		display += "\n" + "			Alternatives ranked";
-		display += "\n" + alternativesComparison.getX().getName() + " = " + Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight());
-		display += "\n" + alternativesComparison.getY().getName() + " = " + Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+		display += "\n" + alternativesComparison.getX().getName() + " = "
+				+ Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight());
+		display += "\n" + alternativesComparison.getY().getName() + " = "
+				+ Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
 
-		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than " + alternativesComparison.getY().getName() + " :";
+		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "
+				+ alternativesComparison.getY().getName() + " :";
 
 		logger.info(display);
 	}
-	
+
 	public void solvesProblem() {
 		showProblem();
-		
+
 		@SuppressWarnings("unused")
 		LabreucheOutput lo = getExplanation();
-		
+
 		String c = arguer();
-		
+
 		logger.info(c);
 	}
 

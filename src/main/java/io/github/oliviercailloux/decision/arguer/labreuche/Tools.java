@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
@@ -23,7 +25,7 @@ import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Tools {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(Tools.class);
 
 	static Double score(Alternative x, Map<Criterion, Double> w) {
@@ -102,8 +104,7 @@ public class Tools {
 
 	static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, int flag, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-		
-		
+
 		double first_part = 0.0;
 
 		if (subset.isEmpty())
@@ -121,7 +122,8 @@ public class Tools {
 
 		Double result = first_part - min_part;
 
-		logger.debug("Calling d_eu for "+ showCriteria(subset) +" : "+ first_part +" - "+ min_part +" = " + result + " pi best : "+showCriteria(best_min_pi) );
+		logger.debug("Calling d_eu for " + showCriteria(subset) + " : " + first_part + " - " + min_part + " = " + result
+				+ " pi best : " + showCriteria(best_min_pi));
 
 		if (flag == 0)
 			return new Couple<>(first_part, best_min_pi);
@@ -148,7 +150,7 @@ public class Tools {
 			for (Criterion c : subset)
 				sum += delta.get(c) * w_modified.get(c);
 
-			logger.debug("Current Min part of "+ showCriteria(pi) + " = " + sum);
+			logger.debug("Current Min part of " + showCriteria(pi) + " = " + sum);
 
 			if (sum < min_pi_value) {
 				min_pi_value = sum;
@@ -159,8 +161,9 @@ public class Tools {
 			// w_modified = new LinkedHashMap<Criterion,Double>(this.weights);
 		}
 
-		logger.debug("Calling pi_min for " + showCriteria(subset) +" pi_min returned : " + showCriteria(min_pi) + " = " + min_pi_value);
-		
+		logger.debug("Calling pi_min for " + showCriteria(subset) + " pi_min returned : " + showCriteria(min_pi) + " = "
+				+ min_pi_value);
+
 		return min_pi;
 	}
 
@@ -201,27 +204,27 @@ public class Tools {
 
 				for (List<Criterion> subset : copy_subsets) {
 					logger.debug("######## changing subset ###########");
-					
+
 					int born_sup = set.indexOf(subset.get(subset.size() - 1));
 
 					logger.debug(" subset " + showCriteria(subset));
-					logger.debug(" last element " + subset.get(subset.size()-1));
+					logger.debug(" last element " + subset.get(subset.size() - 1));
 					logger.debug(" born sup " + born_sup);
 
 					logger.debug(" before " + showCriteria(set_light));
 					logger.debug("set : " + showCriteria(set));
-					logger.debug(" sublist " + showCriteria(set.subList(0,born_sup +1)));
+					logger.debug(" sublist " + showCriteria(set.subList(0, born_sup + 1)));
 					// set_light.removeAll(subset);
-					
+
 					set_light.removeAll(set.subList(0, born_sup + 1));
-					
+
 					logger.debug(" after " + showCriteria(set_light));
 
 					if (set_light.size() >= 1) {
 						for (Criterion c : set_light) {
 							new_subset = add(subset, c);
 							subsets.add(new_subset);
-							
+
 							logger.debug("adding subset " + showCriteria(new_subset));
 						}
 						subsets.remove(subset);
@@ -253,8 +256,8 @@ public class Tools {
 	}
 
 	/*
-	 * * * * * * * * * * * * * * * * * * * * * * * Methods used by IVT anchors * * *
-	 * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * Methods used by IVT anchors * * * * * * * * * * * *
+	 * * * *
 	 */
 
 	// return true if the intersection of "list_l" and "l" is empty, and false
@@ -263,11 +266,11 @@ public class Tools {
 		if (list_l.isEmpty()) {
 			return true;
 		}
-		
+
 		if (l.isEmpty()) {
 			return true;
 		}
-		
+
 		List<Criterion> union_l = new ArrayList<>();
 
 		for (List<Criterion> list : list_l) {
@@ -297,26 +300,26 @@ public class Tools {
 		Map<Double, List<Criterion>> rankedSameSize = new HashMap<>();
 
 		while (!list.isEmpty()) {
-			logger.debug("Size of list = "+ list.size());
+			logger.debug("Size of list = " + list.size());
 
 			for (List<Criterion> l : list) {
 				if (l.size() < min_size)
 					min_size = l.size();
 			}
 
-			logger.debug("Size min find : "+ min_size);
+			logger.debug("Size min find : " + min_size);
 
 			for (List<Criterion> min_size_l : list) {
 				if (min_size_l.size() == min_size)
 					tmp.add(min_size_l);
 			}
 
-			logger.debug("Size of tmp = "+ tmp.size());
+			logger.debug("Size of tmp = " + tmp.size());
 
 			for (List<Criterion> l2 : tmp) {
-				
-				logger.info("set "+ showCriteria(l2)+" d_eu = "+d_eu(l2,1,w,delta));
-				
+
+				logger.info("set " + showCriteria(l2) + " d_eu = " + d_eu(l2, 1, w, delta));
+
 				rankedSameSize.put(d_eu(l2, 5, w, delta).getLeft(), l2);
 			}
 
@@ -324,7 +327,7 @@ public class Tools {
 			Collections.sort(keys);
 			Collections.reverse(keys);
 
-			logger.debug("Size of keys = "+ keys.size());
+			logger.debug("Size of keys = " + keys.size());
 
 			for (int i = 0; i < keys.size(); i++) {
 				if (!sorted.contains(rankedSameSize.get(keys.get(i))))
@@ -334,8 +337,8 @@ public class Tools {
 			for (List<Criterion> delete : tmp)
 				list.remove(delete);
 
-			logger.debug("Size of List after remove = "+ list.size());
-			
+			logger.debug("Size of List after remove = " + list.size());
+
 			rankedSameSize.clear();
 			tmp.clear();
 			min_size = Integer.MAX_VALUE;
@@ -427,28 +430,31 @@ public class Tools {
 	}
 
 	/*
-	 * * * * * * * * * * * * * * * * Methods for building * R* used in IVT anchor *
-	 * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * Methods for building * R* used in IVT anchor * * * * * *
+	 * * * * *
 	 */
 
 	static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-		List<Couple<Criterion, Criterion>> cpl = new ArrayList<>();
+
+		List<Couple<Criterion, Criterion>> result = new ArrayList<>();
 
 		for (Criterion c1 : l) {
 			for (Criterion c2 : l) {
 				if (!c1.equals(c2)) {
 					if (delta.get(c1) < delta.get(c2) && w.get(c1) < w.get(c2)) {
-						cpl.add(new Couple<>(c1, c2));
+
+						result.add(new Couple<>(c1, c2));
 					}
 				}
 			}
 		}
-		return cpl;
+		return result;
 	}
 
 	static List<Couple<Criterion, Criterion>> r_top(List<Couple<Criterion, Criterion>> list_c) {
 		boolean change_flag = false; // -> list_c have a new couple added, falg = true;
+
 		List<Couple<Criterion, Criterion>> copy = new ArrayList<>(list_c);
 		List<Couple<Criterion, Criterion>> light = new ArrayList<>(); // -> used to avoid to check the same couples
 		Couple<Criterion, Criterion> tmp = null;
@@ -489,7 +495,7 @@ public class Tools {
 	}
 
 	static ImmutableGraph<Criterion> buildRStar(List<Couple<Criterion, Criterion>> cpls) {
-		List<List<Couple<Criterion, Criterion>>> subsets = allSubsetCouple(cpls);
+		Set<List<Couple<Criterion, Criterion>>> subsets = allSubsetCouple(cpls);
 		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 
 		List<Couple<Criterion, Criterion>> tmp_top;
@@ -507,8 +513,8 @@ public class Tools {
 		return ImmutableGraph.copyOf(result);
 	}
 
-	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set, int size) {
-		List<List<Couple<Criterion, Criterion>>> subsets = new ArrayList<>();
+	static Set<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set, int size) {
+		Set<List<Couple<Criterion, Criterion>>> subsets = new LinkedHashSet<>();
 		for (int i = 0; i < size; i++) {
 			if (i == 0) {
 				List<Couple<Criterion, Criterion>> singleton;
@@ -543,12 +549,13 @@ public class Tools {
 		return subsets;
 	}
 
-	static List<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set) {
-		List<List<Couple<Criterion, Criterion>>> result = new ArrayList<>();
-		List<List<Couple<Criterion, Criterion>>> tmp;
+	static Set<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> cpls) {
+		Set<List<Couple<Criterion, Criterion>>> result = new LinkedHashSet<>();
 
-		for (int i = 1; i <= set.size(); i++) {
-			tmp = allSubsetCouple(set, i);
+		Set<List<Couple<Criterion, Criterion>>> tmp;
+
+		for (int i = 1; i <= cpls.size(); i++) {
+			tmp = allSubsetCouple(cpls, i);
 
 			for (List<Couple<Criterion, Criterion>> l : tmp)
 				result.add(l);
@@ -565,19 +572,10 @@ public class Tools {
 	}
 
 	/*
-	 * * * * * * * * * * * * * * * * * * * * Used to show properly sets of *
-	 * criteria or Couple of criteria * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * Used to show properly sets of * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * * criteria or Couple of criteria * * *
+	 * * * * * * * * * * * * *
 	 */
-
-	public static String displayAsVector(Alternative a) {
-
-		String vectorPerf = "( ";
-
-		for (Map.Entry<Criterion, Double> perf : a.getEvaluations().entrySet())
-			vectorPerf += " " + perf.getValue() + " ";
-
-		return vectorPerf + " )";
-	}
 
 	public static String showVector(Collection<Double> collect) {
 		String show2 = "( ";
@@ -588,7 +586,7 @@ public class Tools {
 		}
 		show2 += " )";
 
-		return  show2;
+		return show2;
 	}
 
 	public static String showCriteria(Collection<Criterion> collect) {
@@ -604,45 +602,11 @@ public class Tools {
 	public static String showSet(List<List<Criterion>> big_a) {
 		String str = "{ ";
 
-		for (List<Criterion> l : big_a)
+		for (Collection<Criterion> l : big_a)
 			str += showCriteria(l) + " ";
 
 		str += " }";
 
 		return str;
 	}
-
-	public static String showSet(Set<Set<Criterion>> big_a) {
-		String str = "{ ";
-
-		for (Set<Criterion> l : big_a)
-			str += showCriteria(l) + " ";
-
-		str += "}";
-
-		return str;
-	}
-
-	public static String showCouples(List<Couple<Criterion, Criterion>> cpls) {
-		String string = "{ ";
-
-		for (Couple<Criterion, Criterion> c : cpls)
-			string += "(" + c.getLeft().getName() + "," + c.getRight().getName() + ") ";
-
-		string += " }";
-
-		return string;
-	}
-
-	public static String showGraph(ImmutableGraph<Criterion> graph) {
-		String res = "{ ";
-
-		for (Criterion c : graph.nodes())
-			res += c.getName() + " ";
-
-		res += "}";
-
-		return res;
-	}
-
 }
