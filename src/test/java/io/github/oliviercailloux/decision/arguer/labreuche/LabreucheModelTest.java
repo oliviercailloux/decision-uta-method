@@ -31,9 +31,9 @@ public class LabreucheModelTest {
 		MainLabreucheModel mlm = new MainLabreucheModel();
 
 		AlternativesComparison alts = mlm.lm.getAlternativesComparison();
-		log.info(" w = " + Tools.showVector(alts.getWeight()));
-		log.info(alts.getX().getName() + " = " + Tools.showVector(alts.getX().getEvaluations()) + " : " + Tools.score(alts.getX(),alts.getWeight()));
-		log.info(alts.getY().getName() + " = " + Tools.showVector(alts.getY().getEvaluations()) + " : " + Tools.score(alts.getY(),alts.getWeight()));
+		log.info(" w = " + Tools.showVector(alts.getWeight().values()));
+		log.info(alts.getX().getName() + " = " + Tools.showVector(alts.getX().getEvaluations().values()) + " : " + Tools.score(alts.getX(),alts.getWeight()));
+		log.info(alts.getY().getName() + " = " + Tools.showVector(alts.getY().getEvaluations().values()) + " : " + Tools.score(alts.getY(),alts.getWeight()));
 
 
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
