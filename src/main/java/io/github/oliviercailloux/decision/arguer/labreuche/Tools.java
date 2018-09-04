@@ -3,6 +3,7 @@ package io.github.oliviercailloux.decision.arguer.labreuche;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,8 +23,6 @@ import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Tools {
-
-	private Logger logger = LoggerFactory.getLogger(Tools.class);
 
 	static Double score(Alternative x, Map<Criterion, Double> w) {
 		Double score = 0.0;
@@ -573,35 +572,22 @@ public class Tools {
 		return vectorPerf + " )";
 	}
 
-	public static String showVector(Map<Criterion, Double> v) {
+	public static String showVector(Collection<Double> collect) {
 		String show2 = "( ";
 
-		for (Map.Entry<Criterion, Double> c : v.entrySet()) {
-			Double c_scaled = BigDecimal.valueOf(c.getValue()).setScale(3, RoundingMode.HALF_UP).doubleValue();
+		for (Double c : collect) {
+			Double c_scaled = BigDecimal.valueOf(c).setScale(3, RoundingMode.HALF_UP).doubleValue();
 			show2 += c_scaled + " ";
 		}
 		show2 += " )";
 
-		return "  " + show2;
+		return  show2;
 	}
 
-	public static String showCriteria(List<Criterion> c) {
+	public static String showCriteria(Collection<Criterion> collect) {
 		String show = "{ ";
 
-		for (int i = 0; i < c.size(); i++) {
-			if (i == c.size() - 1)
-				show += c.get(i).getName();
-			else
-				show += c.get(i).getName() + ", ";
-		}
-
-		return show + " }";
-	}
-
-	public static String showCriteria(Set<Criterion> s) {
-		String show = "{ ";
-
-		for (Criterion c : s) {
+		for (Criterion c : collect) {
 			show += c.getName() + " ";
 		}
 

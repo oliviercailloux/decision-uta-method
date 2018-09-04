@@ -25,7 +25,6 @@ public class AlternativesComparison {
 	private ImmutableMap<Criterion, Double> weights;
 	private Alternative x;
 	private Alternative y;
-	private Logger logger;
 
 	/**
 	 * The parameters must be such that x and y do not have the same evaluation.
@@ -40,7 +39,6 @@ public class AlternativesComparison {
 		this.weights = ImmutableMap.copyOf(requireNonNull(weights));
 		/** TODO check that value ≠. */
 		assert !weights.isEmpty();
-		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
 
 		(this).reorderXY();
 	}
@@ -124,33 +122,6 @@ public class AlternativesComparison {
 		}
 
 		return weightsReference.build();
-	}
-
-	public void showProblem() {
-
-		String display = "****************************************************************";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "*         Recommender system based on Labreuche Model          *";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "****************************************************************" + "\n";
-
-		display += "\n    Criteria    <-   Weight : \n";
-
-		for (Criterion c : this.weights.keySet())
-			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + this.weights.get(c);
-
-		display += "\n \n Alternatives : ";
-
-		display += "\n" + "	" + this.x.getName() + " " + " : " + Tools.displayAsVector(this.x);
-		display += "\n" + "	" + this.y.getName() + " " + " : " + Tools.displayAsVector(this.y);
-
-		display += "\n" + "			Alternatives ranked";
-		display += "\n" + x.getName() + " = " + Tools.score(x, weights);
-		display += "\n" + y.getName() + " = " + Tools.score(y, weights);
-
-		display = "Explanation why " + this.x.getName() + " is better than " + this.y.getName() + " :";
-
-		logger.info(display);
 	}
 
 }

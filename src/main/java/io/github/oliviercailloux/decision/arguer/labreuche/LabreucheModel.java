@@ -43,16 +43,15 @@ public class LabreucheModel {
 	private double epsilon;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
+
 
 	public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 
 		this.setCIVT = new ArrayList<>();
 		this.epsilon = 0.2 / this.alternativesComparison.getWeight().keySet().size();
-
 		this.labreucheOutput = null;
-		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
 	}
 
 	public LabreucheModel(AlternativesComparison alternativesComparaison, double epsilon) {
@@ -60,9 +59,7 @@ public class LabreucheModel {
 		this.epsilon = requireNonNull(epsilon);
 
 		this.setCIVT = new ArrayList<>();
-
 		this.labreucheOutput = null;
-		this.logger = LoggerFactory.getLogger(LabreucheModel.class);
 	}
 
 	/***************************************************************************************
@@ -100,6 +97,7 @@ public class LabreucheModel {
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
 		List<List<Criterion>> f = new ArrayList<>();
+		
 
 		for (int i = k; i < this.setCIVT.size(); i++) { // L1
 			logger.info(k + " " + i + " T_i = " + Tools.showCriteria(this.setCIVT.get(i)) + " i = " + i);
@@ -201,7 +199,7 @@ public class LabreucheModel {
 	}
 
 	public boolean isApplicable(Anchor anchor) {
-
+		
 		if (labreucheOutput != null) {
 			if (labreucheOutput.getAnchor() == anchor) {
 				return true;
@@ -408,6 +406,7 @@ public class LabreucheModel {
 		}
 
 		Preconditions.checkState(isApplicable(Anchor.ALL), mess);
+		
 		return (ALLOutput) labreucheOutput;
 	}
 
@@ -606,6 +605,45 @@ public class LabreucheModel {
 		default:
 			return "No possible argumentation found";
 		}
+	}
+	
+
+	public void showProblem() {
+
+		String display = "****************************************************************";
+		display += "\n" + "*                                                              *";
+		display += "\n" + "*         Recommender system based on Labreuche Model          *";
+		display += "\n" + "*                                                              *";
+		display += "\n" + "****************************************************************" + "\n";
+
+		display += "\n    Criteria    <-   Weight : \n";
+
+		for (Criterion c : alternativesComparison.getWeight().keySet())
+			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + alternativesComparison.getWeight().get(c);
+
+		display += "\n \n Alternatives : ";
+
+		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : " + Tools.displayAsVector(alternativesComparison.getX());
+		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : " + Tools.displayAsVector(alternativesComparison.getY());
+
+		display += "\n" + "			Alternatives ranked";
+		display += "\n" + alternativesComparison.getX().getName() + " = " + Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight());
+		display += "\n" + alternativesComparison.getY().getName() + " = " + Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+
+		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than " + alternativesComparison.getY().getName() + " :";
+
+		logger.info(display);
+	}
+	
+	public void solvesProblem() {
+		showProblem();
+		
+		@SuppressWarnings("unused")
+		LabreucheOutput lo = getExplanation();
+		
+		String c = arguer();
+		
+		logger.info(c);
 	}
 
 }
