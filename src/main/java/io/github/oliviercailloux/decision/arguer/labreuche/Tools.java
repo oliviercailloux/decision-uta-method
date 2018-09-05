@@ -11,7 +11,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.graph.EndpointPair;
+import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.Graphs;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
@@ -418,83 +421,75 @@ public class Tools {
 		return result;
 	}
 
-	/*
-	 * * * * * * * * * * * Methods for building * R* used in IVT anchor * * * * * *
-	 * * * * *
-	 */
-
-	static List<Couple<Criterion, Criterion>> couples_of(List<Criterion> l, Map<Criterion, Double> w,
+	/* * * * * * * * * * Methods for build R Star used in IVT anchor * * * * * */
+	
+	static ImmutableGraph<Criterion> couples_ofG(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-
-		List<Couple<Criterion, Criterion>> result = new ArrayList<>();
+		
+		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 
 		for (Criterion c1 : l) {
 			for (Criterion c2 : l) {
 				if (!c1.equals(c2)) {
 					if (delta.get(c1) < delta.get(c2) && w.get(c1) < w.get(c2)) {
-
-						result.add(new Couple<>(c1, c2));
+						result.putEdge(c1, c2);
 					}
 				}
 			}
 		}
-		return result;
+		return ImmutableGraph.copyOf(result);
 	}
-
-	static List<Couple<Criterion, Criterion>> r_top(List<Couple<Criterion, Criterion>> list_c) {
+	
+	static ImmutableGraph<Criterion> r_topG(Graph<Criterion> graph) {
 		boolean change_flag = false; // -> list_c have a new couple added, falg = true;
 
-		List<Couple<Criterion, Criterion>> copy = new ArrayList<>(list_c);
-		List<Couple<Criterion, Criterion>> light = new ArrayList<>(); // -> used to avoid to check the same couples
-		Couple<Criterion, Criterion> tmp = null;
+		MutableGraph<Criterion> copy = Graphs.copyOf(graph);
+		MutableGraph<Criterion> light; // -> used to avoid to check the same couples
 
 		do {
 			change_flag = false;
 
 			// c1 = (a b)
-			for (Couple<Criterion, Criterion> c1 : copy) {
-				light = new ArrayList<>(copy);
-				light.remove(c1);
+			for (EndpointPair<Criterion> c1 : copy.edges()) {
+				light = Graphs.copyOf(copy);
+				light.removeEdge(c1.nodeU(), c1.nodeV());
 
 				// c2 = (c d)
-				for (Couple<Criterion, Criterion> c2 : light) {
+				for (EndpointPair<Criterion> c2 : light.edges()) {
 					// (a b) , (c d) => b=c and a!=d
-					if (c1.getRight().equals(c2.getLeft()) && !c1.getLeft().equals(c2.getRight())) {
-						tmp = new Couple<>(c1.getLeft(), c2.getRight());
-						if (!copy.contains(tmp)) {
-							copy.add(tmp);
+					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())) {
+						if (!copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
+							copy.putEdge(c1.nodeU(),  c2.nodeV());
 							change_flag = true;
 						}
 					}
 					// (c d) , (a b) => a=d and b!=d
-					if (c1.getLeft().equals(c2.getRight()) && !c1.getRight().equals(c2.getLeft())) {
-						tmp = new Couple<>(c1.getRight(), c2.getLeft());
-						if (!copy.contains(tmp)) {
-							copy.add(tmp);
+					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU())) {
+						if (!copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
+							copy.putEdge(c1.nodeV(), c2.nodeU());
 							change_flag = true;
 						}
 					}
 				}
 			}
-			light.clear();
 
 		} while (change_flag);
 
-		return copy;
+		return ImmutableGraph.copyOf(copy);
 	}
 
-	static ImmutableGraph<Criterion> buildRStar(List<Couple<Criterion, Criterion>> cpls) {
-		Set<List<Couple<Criterion, Criterion>>> subsets = allSubsetCouple(cpls);
+	static ImmutableGraph<Criterion> buildRStarG(Graph<Criterion> cpls) {
+		Set<ImmutableGraph<Criterion>> subsets = allSubsetCoupleG(cpls);
 		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 
-		List<Couple<Criterion, Criterion>> tmp_top;
+		ImmutableGraph<Criterion> tmp_top;
 
-		for (List<Couple<Criterion, Criterion>> c_list : subsets) {
-			tmp_top = r_top(c_list);
+		for (ImmutableGraph<Criterion> c_list : subsets) {
+			tmp_top = r_topG(c_list);
 
 			if (tmp_top.equals(c_list)) {
-				for (Couple<Criterion, Criterion> c : c_list) {
-					result.putEdge(c.getLeft(), c.getRight());
+				for (EndpointPair<Criterion> c : c_list.edges()) {
+					result.putEdge(c.nodeU(), c.nodeV());
 				}
 			}
 		}
@@ -502,62 +497,75 @@ public class Tools {
 		return ImmutableGraph.copyOf(result);
 	}
 
-	static Set<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> set, int size) {
-		Set<List<Couple<Criterion, Criterion>>> subsets = new LinkedHashSet<>();
+	static Set<ImmutableGraph<Criterion>> allSubsetCoupleG(Graph<Criterion> set, int size) {
+		Set<MutableGraph<Criterion>> subsets = new LinkedHashSet<>();
 		for (int i = 0; i < size; i++) {
 			if (i == 0) {
-				List<Couple<Criterion, Criterion>> singleton;
+				MutableGraph<Criterion> singleton;
 
-				for (int j = 0; j < set.size(); j++) {
-					singleton = new ArrayList<>();
-					singleton.add(set.get(j));
+				for (EndpointPair<Criterion> edge : set.edges()) {
+					singleton = GraphBuilder.directed().build();
+					singleton.putEdge(edge.nodeU(), edge.nodeV());
 					subsets.add(singleton);
 				}
+				
 			} else {
-				List<List<Couple<Criterion, Criterion>>> copy_subsets = new ArrayList<>(subsets);
-				List<Couple<Criterion, Criterion>> new_subset = new ArrayList<>();
-				List<Couple<Criterion, Criterion>> set_light = new ArrayList<>(set);
+				
+				
+				Set<MutableGraph<Criterion>> copy_subsets = new LinkedHashSet<>(subsets);
+				MutableGraph<Criterion> new_subset = GraphBuilder.directed().build();
+				MutableGraph<Criterion> set_light = Graphs.copyOf(set);
 
-				for (List<Couple<Criterion, Criterion>> subset : copy_subsets) {
-					int born_sup = set.indexOf(subset.get(subset.size() - 1));
-					set_light.removeAll(set.subList(0, born_sup + 1));
-
-					if (set_light.size() >= 1) {
-						for (Couple<Criterion, Criterion> c : set_light) {
-							new_subset = addCouple(subset, c);
+				for (MutableGraph<Criterion> subset : copy_subsets) {
+					
+					for(EndpointPair<Criterion> edge : subset.edges()) {
+						set_light.removeEdge(edge.nodeU(), edge.nodeV());
+					}
+					
+					if (set_light.edges().size() >= 1) {
+						for (EndpointPair<Criterion> c : set_light.edges()) {
+							new_subset = addCoupleG(subset, c);
 							subsets.add(new_subset);
 						}
 						subsets.remove(subset);
 					}
 					subsets.remove(subset);
-					set_light.addAll(set.subList(0, born_sup + 1));
+					
+					for(EndpointPair<Criterion> edge : subset.edges())
+						set_light.putEdge(edge.nodeU(), edge.nodeV());
 				}
 			}
 		}
+		
+		Set<ImmutableGraph<Criterion>> result = new LinkedHashSet<>();
+		
+		for(MutableGraph<Criterion> g : subsets) {
+			result.add(ImmutableGraph.copyOf(g));
+		}
 
-		return subsets;
+		return result;
 	}
+	
+	static Set<ImmutableGraph<Criterion>> allSubsetCoupleG(Graph<Criterion> cpls) {
+		Set<ImmutableGraph<Criterion>> result = new LinkedHashSet<>();
 
-	static Set<List<Couple<Criterion, Criterion>>> allSubsetCouple(List<Couple<Criterion, Criterion>> cpls) {
-		Set<List<Couple<Criterion, Criterion>>> result = new LinkedHashSet<>();
+		Set<ImmutableGraph<Criterion>> tmp;
 
-		Set<List<Couple<Criterion, Criterion>>> tmp;
+		for (int i = 1; i <= cpls.edges().size(); i++) {
+			tmp = allSubsetCoupleG(cpls, i);
 
-		for (int i = 1; i <= cpls.size(); i++) {
-			tmp = allSubsetCouple(cpls, i);
-
-			for (List<Couple<Criterion, Criterion>> l : tmp)
-				result.add(l);
+			for (ImmutableGraph<Criterion> g : tmp)
+				result.add(g);
 		}
 
 		return result;
 	}
 
-	static List<Couple<Criterion, Criterion>> addCouple(List<Couple<Criterion, Criterion>> l,
-			Couple<Criterion, Criterion> c) {
-		List<Couple<Criterion, Criterion>> new_l = new ArrayList<>(l);
-		new_l.add(c);
-		return new_l;
+	static MutableGraph<Criterion> addCoupleG(Graph<Criterion> graph, EndpointPair<Criterion> edge) {
+		MutableGraph<Criterion> new_graph = Graphs.copyOf(graph);
+		new_graph.putEdge(edge.nodeU(), edge.nodeV());
+		
+		return new_graph;
 	}
 
 }

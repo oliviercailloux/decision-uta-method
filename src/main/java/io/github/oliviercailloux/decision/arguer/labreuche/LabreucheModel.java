@@ -17,7 +17,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
+import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
+import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
@@ -315,25 +317,23 @@ public class LabreucheModel {
 		}
 
 		// Start to determine R*
-
-		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
-		List<Couple<Criterion, Criterion>> r_s;
+		
+		MutableGraph<Criterion> cpls = GraphBuilder.directed().build();
+		ImmutableGraph<Criterion> r_s;
 
 		LOGGER.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
-			r_s = Tools.couples_of(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			r_s = Tools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
-			for (Couple<Criterion, Criterion> cp : r_s) {
-				if (!cpls.contains(cp)) {
-					cpls.add(cp);
-				}
+			for (EndpointPair<Criterion> cp : r_s.edges()) {
+					cpls.putEdge(cp.nodeU(), cp.nodeV());
 			}
 
 			r_s = null;
-		}
+		}	
 
-		ImmutableGraph<Criterion> rStar = Tools.buildRStar(cpls);
+		ImmutableGraph<Criterion> rStar = Tools.buildRStarG(cpls);
 
 		// R* determined
 
