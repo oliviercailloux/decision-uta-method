@@ -4,22 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-
-import io.github.oliviercailloux.decision.Utils;
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
 import io.github.oliviercailloux.uta_calculator.view.MainLabreucheModel;
 
 public class LabreucheModelTest {

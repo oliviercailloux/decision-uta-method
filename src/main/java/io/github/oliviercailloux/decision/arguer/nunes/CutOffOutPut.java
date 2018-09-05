@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.oliviercailloux.decision.Utils;
-import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 

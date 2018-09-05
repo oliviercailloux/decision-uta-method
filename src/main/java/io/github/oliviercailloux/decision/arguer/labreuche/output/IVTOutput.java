@@ -3,10 +3,6 @@ package io.github.oliviercailloux.decision.arguer.labreuche.output;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
@@ -15,10 +11,8 @@ import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
-import com.google.common.graph.SuccessorsFunction;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**

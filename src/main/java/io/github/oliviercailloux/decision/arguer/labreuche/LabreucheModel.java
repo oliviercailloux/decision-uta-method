@@ -1,11 +1,8 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -17,13 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
-import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
-import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
@@ -33,8 +27,6 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.uta_calculator.App;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheModel {
