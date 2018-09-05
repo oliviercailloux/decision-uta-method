@@ -25,6 +25,7 @@ import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
+import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
@@ -96,7 +97,7 @@ public class LabreucheModel {
 
 	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
 
-		logger.debug(" \n #### Calling ALGO_EU : " + Tools.showSet(a) + " and k = " + k);
+		logger.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
 
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
@@ -104,8 +105,8 @@ public class LabreucheModel {
 
 		for (int i = k; i < setCIVT.size(); i++) { // L1
 
-			logger.debug(k + " " + i + " T_i = " + Tools.showCriteria(setCIVT.get(i)) + " i = " + i);
-			logger.debug(k + " " + i + " Is " + Tools.showSet(a) + " CAP " + Tools.showCriteria(setCIVT.get(i))
+			logger.debug(k + " " + i + " T_i = " + Utils.showCriteria(setCIVT.get(i)) + " i = " + i);
+			logger.debug(k + " " + i + " Is " + Utils.showSet(a) + " CAP " + Utils.showCriteria(setCIVT.get(i))
 					+ " empty  : " + Tools.isCapEmpty(a, setCIVT.get(i)));
 
 			if (Tools.isCapEmpty(a, setCIVT.get(i))) { // L2
@@ -127,12 +128,12 @@ public class LabreucheModel {
 				logger.debug(k + " " + i + " sum better than hache? " + sum + " >= " + hache);
 
 				if (sum >= hache) { // L3
-					logger.debug(k + " " + i + " Adding to F" + Tools.showCriteria(setCIVT.get(i)));
+					logger.debug(k + " " + i + " Adding to F" + Utils.showCriteria(setCIVT.get(i)));
 					a_copy.add(setCIVT.get(i));
 					f = new ArrayList<>(a_copy); // L4
 				} else { // L5
 					a_copy.add(setCIVT.get(i));
-					logger.debug(k + " " + i + " Calling algo_eu" + Tools.showSet(a_copy) + " " + Tools.showSet(b)
+					logger.debug(k + " " + i + " Calling algo_eu" + Utils.showSet(a_copy) + " " + Utils.showSet(b)
 							+ " , " + (i + 1));
 					f = algoEU(a_copy, b_copy, (i + 1)); // L6
 
@@ -149,8 +150,8 @@ public class LabreucheModel {
 					b_copy = new ArrayList<>(f); // L8
 				}
 
-				logger.debug(k + " " + i + " A" + Tools.showSet(a));
-				logger.debug(k + " " + i + " B" + Tools.showSet(b));
+				logger.debug(k + " " + i + " A" + Utils.showSet(a));
+				logger.debug(k + " " + i + " B" + Utils.showSet(b));
 				logger.debug(
 						k + " " + i + " Test for return B :" + !b.isEmpty() + " and " + !Tools.includeDiscri(a_copy, b,
 								alternativesComparison.getWeight(), alternativesComparison.getDelta()));
@@ -273,7 +274,7 @@ public class LabreucheModel {
 
 		logger.debug(
 				"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
-						+ " : " + Tools.showVector(alternativesComparison.getDelta().values()) + "\n");
+						+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
 
 		do {
 			d_eu = null;
@@ -301,9 +302,9 @@ public class LabreucheModel {
 
 			logger.info("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
-				logger.debug(Tools.showCriteria(l) + " "
+				logger.debug(Utils.showCriteria(l) + " "
 						+ Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
-						+ Tools.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
+						+ Utils.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
 			big_c = algoEU(big_a, big_b, 0);
@@ -321,7 +322,7 @@ public class LabreucheModel {
 		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
 		List<Couple<Criterion, Criterion>> r_s;
 
-		logger.info("Minimal permutation : " + Tools.showSet(big_c) + "\n");
+		logger.info("Minimal permutation : " + Utils.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
 			r_s = Tools.couples_of(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
@@ -453,9 +454,9 @@ public class LabreucheModel {
 			explanation = "Even though " + alcoNOA.getY().getName() + " is better than " + alcoNOA.getX().getName()
 					+ " on average, " + alcoNOA.getX().getName() + " is preferred to " + alcoNOA.getY().getName()
 					+ " since \n" + alcoNOA.getX().getName() + " is better than " + alcoNOA.getY().getName()
-					+ " on the criteria " + Tools.showCriteria(ConPA) + " that are important whereas \n"
+					+ " on the criteria " + Utils.showCriteria(ConPA) + " that are important whereas \n"
 					+ alcoNOA.getX().getName() + " is worse than " + alcoNOA.getY().getName() + " on the criteria "
-					+ Tools.showCriteria(ConNA) + " that are not important.";
+					+ Utils.showCriteria(ConNA) + " that are not important.";
 
 			Double addSentence = 0.0;
 
@@ -485,10 +486,10 @@ public class LabreucheModel {
 
 			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-					+ Tools.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
-					+ Tools.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
-					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Tools.showCriteria(k_nw)
-					+ "\n" + "that are not important and on the criteria " + Tools.showCriteria(k_nrw)
+					+ Utils.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
+					+ Utils.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
+					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(k_nw)
+					+ "\n" + "that are not important and on the criteria " + Utils.showCriteria(k_nrw)
 					+ " that are not really important.";
 
 			if (!k_pn.edges().isEmpty()) {
@@ -530,10 +531,10 @@ public class LabreucheModel {
 					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 							+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
 							+ alcoRMGCOMP.getY().getName() + " on \n"
-							+ Tools.showCriteria(alcoRMGCOMP.getPositiveCriteria())
+							+ Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 							+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName()
 							+ " over " + alcoRMGCOMP.getX().getName() + " on \n"
-							+ Tools.showCriteria(alcoRMGCOMP.getNegativeCriteria())
+							+ Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 							+ ", and all the criteria have more or less the same weights.";
 
 					return explanation;
@@ -542,9 +543,9 @@ public class LabreucheModel {
 
 			explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getPositiveCriteria())
+					+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 					+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Tools.showCriteria(alcoRMGCOMP.getNegativeCriteria())
+					+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 					+ ".";
 
 			return explanation;
@@ -571,9 +572,9 @@ public class LabreucheModel {
 		display += "\n \n Alternatives : ";
 
 		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
-				+ Tools.showVector(alternativesComparison.getX().getEvaluations().values());
+				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values());
 		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
-				+ Tools.showVector(alternativesComparison.getY().getEvaluations().values());
+				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values());
 
 		display += "\n" + "			Alternatives ranked";
 		display += "\n" + alternativesComparison.getX().getName() + " = "

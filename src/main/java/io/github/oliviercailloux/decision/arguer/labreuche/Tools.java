@@ -1,11 +1,7 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,12 +11,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
+import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -122,8 +117,8 @@ public class Tools {
 
 		Double result = first_part - min_part;
 
-		logger.debug("Calling d_eu for " + showCriteria(subset) + " : " + first_part + " - " + min_part + " = " + result
-				+ " pi best : " + showCriteria(best_min_pi));
+		logger.debug("Calling d_eu for " + Utils.showCriteria(subset) + " : " + first_part + " - " + min_part + " = " + result
+				+ " pi best : " + Utils.showCriteria(best_min_pi));
 
 		return new Couple<>(result, best_min_pi);
 	}
@@ -144,7 +139,7 @@ public class Tools {
 			for (Criterion c : subset)
 				sum += delta.get(c) * w_modified.get(c);
 
-			logger.debug("Current Min part of " + showCriteria(pi) + " = " + sum);
+			logger.debug("Current Min part of " + Utils.showCriteria(pi) + " = " + sum);
 
 			if (sum < min_pi_value) {
 				min_pi_value = sum;
@@ -155,7 +150,7 @@ public class Tools {
 			// w_modified = new LinkedHashMap<Criterion,Double>(this.weights);
 		}
 
-		logger.debug("Calling pi_min for " + showCriteria(subset) + " pi_min returned : " + showCriteria(min_pi) + " = "
+		logger.debug("Calling pi_min for " + Utils.showCriteria(subset) + " pi_min returned : " + Utils.showCriteria(min_pi) + " = "
 				+ min_pi_value);
 
 		return min_pi;
@@ -201,25 +196,25 @@ public class Tools {
 
 					int born_sup = set.indexOf(subset.get(subset.size() - 1));
 
-					logger.debug(" subset " + showCriteria(subset));
+					logger.debug(" subset " + Utils.showCriteria(subset));
 					logger.debug(" last element " + subset.get(subset.size() - 1));
 					logger.debug(" born sup " + born_sup);
 
-					logger.debug(" before " + showCriteria(set_light));
-					logger.debug("set : " + showCriteria(set));
-					logger.debug(" sublist " + showCriteria(set.subList(0, born_sup + 1)));
+					logger.debug(" before " + Utils.showCriteria(set_light));
+					logger.debug("set : " + Utils.showCriteria(set));
+					logger.debug(" sublist " + Utils.showCriteria(set.subList(0, born_sup + 1)));
 					// set_light.removeAll(subset);
 
 					set_light.removeAll(set.subList(0, born_sup + 1));
 
-					logger.debug(" after " + showCriteria(set_light));
+					logger.debug(" after " + Utils.showCriteria(set_light));
 
 					if (set_light.size() >= 1) {
 						for (Criterion c : set_light) {
 							new_subset = add(subset, c);
 							subsets.add(new_subset);
 
-							logger.debug("adding subset " + showCriteria(new_subset));
+							logger.debug("adding subset " + Utils.showCriteria(new_subset));
 						}
 						subsets.remove(subset);
 					}
@@ -291,7 +286,7 @@ public class Tools {
 		List<List<Criterion>> tmp = new ArrayList<>();
 		// Map<List<Criterion>,Double> rankedSameSize = new
 		// HashMap<List<Criterion>,Double>();
-		Map<Double, List<Criterion>> rankedSameSize = new HashMap<>();
+		Map<Double, List<Criterion>> rankedSameSize = new LinkedHashMap<>();
 
 		while (!list.isEmpty()) {
 			logger.debug("Size of list = " + list.size());
@@ -312,7 +307,7 @@ public class Tools {
 
 			for (List<Criterion> l2 : tmp) {
 
-				logger.info("set " + showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
+				logger.info("set " + Utils.showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
 
 				rankedSameSize.put(d_eu(l2, w, delta).getLeft(), l2);
 			}
@@ -565,42 +560,5 @@ public class Tools {
 		return new_l;
 	}
 
-	/*
-	 * * * * * * * * * * * * * * * Used to show properly sets of * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * criteria or Couple of criteria * * *
-	 * * * * * * * * * * * * *
-	 */
-
-	public static String showVector(Collection<Double> collect) {
-		String show2 = "( ";
-
-		for (Double c : collect) {
-			Double c_scaled = BigDecimal.valueOf(c).setScale(3, RoundingMode.HALF_UP).doubleValue();
-			show2 += c_scaled + " ";
-		}
-		show2 += " )";
-
-		return show2;
-	}
-
-	public static String showCriteria(Collection<Criterion> collect) {
-		String show = "{ ";
-
-		for (Criterion c : collect) {
-			show += c.getName() + " ";
-		}
-
-		return show + " }";
-	}
-
-	public static String showSet(List<List<Criterion>> big_a) {
-		String str = "{ ";
-
-		for (Collection<Criterion> l : big_a)
-			str += showCriteria(l) + " ";
-
-		str += " }";
-
-		return str;
-	}
+	
 }
