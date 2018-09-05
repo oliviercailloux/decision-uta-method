@@ -23,7 +23,8 @@ The UTA method is used to solve a multi-criteria problem. It build a utility fun
 
 An improved version of the UTA is the UTASTAR. In UTA we used a single error in UTASTAR we use a double positive error function. The updated version has performed better than the regular method. 
 
-In the internship-report, you will find a section that explain the UTA method, illustrated with an example. 
+In the internship-report, you will find a section that explain the UTA method, illustrated with an example.  
+
 
 # UTA Calculator - Criteria
 
@@ -101,4 +102,16 @@ For the exercice Buying New Car, you should run the following commands :
 javac -d objs -cp examples/BuyingNewCar.java
 java -Djava.library.path=lib -cp com.lamsade.lp.BuyingNewCar
 ```
+
+# Librairy Or-tools
+
+#### on linux
+Two librairies are needed to run the project correctly, libortools.so and libjniortools.so.
+You can get them here
+```
+https://developers.google.com/optimization/install/java/linux
+``` 
+We used the binary distribution version v6.7.4981 for Ubuntu 16.04 64bit. 
+Download and unzip it, collect them in their /lib repository and stored them in /decision-uta-method/lib repository.
+
 
