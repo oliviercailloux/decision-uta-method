@@ -105,9 +105,11 @@ java -Djava.library.path=lib -cp com.lamsade.lp.BuyingNewCar
 
 # Librairy Or-tools
 
+Some librairies are need needed to run the project correctly.
+
 #### on linux
-Two librairies are needed to run the project correctly, libortools.so and libjniortools.so.
-You can get them here
+
+libortools.so and libjniortools.so, you can get them here
 ```
 https://developers.google.com/optimization/install/java/linux
 ``` 
