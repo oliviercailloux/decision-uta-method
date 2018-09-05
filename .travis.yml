@@ -8,8 +8,8 @@ cache:
   directories:
     - $HOME/.m2
 notifications:
-   email:
-	-tony.seguin9@gmail.com
-   on_success: never 
-   on_failure: always
+  email:
+    -tony.seguin9@gmail.com
+  on_success: never 
+  on_failure: always
 
