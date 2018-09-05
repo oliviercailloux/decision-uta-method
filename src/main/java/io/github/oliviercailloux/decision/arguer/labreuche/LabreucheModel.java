@@ -1,7 +1,7 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static java.util.Objects.requireNonNull;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
@@ -118,8 +118,7 @@ public class LabreucheModel {
 								.getLeft();
 					}
 				}
-				sum += Tools
-						.d_eu(setCIVT.get(i), alternativesComparison.getWeight(), alternativesComparison.getDelta())
+				sum += Tools.d_eu(setCIVT.get(i), alternativesComparison.getWeight(), alternativesComparison.getDelta())
 						.getLeft();
 
 				Double hache = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
@@ -185,34 +184,38 @@ public class LabreucheModel {
 
 	/**
 	 * @return the right explanation of the problem given in alternativesComparison.
-	 * @throws IllegalException
-	 *             if none anchors applicable This function can be called only if
-	 *             labreucheOutput is null.
+	 * @throws IllegalException if none anchors applicable. 
+	 * Precondition : This function can be called only if labreucheOutput is null.
 	 */
 	private LabreucheOutput computeExplanation() {
 		Preconditions.checkState(labreucheOutput == null);
 
 		if (tryALL()) {
+			assert !(labreucheOutput == null);
 			return labreucheOutput;
 		}
 		if (tryNOA()) {
+			assert !(labreucheOutput == null);
 			return labreucheOutput;
 		}
 		if (tryIVT()) {
+			assert !(labreucheOutput == null);
 			return labreucheOutput;
 		}
 		if (tryRMGAVG()) {
+			assert !(labreucheOutput == null);
 			return labreucheOutput;
 		}
 		if (tryRMGCOMP()) {
+			assert !(labreucheOutput == null);
 			return labreucheOutput;
 		}
 		throw new IllegalStateException();
 	}
 
 	private boolean tryALL() {
-		for (ImmutableMap.Entry<Criterion, Double> d : alternativesComparison.getDelta().entrySet()) {
-			if (d.getValue() < 0.0) {
+		for (Double v : alternativesComparison.getDelta().values()) {
+			if (v < 0.0) {
 				logger.info("ALL false");
 				return false;
 			}
@@ -256,7 +259,8 @@ public class LabreucheModel {
 
 			p--;
 		} while (scoreX < scoreY);
-
+		
+		logger.info("NOA true");
 		labreucheOutput = new NOAOutput(alternativesComparison, setC);
 
 		return true;
@@ -300,7 +304,7 @@ public class LabreucheModel {
 
 			setCIVT = Tools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
-			logger.info("setCIVT : ");
+			logger.debug("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				logger.debug(Utils.showCriteria(l) + " "
 						+ Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
@@ -322,7 +326,7 @@ public class LabreucheModel {
 		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
 		List<Couple<Criterion, Criterion>> r_s;
 
-		logger.info("Minimal permutation : " + Utils.showSet(big_c) + "\n");
+		logger.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
 			r_s = Tools.couples_of(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
@@ -340,23 +344,18 @@ public class LabreucheModel {
 
 		// R* determined
 
+		logger.info("IVT true");
 		labreucheOutput = new IVTOutput(alternativesComparison, rStar, epsilon);
 
 		return true;
 	}
 
 	private boolean tryRMGAVG() {
-		double max_w = Double.MIN_VALUE;
-
-		for (Map.Entry<Criterion, Double> c : alternativesComparison.getWeight().entrySet()) {
-			double v = Math.abs(c.getValue() - (1.0 / alternativesComparison.getCriteria().size()));
-
-			if (v > max_w) {
-				max_w = v;
-			}
-		}
+		double max_w = getMaxW();
 
 		if (max_w <= epsilon) {
+			logger.info("RMGAVG true");
+
 			labreucheOutput = new RMGAVGOutput(alternativesComparison);
 
 			return true;
@@ -366,19 +365,26 @@ public class LabreucheModel {
 
 		return false;
 	}
+	
+	private double getMaxW() {
+		double max_w = Double.MIN_VALUE;
 
-	private boolean tryRMGCOMP() {
-		double max_w1 = Double.MIN_VALUE;
+		for (Double v : alternativesComparison.getWeight().values()) {
+			double value = Math.abs(v - (1.0 / alternativesComparison.getCriteria().size()));
 
-		for (Map.Entry<Criterion, Double> c : alternativesComparison.getWeight().entrySet()) {
-			double v = Math.abs(c.getValue() - (1.0 / alternativesComparison.getCriteria().size()));
-
-			if (v > max_w1) {
-				max_w1 = v;
+			if (value > max_w) {
+				max_w = value;
 			}
 		}
+		return max_w;
+	}
+
+	private boolean tryRMGCOMP() {
+		double max_w1 = getMaxW();
 
 		if (max_w1 > epsilon) {
+			logger.info("RMGCOMP true");
+
 			labreucheOutput = new RMGCOMPOutput(alternativesComparison, epsilon);
 
 			return true;
@@ -392,10 +398,7 @@ public class LabreucheModel {
 	public boolean isApplicable(Anchor anchor) {
 		getExplanation();
 
-		if (labreucheOutput.getAnchor() == anchor) {
-			return true;
-		}
-		return false;
+		return labreucheOutput.getAnchor() == anchor;
 	}
 
 	/**
@@ -404,30 +407,30 @@ public class LabreucheModel {
 	 * @throws IllegalArgumentException
 	 *             if anchor type is not the same a labreucheOutput value.
 	 */
-	private LabreucheOutput getCheckExplanation(Anchor ancrage) {
+	private LabreucheOutput getCheckedExplanation(Anchor ancrage) {
 		getExplanation();
 		Preconditions.checkState(labreucheOutput.getAnchor() == ancrage, "This anchor is not the one applicable");
 		return labreucheOutput;
 	}
 
 	public ALLOutput getALLExplanation() {
-		return (ALLOutput) getCheckExplanation(Anchor.ALL);
+		return (ALLOutput) getCheckedExplanation(Anchor.ALL);
 	}
 
 	public NOAOutput getNOAExplanation() {
-		return (NOAOutput) getCheckExplanation(Anchor.NOA);
+		return (NOAOutput) getCheckedExplanation(Anchor.NOA);
 	}
 
 	public IVTOutput getIVTExplanation() {
-		return (IVTOutput) getCheckExplanation(Anchor.IVT);
+		return (IVTOutput) getCheckedExplanation(Anchor.IVT);
 	}
 
 	public RMGAVGOutput getRMGAVGExplanation() {
-		return (RMGAVGOutput) getCheckExplanation(Anchor.RMGAVG);
+		return (RMGAVGOutput) getCheckedExplanation(Anchor.RMGAVG);
 	}
 
 	public RMGCOMPOutput getRMGCOMPExplanation() {
-		return (RMGCOMPOutput) getCheckExplanation(Anchor.RMGCOMP);
+		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
 	}
 
 	public String arguer() {

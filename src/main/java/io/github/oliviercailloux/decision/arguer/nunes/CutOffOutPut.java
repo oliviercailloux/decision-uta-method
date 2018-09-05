@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -27,7 +28,7 @@ public class CutOffOutPut implements NunesOutPut {
 	public String argue() {
 
 		return x.getName() + " is rejected because she doesn't satisfied the constrain on the criteria "
-				+ Tools.showCriteria(reject);
+				+ Utils.showCriteria(reject);
 	}
 
 	@Override

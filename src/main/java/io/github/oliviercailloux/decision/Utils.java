@@ -9,7 +9,6 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Utils {
 
-
 	public static String showVector(Collection<Double> collect) {
 		String show2 = "( ";
 

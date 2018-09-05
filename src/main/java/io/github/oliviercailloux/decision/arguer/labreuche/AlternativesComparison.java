@@ -43,21 +43,21 @@ public class AlternativesComparison {
 		(this).reorderXY();
 		(this).WeightsSumInOne();
 	}
-	
+
 	private void WeightsSumInOne() {
 		double sum_weights = 0.0;
-		
-		for(Map.Entry<Criterion, Double> entry: weights.entrySet()) {
+
+		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
 			sum_weights += entry.getValue().doubleValue();
 		}
-		
-		Builder<Criterion,Double> builder = ImmutableMap.builder();
-		
-		for(Map.Entry<Criterion, Double> entry : weights.entrySet()) {
+
+		Builder<Criterion, Double> builder = ImmutableMap.builder();
+
+		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
 			builder.put(entry.getKey(), entry.getValue().doubleValue() / sum_weights);
 		}
-		
-		weights = builder.build(); 
+
+		weights = builder.build();
 	}
 
 	/**

@@ -117,8 +117,8 @@ public class Tools {
 
 		Double result = first_part - min_part;
 
-		logger.debug("Calling d_eu for " + Utils.showCriteria(subset) + " : " + first_part + " - " + min_part + " = " + result
-				+ " pi best : " + Utils.showCriteria(best_min_pi));
+		logger.debug("Calling d_eu for " + Utils.showCriteria(subset) + " : " + first_part + " - " + min_part + " = "
+				+ result + " pi best : " + Utils.showCriteria(best_min_pi));
 
 		return new Couple<>(result, best_min_pi);
 	}
@@ -150,8 +150,8 @@ public class Tools {
 			// w_modified = new LinkedHashMap<Criterion,Double>(this.weights);
 		}
 
-		logger.debug("Calling pi_min for " + Utils.showCriteria(subset) + " pi_min returned : " + Utils.showCriteria(min_pi) + " = "
-				+ min_pi_value);
+		logger.debug("Calling pi_min for " + Utils.showCriteria(subset) + " pi_min returned : "
+				+ Utils.showCriteria(min_pi) + " = " + min_pi_value);
 
 		return min_pi;
 	}
@@ -307,7 +307,7 @@ public class Tools {
 
 			for (List<Criterion> l2 : tmp) {
 
-				logger.info("set " + Utils.showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
+				logger.debug("set " + Utils.showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
 
 				rankedSameSize.put(d_eu(l2, w, delta).getLeft(), l2);
 			}
@@ -560,5 +560,4 @@ public class Tools {
 		return new_l;
 	}
 
-	
 }
