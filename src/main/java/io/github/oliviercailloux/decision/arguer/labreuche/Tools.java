@@ -21,7 +21,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Tools {
 
-	private static final Logger logger = LoggerFactory.getLogger(Tools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Tools.class);
 
 	static Double score(Alternative x, Map<Criterion, Double> w) {
 		Double score = 0.0;
@@ -117,7 +117,7 @@ public class Tools {
 
 		Double result = first_part - min_part;
 
-		logger.debug("Calling d_eu for " + Utils.showCriteria(subset) + " : " + first_part + " - " + min_part + " = "
+		LOGGER.debug("Calling d_eu for " + Utils.showCriteria(subset) + " : " + first_part + " - " + min_part + " = "
 				+ result + " pi best : " + Utils.showCriteria(best_min_pi));
 
 		return new Couple<>(result, best_min_pi);
@@ -139,7 +139,7 @@ public class Tools {
 			for (Criterion c : subset)
 				sum += delta.get(c) * w_modified.get(c);
 
-			logger.debug("Current Min part of " + Utils.showCriteria(pi) + " = " + sum);
+			LOGGER.debug("Current Min part of " + Utils.showCriteria(pi) + " = " + sum);
 
 			if (sum < min_pi_value) {
 				min_pi_value = sum;
@@ -150,7 +150,7 @@ public class Tools {
 			// w_modified = new LinkedHashMap<Criterion,Double>(this.weights);
 		}
 
-		logger.debug("Calling pi_min for " + Utils.showCriteria(subset) + " pi_min returned : "
+		LOGGER.debug("Calling pi_min for " + Utils.showCriteria(subset) + " pi_min returned : "
 				+ Utils.showCriteria(min_pi) + " = " + min_pi_value);
 
 		return min_pi;
@@ -192,29 +192,29 @@ public class Tools {
 				List<Criterion> set_light = new ArrayList<>(set);
 
 				for (List<Criterion> subset : copy_subsets) {
-					logger.debug("######## changing subset ###########");
+					LOGGER.debug("######## changing subset ###########");
 
 					int born_sup = set.indexOf(subset.get(subset.size() - 1));
 
-					logger.debug(" subset " + Utils.showCriteria(subset));
-					logger.debug(" last element " + subset.get(subset.size() - 1));
-					logger.debug(" born sup " + born_sup);
+					LOGGER.debug(" subset " + Utils.showCriteria(subset));
+					LOGGER.debug(" last element " + subset.get(subset.size() - 1));
+					LOGGER.debug(" born sup " + born_sup);
 
-					logger.debug(" before " + Utils.showCriteria(set_light));
-					logger.debug("set : " + Utils.showCriteria(set));
-					logger.debug(" sublist " + Utils.showCriteria(set.subList(0, born_sup + 1)));
+					LOGGER.debug(" before " + Utils.showCriteria(set_light));
+					LOGGER.debug("set : " + Utils.showCriteria(set));
+					LOGGER.debug(" sublist " + Utils.showCriteria(set.subList(0, born_sup + 1)));
 					// set_light.removeAll(subset);
 
 					set_light.removeAll(set.subList(0, born_sup + 1));
 
-					logger.debug(" after " + Utils.showCriteria(set_light));
+					LOGGER.debug(" after " + Utils.showCriteria(set_light));
 
 					if (set_light.size() >= 1) {
 						for (Criterion c : set_light) {
 							new_subset = add(subset, c);
 							subsets.add(new_subset);
 
-							logger.debug("adding subset " + Utils.showCriteria(new_subset));
+							LOGGER.debug("adding subset " + Utils.showCriteria(new_subset));
 						}
 						subsets.remove(subset);
 					}
@@ -289,25 +289,25 @@ public class Tools {
 		Map<Double, List<Criterion>> rankedSameSize = new LinkedHashMap<>();
 
 		while (!list.isEmpty()) {
-			logger.debug("Size of list = " + list.size());
+			LOGGER.debug("Size of list = " + list.size());
 
 			for (List<Criterion> l : list) {
 				if (l.size() < min_size)
 					min_size = l.size();
 			}
 
-			logger.debug("Size min find : " + min_size);
+			LOGGER.debug("Size min find : " + min_size);
 
 			for (List<Criterion> min_size_l : list) {
 				if (min_size_l.size() == min_size)
 					tmp.add(min_size_l);
 			}
 
-			logger.debug("Size of tmp = " + tmp.size());
+			LOGGER.debug("Size of tmp = " + tmp.size());
 
 			for (List<Criterion> l2 : tmp) {
 
-				logger.debug("set " + Utils.showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
+				LOGGER.debug("set " + Utils.showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
 
 				rankedSameSize.put(d_eu(l2, w, delta).getLeft(), l2);
 			}
@@ -316,7 +316,7 @@ public class Tools {
 			Collections.sort(keys);
 			Collections.reverse(keys);
 
-			logger.debug("Size of keys = " + keys.size());
+			LOGGER.debug("Size of keys = " + keys.size());
 
 			for (int i = 0; i < keys.size(); i++) {
 				if (!sorted.contains(rankedSameSize.get(keys.get(i))))
@@ -326,7 +326,7 @@ public class Tools {
 			for (List<Criterion> delete : tmp)
 				list.remove(delete);
 
-			logger.debug("Size of List after remove = " + list.size());
+			LOGGER.debug("Size of List after remove = " + list.size());
 
 			rankedSameSize.clear();
 			tmp.clear();
@@ -364,13 +364,13 @@ public class Tools {
 				int k = 0;
 
 				do {
-					// logger.info(k);
+					LOGGER.debug(k + "");
 
 					if (d_eu(a.get(k), w, delta) == d_eu(b.get(k), w, delta))
 						k++;
 					else
 						break;
-					// logger.info(k);
+					LOGGER.debug(k + "");
 				} while (k < a.size());
 
 				if (d_eu(a.get(k), w, delta).getLeft() > d_eu(b.get(k), w, delta).getLeft())

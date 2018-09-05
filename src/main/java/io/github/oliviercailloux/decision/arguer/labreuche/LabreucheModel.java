@@ -48,7 +48,7 @@ public class LabreucheModel {
 	private double epsilon;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
-	private static final Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
 
 	public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
@@ -97,7 +97,7 @@ public class LabreucheModel {
 
 	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
 
-		logger.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
+		LOGGER.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
 
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
@@ -105,8 +105,8 @@ public class LabreucheModel {
 
 		for (int i = k; i < setCIVT.size(); i++) { // L1
 
-			logger.debug(k + " " + i + " T_i = " + Utils.showCriteria(setCIVT.get(i)) + " i = " + i);
-			logger.debug(k + " " + i + " Is " + Utils.showSet(a) + " CAP " + Utils.showCriteria(setCIVT.get(i))
+			LOGGER.debug(k + " " + i + " T_i = " + Utils.showCriteria(setCIVT.get(i)) + " i = " + i);
+			LOGGER.debug(k + " " + i + " Is " + Utils.showSet(a) + " CAP " + Utils.showCriteria(setCIVT.get(i))
 					+ " empty  : " + Tools.isCapEmpty(a, setCIVT.get(i)));
 
 			if (Tools.isCapEmpty(a, setCIVT.get(i))) { // L2
@@ -124,34 +124,34 @@ public class LabreucheModel {
 				Double hache = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
 						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
 
-				logger.debug(k + " " + i + " sum better than hache? " + sum + " >= " + hache);
+				LOGGER.debug(k + " " + i + " sum better than hache? " + sum + " >= " + hache);
 
 				if (sum >= hache) { // L3
-					logger.debug(k + " " + i + " Adding to F" + Utils.showCriteria(setCIVT.get(i)));
+					LOGGER.debug(k + " " + i + " Adding to F" + Utils.showCriteria(setCIVT.get(i)));
 					a_copy.add(setCIVT.get(i));
 					f = new ArrayList<>(a_copy); // L4
 				} else { // L5
 					a_copy.add(setCIVT.get(i));
-					logger.debug(k + " " + i + " Calling algo_eu" + Utils.showSet(a_copy) + " " + Utils.showSet(b)
+					LOGGER.debug(k + " " + i + " Calling algo_eu" + Utils.showSet(a_copy) + " " + Utils.showSet(b)
 							+ " , " + (i + 1));
 					f = algoEU(a_copy, b_copy, (i + 1)); // L6
 
 				}
 
-				logger.debug(k + " " + i + " Test for update :" + !f.isEmpty() + " and [ " + b_copy.isEmpty() + " or "
+				LOGGER.debug(k + " " + i + " Test for update :" + !f.isEmpty() + " and [ " + b_copy.isEmpty() + " or "
 						+ Tools.includeDiscri(f, b, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())
 						+ " ]");
 
 				if (!f.isEmpty() && (b_copy.isEmpty() || Tools.includeDiscri(f, b_copy,
 						alternativesComparison.getWeight(), alternativesComparison.getDelta()))) { // L8
-					logger.debug(k + " " + i + " UPDATE");
+					LOGGER.debug(k + " " + i + " UPDATE");
 					b_copy = new ArrayList<>(f); // L8
 				}
 
-				logger.debug(k + " " + i + " A" + Utils.showSet(a));
-				logger.debug(k + " " + i + " B" + Utils.showSet(b));
-				logger.debug(
+				LOGGER.debug(k + " " + i + " A" + Utils.showSet(a));
+				LOGGER.debug(k + " " + i + " B" + Utils.showSet(b));
+				LOGGER.debug(
 						k + " " + i + " Test for return B :" + !b.isEmpty() + " and " + !Tools.includeDiscri(a_copy, b,
 								alternativesComparison.getWeight(), alternativesComparison.getDelta()));
 
@@ -165,7 +165,7 @@ public class LabreucheModel {
 		}
 		List<List<Criterion>> empty = new ArrayList<>();
 
-		logger.debug("#### END ALGO EU : k = " + k);
+		LOGGER.debug("#### END ALGO EU : k = " + k);
 
 		return empty;
 	}
@@ -184,8 +184,9 @@ public class LabreucheModel {
 
 	/**
 	 * @return the right explanation of the problem given in alternativesComparison.
-	 * @throws IllegalException if none anchors applicable. 
-	 * Precondition : This function can be called only if labreucheOutput is null.
+	 * @throws IllegalException
+	 *             if none anchors applicable. Precondition : This function can be
+	 *             called only if labreucheOutput is null.
 	 */
 	private LabreucheOutput computeExplanation() {
 		Preconditions.checkState(labreucheOutput == null);
@@ -216,12 +217,12 @@ public class LabreucheModel {
 	private boolean tryALL() {
 		for (Double v : alternativesComparison.getDelta().values()) {
 			if (v < 0.0) {
-				logger.info("ALL false");
+				LOGGER.info("ALL false");
 				return false;
 			}
 		}
 
-		logger.info("ALL true");
+		LOGGER.info("ALL true");
 		labreucheOutput = new ALLOutput(alternativesComparison);
 
 		return true;
@@ -230,7 +231,7 @@ public class LabreucheModel {
 	private boolean tryNOA() {
 		if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
 				.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
-			logger.info("NOA false");
+			LOGGER.info("NOA false");
 			return false;
 		}
 
@@ -259,8 +260,8 @@ public class LabreucheModel {
 
 			p--;
 		} while (scoreX < scoreY);
-		
-		logger.info("NOA true");
+
+		LOGGER.info("NOA true");
 		labreucheOutput = new NOAOutput(alternativesComparison, setC);
 
 		return true;
@@ -276,7 +277,7 @@ public class LabreucheModel {
 		Double d_eu = null;
 		List<Criterion> pi = new ArrayList<>();
 
-		logger.debug(
+		LOGGER.debug(
 				"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
 						+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
 
@@ -304,9 +305,9 @@ public class LabreucheModel {
 
 			setCIVT = Tools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
-			logger.debug("setCIVT : ");
+			LOGGER.debug("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
-				logger.debug(Utils.showCriteria(l) + " "
+				LOGGER.debug(Utils.showCriteria(l) + " "
 						+ Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
 						+ Utils.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
@@ -317,7 +318,7 @@ public class LabreucheModel {
 		} while (big_c.isEmpty() && size <= alternativesComparison.getCriteria().size());
 
 		if (big_c.isEmpty()) {
-			logger.info("IVT false");
+			LOGGER.info("IVT false");
 			return false;
 		}
 
@@ -326,7 +327,7 @@ public class LabreucheModel {
 		List<Couple<Criterion, Criterion>> cpls = new ArrayList<>();
 		List<Couple<Criterion, Criterion>> r_s;
 
-		logger.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
+		LOGGER.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
 			r_s = Tools.couples_of(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
@@ -344,7 +345,7 @@ public class LabreucheModel {
 
 		// R* determined
 
-		logger.info("IVT true");
+		LOGGER.info("IVT true");
 		labreucheOutput = new IVTOutput(alternativesComparison, rStar, epsilon);
 
 		return true;
@@ -354,18 +355,18 @@ public class LabreucheModel {
 		double max_w = getMaxW();
 
 		if (max_w <= epsilon) {
-			logger.info("RMGAVG true");
+			LOGGER.info("RMGAVG true");
 
 			labreucheOutput = new RMGAVGOutput(alternativesComparison);
 
 			return true;
 		}
 
-		logger.info("RMGAVG false");
+		LOGGER.info("RMGAVG false");
 
 		return false;
 	}
-	
+
 	private double getMaxW() {
 		double max_w = Double.MIN_VALUE;
 
@@ -383,14 +384,14 @@ public class LabreucheModel {
 		double max_w1 = getMaxW();
 
 		if (max_w1 > epsilon) {
-			logger.info("RMGCOMP true");
+			LOGGER.info("RMGCOMP true");
 
 			labreucheOutput = new RMGCOMPOutput(alternativesComparison, epsilon);
 
 			return true;
 		}
 
-		logger.info("RMGCOMP false");
+		LOGGER.info("RMGCOMP false");
 
 		return false;
 	}
@@ -588,7 +589,7 @@ public class LabreucheModel {
 		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :";
 
-		logger.info(display);
+		LOGGER.info(display);
 	}
 
 	public void solvesProblem() {
@@ -599,7 +600,7 @@ public class LabreucheModel {
 
 		String c = arguer();
 
-		logger.info(c);
+		LOGGER.info(c);
 	}
 
 }

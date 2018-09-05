@@ -24,7 +24,7 @@ import io.github.oliviercailloux.uta_calculator.view.MainLabreucheModel;
 
 public class LabreucheModelTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(LabreucheModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
 
 	@Test
 	public void labreucheModelNOATest() {
@@ -33,49 +33,49 @@ public class LabreucheModelTest {
 		MainLabreucheModel mlm13 = new MainLabreucheModel(13);
 		MainLabreucheModel mlm14 = new MainLabreucheModel(14);
 
-		logger.info("anchor ALL applicable on NOA examples?");
-		
+		LOGGER.info("anchor ALL applicable on NOA examples?");
+
 		assertFalse(mlm5.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm6.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm13.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm14.lm.isApplicable(Anchor.ALL));
-		
-		logger.info("anchor NOA applicable on NOA examples?");
+
+		LOGGER.info("anchor NOA applicable on NOA examples?");
 
 		assertTrue(mlm5.lm.isApplicable(Anchor.NOA));
 		assertTrue(mlm6.lm.isApplicable(Anchor.NOA));
 		assertTrue(mlm13.lm.isApplicable(Anchor.NOA));
 		assertTrue(mlm14.lm.isApplicable(Anchor.NOA));
-		
-		logger.info("anchor IVT applicable on NOA examples?");
+
+		LOGGER.info("anchor IVT applicable on NOA examples?");
 
 		assertFalse(mlm5.lm.isApplicable(Anchor.IVT));
 		assertFalse(mlm6.lm.isApplicable(Anchor.IVT));
 		assertFalse(mlm13.lm.isApplicable(Anchor.IVT));
 		assertFalse(mlm14.lm.isApplicable(Anchor.IVT));
-		
-		logger.info("anchor RMGAVG applicable on NOA examples?");
+
+		LOGGER.info("anchor RMGAVG applicable on NOA examples?");
 
 		assertFalse(mlm5.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm6.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm13.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm14.lm.isApplicable(Anchor.RMGAVG));
-		
-		logger.info("anchor RMGCOMP applicable on NOA examples?");
+
+		LOGGER.info("anchor RMGCOMP applicable on NOA examples?");
 
 		assertFalse(mlm5.lm.isApplicable(Anchor.RMGCOMP));
 		assertFalse(mlm6.lm.isApplicable(Anchor.RMGCOMP));
 		assertFalse(mlm13.lm.isApplicable(Anchor.RMGCOMP));
 		assertFalse(mlm14.lm.isApplicable(Anchor.RMGCOMP));
-		
-		logger.info("Checking if getExplenation() return not null");
+
+		LOGGER.info("Checking if getExplenation() return not null");
 
 		assertNotNull(mlm5.lm.getExplanation());
 		assertNotNull(mlm6.lm.getExplanation());
 		assertNotNull(mlm13.lm.getExplanation());
 		assertNotNull(mlm14.lm.getExplanation());
-		
-		logger.info("cheking if arguer() return not null");
+
+		LOGGER.info("cheking if arguer() return not null");
 
 		assertNotNull(mlm5.lm.arguer());
 		assertNotNull(mlm6.lm.arguer());
@@ -87,8 +87,8 @@ public class LabreucheModelTest {
 	public void labreucheModelRMGAVGTest() {
 		MainLabreucheModel mlm = new MainLabreucheModel(18);
 
-		logger.info("anchor all anchors applicable on RMGAVG examples?");
-		
+		LOGGER.info("anchor all anchors applicable on RMGAVG examples?");
+
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm.lm.isApplicable(Anchor.NOA));
 		assertFalse(mlm.lm.isApplicable(Anchor.IVT));
@@ -101,8 +101,8 @@ public class LabreucheModelTest {
 	@Test
 	public void labreucheModelRMGCOMPTest() {
 		MainLabreucheModel mlm = new MainLabreucheModel(17);
-		
-		logger.info("anchor all anchors applicable on RMGCOMP examples?");
+
+		LOGGER.info("anchor all anchors applicable on RMGCOMP examples?");
 
 		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm.lm.isApplicable(Anchor.NOA));
@@ -112,60 +112,60 @@ public class LabreucheModelTest {
 		assertNotNull(mlm.lm.getExplanation());
 		assertNotNull(mlm.lm.arguer());
 	}
-	
+
 	@Test
 	public void labreucheModelIVTTest() {
 		MainLabreucheModel mlm9 = new MainLabreucheModel(9);
-		//MainLabreucheModel mlm10 = new MainLabreucheModel(10);
+		// MainLabreucheModel mlm10 = new MainLabreucheModel(10);
 		MainLabreucheModel mlm15 = new MainLabreucheModel(15);
 		MainLabreucheModel mlm16 = new MainLabreucheModel(16);
-		
-		logger.info("anchor ALL applicable on IVT examples?");
+
+		LOGGER.info("anchor ALL applicable on IVT examples?");
 
 		assertFalse(mlm9.lm.isApplicable(Anchor.ALL));
-		//assertFalse(mlm10.lm.isApplicable(Anchor.ALL));
+		// assertFalse(mlm10.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm15.lm.isApplicable(Anchor.ALL));
 		assertFalse(mlm16.lm.isApplicable(Anchor.ALL));
 
-		logger.info("anchor NOA applicable on IVT examples?");
+		LOGGER.info("anchor NOA applicable on IVT examples?");
 
 		assertFalse(mlm9.lm.isApplicable(Anchor.NOA));
-		//assertFalse(mlm10.lm.isApplicable(Anchor.NOA));
+		// assertFalse(mlm10.lm.isApplicable(Anchor.NOA));
 		assertFalse(mlm15.lm.isApplicable(Anchor.NOA));
 		assertFalse(mlm16.lm.isApplicable(Anchor.NOA));
-		
-		logger.info("anchor IVT applicable on IVT examples?");
+
+		LOGGER.info("anchor IVT applicable on IVT examples?");
 
 		assertTrue(mlm9.lm.isApplicable(Anchor.IVT));
-		//assertTrue(mlm10.lm.isApplicable(Anchor.IVT));
+		// assertTrue(mlm10.lm.isApplicable(Anchor.IVT));
 		assertTrue(mlm15.lm.isApplicable(Anchor.IVT));
 		assertTrue(mlm16.lm.isApplicable(Anchor.IVT));
-		
-		logger.info("anchor RMGAVG applicable on IVT examples?");
+
+		LOGGER.info("anchor RMGAVG applicable on IVT examples?");
 
 		assertFalse(mlm9.lm.isApplicable(Anchor.RMGAVG));
-		//assertFalse(mlm10.lm.isApplicable(Anchor.RMGAVG));
+		// assertFalse(mlm10.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm15.lm.isApplicable(Anchor.RMGAVG));
 		assertFalse(mlm16.lm.isApplicable(Anchor.RMGAVG));
-		
-		logger.info("anchor RMGCOMP applicable on IVT examples?");
+
+		LOGGER.info("anchor RMGCOMP applicable on IVT examples?");
 
 		assertFalse(mlm9.lm.isApplicable(Anchor.RMGCOMP));
-		//assertFalse(mlm10.lm.isApplicable(Anchor.RMGCOMP));
+		// assertFalse(mlm10.lm.isApplicable(Anchor.RMGCOMP));
 		assertFalse(mlm15.lm.isApplicable(Anchor.RMGCOMP));
 		assertFalse(mlm16.lm.isApplicable(Anchor.RMGCOMP));
-		
-		logger.info("Checking if getExplenation() return not null");
+
+		LOGGER.info("Checking if getExplenation() return not null");
 
 		assertNotNull(mlm9.lm.getExplanation());
-		//assertNotNull(mlm10.lm.getExplanation());
+		// assertNotNull(mlm10.lm.getExplanation());
 		assertNotNull(mlm15.lm.getExplanation());
 		assertNotNull(mlm16.lm.getExplanation());
-		
-		logger.info("Checking if aruger() return not null");
+
+		LOGGER.info("Checking if aruger() return not null");
 
 		assertNotNull(mlm9.lm.arguer());
-		//assertNotNull(mlm10.lm.arguer());
+		// assertNotNull(mlm10.lm.arguer());
 		assertNotNull(mlm15.lm.arguer());
 		assertNotNull(mlm16.lm.arguer());
 	}
