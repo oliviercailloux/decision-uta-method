@@ -113,12 +113,12 @@ public class LabreucheModel {
 
 				if (!a.isEmpty()) {
 					for (List<Criterion> l : a) {
-						sum += Tools.d_eu(l, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						sum += Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 								.getLeft();
 					}
 				}
 				sum += Tools
-						.d_eu(setCIVT.get(i), 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						.d_eu(setCIVT.get(i), alternativesComparison.getWeight(), alternativesComparison.getDelta())
 						.getLeft();
 
 				Double hache = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
@@ -287,7 +287,7 @@ public class LabreucheModel {
 			subsets = Tools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				d_eu = Tools.d_eu(subset, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+				d_eu = Tools.d_eu(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 						.getLeft();
 				pi = Tools.pi_min(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
@@ -302,9 +302,7 @@ public class LabreucheModel {
 			logger.info("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				logger.debug(Tools.showCriteria(l) + " "
-						+ Tools.d_eu(l, 0, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
-						+ Tools.d_eu(l, 1, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
-						+ Tools.d_eu(l, 5, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
+						+ Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
 						+ Tools.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 

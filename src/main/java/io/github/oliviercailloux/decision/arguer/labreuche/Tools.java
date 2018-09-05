@@ -102,7 +102,7 @@ public class Tools {
 		return result;
 	}
 
-	static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, int flag, Map<Criterion, Double> w,
+	static Couple<Double, List<Criterion>> d_eu(List<Criterion> subset, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 
 		double first_part = 0.0;
@@ -124,12 +124,6 @@ public class Tools {
 
 		logger.debug("Calling d_eu for " + showCriteria(subset) + " : " + first_part + " - " + min_part + " = " + result
 				+ " pi best : " + showCriteria(best_min_pi));
-
-		if (flag == 0)
-			return new Couple<>(first_part, best_min_pi);
-
-		if (flag == 1)
-			return new Couple<>(min_part, best_min_pi);
 
 		return new Couple<>(result, best_min_pi);
 	}
@@ -318,9 +312,9 @@ public class Tools {
 
 			for (List<Criterion> l2 : tmp) {
 
-				logger.info("set " + showCriteria(l2) + " d_eu = " + d_eu(l2, 1, w, delta));
+				logger.info("set " + showCriteria(l2) + " d_eu = " + d_eu(l2, w, delta));
 
-				rankedSameSize.put(d_eu(l2, 5, w, delta).getLeft(), l2);
+				rankedSameSize.put(d_eu(l2, w, delta).getLeft(), l2);
 			}
 
 			ArrayList<Double> keys = new ArrayList<>(rankedSameSize.keySet());
@@ -377,14 +371,14 @@ public class Tools {
 				do {
 					// logger.info(k);
 
-					if (d_eu(a.get(k), 5, w, delta) == d_eu(b.get(k), 5, w, delta))
+					if (d_eu(a.get(k), w, delta) == d_eu(b.get(k), w, delta))
 						k++;
 					else
 						break;
 					// logger.info(k);
 				} while (k < a.size());
 
-				if (d_eu(a.get(k), 5, w, delta).getLeft() > d_eu(b.get(k), 5, w, delta).getLeft())
+				if (d_eu(a.get(k), w, delta).getLeft() > d_eu(b.get(k), w, delta).getLeft())
 					result = true;
 				else
 					result = false;
