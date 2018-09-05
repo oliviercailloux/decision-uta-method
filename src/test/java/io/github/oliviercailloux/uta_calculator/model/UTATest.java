@@ -4,13 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import io.github.oliviercailloux.uta_calculator.view.MainBuyingNewCar;
 
 public class UTATest {
 
-	@Test
+	// @Test
 	public void utaLearningFromExamplesShouldReproduceThoseExample() {
 
 		MainBuyingNewCar buyingNewCarExercice = new MainBuyingNewCar();
