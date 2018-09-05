@@ -317,7 +317,7 @@ public class LabreucheModel {
 		}
 
 		// Start to determine R*
-		
+
 		MutableGraph<Criterion> cpls = GraphBuilder.directed().build();
 		ImmutableGraph<Criterion> r_s;
 
@@ -327,11 +327,11 @@ public class LabreucheModel {
 			r_s = Tools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
 			for (EndpointPair<Criterion> cp : r_s.edges()) {
-					cpls.putEdge(cp.nodeU(), cp.nodeV());
+				cpls.putEdge(cp.nodeU(), cp.nodeV());
 			}
 
 			r_s = null;
-		}	
+		}
 
 		ImmutableGraph<Criterion> rStar = Tools.buildRStarG(cpls);
 

@@ -422,10 +422,10 @@ public class Tools {
 	}
 
 	/* * * * * * * * * * Methods for build R Star used in IVT anchor * * * * * */
-	
+
 	static ImmutableGraph<Criterion> couples_ofG(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-		
+
 		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 
 		for (Criterion c1 : l) {
@@ -439,7 +439,7 @@ public class Tools {
 		}
 		return ImmutableGraph.copyOf(result);
 	}
-	
+
 	static ImmutableGraph<Criterion> r_topG(Graph<Criterion> graph) {
 		boolean change_flag = false; // -> list_c have a new couple added, falg = true;
 
@@ -459,7 +459,7 @@ public class Tools {
 					// (a b) , (c d) => b=c and a!=d
 					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())) {
 						if (!copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
-							copy.putEdge(c1.nodeU(),  c2.nodeV());
+							copy.putEdge(c1.nodeU(), c2.nodeV());
 							change_flag = true;
 						}
 					}
@@ -508,20 +508,19 @@ public class Tools {
 					singleton.putEdge(edge.nodeU(), edge.nodeV());
 					subsets.add(singleton);
 				}
-				
+
 			} else {
-				
-				
+
 				Set<MutableGraph<Criterion>> copy_subsets = new LinkedHashSet<>(subsets);
 				MutableGraph<Criterion> new_subset = GraphBuilder.directed().build();
 				MutableGraph<Criterion> set_light = Graphs.copyOf(set);
 
 				for (MutableGraph<Criterion> subset : copy_subsets) {
-					
-					for(EndpointPair<Criterion> edge : subset.edges()) {
+
+					for (EndpointPair<Criterion> edge : subset.edges()) {
 						set_light.removeEdge(edge.nodeU(), edge.nodeV());
 					}
-					
+
 					if (set_light.edges().size() >= 1) {
 						for (EndpointPair<Criterion> c : set_light.edges()) {
 							new_subset = addCoupleG(subset, c);
@@ -530,22 +529,22 @@ public class Tools {
 						subsets.remove(subset);
 					}
 					subsets.remove(subset);
-					
-					for(EndpointPair<Criterion> edge : subset.edges())
+
+					for (EndpointPair<Criterion> edge : subset.edges())
 						set_light.putEdge(edge.nodeU(), edge.nodeV());
 				}
 			}
 		}
-		
+
 		Set<ImmutableGraph<Criterion>> result = new LinkedHashSet<>();
-		
-		for(MutableGraph<Criterion> g : subsets) {
+
+		for (MutableGraph<Criterion> g : subsets) {
 			result.add(ImmutableGraph.copyOf(g));
 		}
 
 		return result;
 	}
-	
+
 	static Set<ImmutableGraph<Criterion>> allSubsetCoupleG(Graph<Criterion> cpls) {
 		Set<ImmutableGraph<Criterion>> result = new LinkedHashSet<>();
 
@@ -564,7 +563,7 @@ public class Tools {
 	static MutableGraph<Criterion> addCoupleG(Graph<Criterion> graph, EndpointPair<Criterion> edge) {
 		MutableGraph<Criterion> new_graph = Graphs.copyOf(graph);
 		new_graph.putEdge(edge.nodeU(), edge.nodeV());
-		
+
 		return new_graph;
 	}
 
