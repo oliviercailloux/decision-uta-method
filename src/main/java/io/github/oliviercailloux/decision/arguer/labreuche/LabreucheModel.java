@@ -178,37 +178,38 @@ public class LabreucheModel {
 
 	/**
 	 * @return the right explanation of the problem given in alternativesComparison.
-	 * @throws IllegalException
-	 *             if none anchors applicable. Precondition : This function can be
-	 *             called only if labreucheOutput is null.
+	 * @throws IllegalException if none anchors applicable. 
+	 * @precondition : labreucheOutput == null.
 	 */
 	private LabreucheOutput computeExplanation() {
 		Preconditions.checkState(labreucheOutput == null);
 
 		if (tryALL()) {
-			assert !(labreucheOutput == null);
+			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
 		if (tryNOA()) {
-			assert !(labreucheOutput == null);
+			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
 		if (tryIVT()) {
-			assert !(labreucheOutput == null);
+			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
 		if (tryRMGAVG()) {
-			assert !(labreucheOutput == null);
+			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
 		if (tryRMGCOMP()) {
-			assert !(labreucheOutput == null);
+			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
 		throw new IllegalStateException();
 	}
 
 	private boolean tryALL() {
+		Preconditions.checkState(labreucheOutput == null);
+
 		for (Double v : alternativesComparison.getDelta().values()) {
 			if (v < 0.0) {
 				LOGGER.info("ALL false");
@@ -223,6 +224,8 @@ public class LabreucheModel {
 	}
 
 	private boolean tryNOA() {
+		Preconditions.checkState(labreucheOutput == null);
+
 		if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
 				.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
 			LOGGER.info("NOA false");
@@ -263,6 +266,8 @@ public class LabreucheModel {
 	}
 
 	private boolean tryIVT() {
+		Preconditions.checkState(labreucheOutput == null);
+
 		int size = 2;
 		List<List<Criterion>> subsets = new ArrayList<>();
 		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
@@ -287,9 +292,10 @@ public class LabreucheModel {
 			subsets = Tools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				d_eu = Tools.d_eu(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta())
-						.getLeft();
-				pi = Tools.pi_min(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+				Couple<Double, List<Criterion>> res = Tools.d_eu(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+				d_eu = res.getLeft();
+				pi = res.getRight();
+				
 				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
 					setCIVT.add(subset);
 				}
@@ -344,6 +350,8 @@ public class LabreucheModel {
 	}
 
 	private boolean tryRMGAVG() {
+		Preconditions.checkState(labreucheOutput == null);
+
 		double max_w = getMaxW();
 
 		if (max_w <= epsilon) {
@@ -373,6 +381,8 @@ public class LabreucheModel {
 	}
 
 	private boolean tryRMGCOMP() {
+		Preconditions.checkState(labreucheOutput == null);
+
 		double max_w1 = getMaxW();
 
 		if (max_w1 > epsilon) {

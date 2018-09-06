@@ -369,7 +369,7 @@ public class Tools {
 				do {
 					LOGGER.debug(k + "");
 
-					if (d_eu(a.get(k), w, delta) == d_eu(b.get(k), w, delta))
+					if (d_eu(a.get(k), w, delta).getLeft() == d_eu(b.get(k), w, delta).getLeft())
 						k++;
 					else
 						break;
