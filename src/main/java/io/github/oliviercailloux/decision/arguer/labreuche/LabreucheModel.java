@@ -193,8 +193,8 @@ public class LabreucheModel {
 				
 				double sum = 0.0;
 				
-				if(!c.isEmpty()) {
-					for(List<Criterion> perm : c) {
+				if(!cPrime.isEmpty()) {
+					for(List<Criterion> perm : cPrime) {
 						sum += Tools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta()).getLeft();
 					}
 				}
@@ -221,7 +221,7 @@ public class LabreucheModel {
 					return b_copy;
 				}
 			}
-			
+			c_copy = new ArrayList<>(c);	
 		}
 		
 		List<List<Criterion>> empty = new ArrayList<>();
