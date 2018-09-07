@@ -331,16 +331,20 @@ public class Tools {
 	// return true if a is include in b in a sense en include_discri
 	static boolean includeDiscri(List<List<Criterion>> a, List<List<Criterion>> b, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
-		boolean result = true;
+		
+		if(a.isEmpty() && b.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
 
 		if (a.isEmpty())
-			return true;
+			return false;
 
 		if (b.isEmpty()) {
-			if (!a.isEmpty())
-				return false;
 			return true;
 		}
+		
+		boolean result = true;
+
 
 		if (a.size() > b.size())
 			return false;

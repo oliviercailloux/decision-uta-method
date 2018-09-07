@@ -99,7 +99,7 @@ public class LabreucheModel {
 
 		LOGGER.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
 
-			List<List<Criterion>> a_copy = new ArrayList<>(a);
+		List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
 		List<List<Criterion>> f = new ArrayList<>();
 
@@ -167,6 +167,65 @@ public class LabreucheModel {
 
 		LOGGER.debug("#### END ALGO EU : k = " + k);
 
+		return empty;
+	}
+	
+	
+
+	
+	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k){
+		LOGGER.info("CALLING ALGO( "+ Utils.showSet(c)+ " , "+ Utils.showSet(b)+ " , "+ k + 	" )" );	
+		
+		List<List<Criterion>> c_copy = new ArrayList<>(c);
+		List<List<Criterion>> b_copy = new ArrayList<>(b);
+		List<List<Criterion>> cPrime = new ArrayList<>();
+		List<Criterion> currentPerm = new ArrayList<>();
+		
+		for(int i = k; i < setCIVT.size(); i++) {
+			currentPerm = setCIVT.get(i);
+			
+			LOGGER.info(k + " " + i +" Current permutation : " + Utils.showCriteria(currentPerm) +" current c = "+ Utils.showSet(c)+" cap = "+ Tools.isCapEmpty(c, currentPerm));
+			
+			
+			if(Tools.isCapEmpty(c,currentPerm)) {
+				cPrime = new ArrayList<>(c_copy);
+				cPrime.add(currentPerm);
+				
+				double sum = 0.0;
+				
+				if(!c.isEmpty()) {
+					for(List<Criterion> perm : c) {
+						sum += Tools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta()).getLeft();
+					}
+				}
+				
+				double vXminusVY = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
+						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+				
+				c_copy.add(currentPerm);
+				
+				if(sum < vXminusVY) {
+					LOGGER.info("BRANCHING : c = "+ Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy) + " " + (i+1));
+					cPrime = algo(c_copy,b_copy,i+1);
+				}
+				
+				if(Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(), alternativesComparison.getDelta())) {
+					LOGGER.info("UPDATE B!");
+					b_copy = new ArrayList<>(cPrime);
+				}
+				
+				LOGGER.info(Utils.showSet(c_copy) + " incluDiscri "+ Utils.showSet(b_copy));
+				
+				if(!Tools.includeDiscri(c_copy, b_copy, alternativesComparison.getWeight(), alternativesComparison.getDelta())){
+					LOGGER.info("RETURN B");
+					return b_copy;
+				}
+			}
+			
+		}
+		
+		List<List<Criterion>> empty = new ArrayList<>();
+		LOGGER.info("RETURN EMPTY");
 		return empty;
 	}
 
@@ -277,9 +336,9 @@ public class LabreucheModel {
 
 		int size = 2;
 		List<List<Criterion>> subsets = new ArrayList<>();
-		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo_eu calls
-		List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo_eu calls
-		List<List<Criterion>> big_c = new ArrayList<>(); // result of algo_eu
+		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo() calls
+		List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo() calls
+		List<List<Criterion>> big_c = new ArrayList<>(); // result of algo()
 		Double d_eu = null;
 		List<Criterion> pi = new ArrayList<>();
 
@@ -304,7 +363,7 @@ public class LabreucheModel {
 				d_eu = res.getLeft();
 				pi = res.getRight();
 
-				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
+				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi)) {
 					setCIVT.add(subset);
 				}
 
@@ -320,7 +379,7 @@ public class LabreucheModel {
 						+ Utils.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
-			big_c = algoEU(big_a, big_b, 0);
+			big_c = algo(big_a, big_b, 0);
 			size++;
 
 		} while (big_c.isEmpty() && size <= alternativesComparison.getCriteria().size());
