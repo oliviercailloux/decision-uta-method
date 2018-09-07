@@ -113,7 +113,7 @@ libortools.so and libjniortools.so, you can get them here
 ```
 https://developers.google.com/optimization/install/java/linux
 ``` 
-We used the binary distribution version v6.7.4981 for Ubuntu 16.04 64bit. 
+We used the binary distribution version v6.7.4981 for Ubuntu 14.04 64bit. We choose this version for Unbuntu 14.04 because we needed a version working on TRAVIS and ours computers (Ubuntu 16.04 and DeBian 9 Stretch).
 Download and unzip it, collect them in their /lib repository and stored them in /decision-uta-method/lib repository.
 
 
