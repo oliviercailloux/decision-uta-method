@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,47 +118,34 @@ public class LabreucheModelTest {
 
 		LabreucheModel lm = Examples.getExample15();
 
-		IVTOutput ivt = lm.getIVTExplanation();
-		IVTOutput ivtExpected = Examples.getExample15Output();
+		List<List<Criterion>> permutationExpected = Examples.getExample15Permutation();
 
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+		assertEquals(permutationExpected, lm.getIVTPermutation());
 	}
 
 	@Test
-	public void testExample16() {
+	public void testExample16Permutation() {
 		LOGGER.info("Example 16 test");
 
 		LabreucheModel lm = Examples.getExample16();
 
-		IVTOutput ivt = lm.getIVTExplanation();
-		IVTOutput ivtExpected = Examples.getExample16Output();
-
-		LOGGER.info("Graph in ivt actual");
-		for (EndpointPair<Criterion> end : ivt.getRStar().edges())
-			LOGGER.info(end.nodeU().getName() + " -> " + end.nodeV().getName());
-
-		LOGGER.info("Graph in ivt expected");
-		for (EndpointPair<Criterion> end : ivtExpected.getRStar().edges())
-			LOGGER.info(end.nodeU().getName() + " -> " + end.nodeV().getName());
+		List<List<Criterion>> permutationExpected = Examples.getExample16Permutation();
 		
-		lm.solvesProblem();
-
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+		assertEquals(permutationExpected, lm.getIVTPermutation());
 	}
 
 	// @Test
-	public void testExample10() {
+	public void testExample10Permutation() {
 		LOGGER.info("Example 10 test");
 
 		LabreucheModel lm = Examples.getExample10();
 
-		IVTOutput ivt = lm.getIVTExplanation();
-		IVTOutput ivtExpected = Examples.getExample10Output();
+		List<List<Criterion>> permutationExpected = Examples.getExample10Permutation();
 
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+		assertEquals(permutationExpected, lm.getIVTPermutation());
 	}
 
 }

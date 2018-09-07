@@ -40,6 +40,7 @@ public class LabreucheModel {
 
 	private AlternativesComparison alternativesComparison;
 	private double epsilon;
+	private List<List<Criterion>> ivtPermutation;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
@@ -47,6 +48,7 @@ public class LabreucheModel {
 		public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 
+		this.ivtPermutation = new ArrayList<>();
 		this.setCIVT = new ArrayList<>();
 		this.epsilon = 0.2 / this.alternativesComparison.getWeight().keySet().size();
 		this.labreucheOutput = null;
@@ -78,6 +80,10 @@ public class LabreucheModel {
 
 	public LabreucheOutput getLabreucheOutput() {
 		return this.labreucheOutput;
+	}
+	
+	public List<List<Criterion>> getIVTPermutation(){
+		return this.ivtPermutation;
 	}
 
 	/****************************************************************************************
@@ -319,7 +325,9 @@ public class LabreucheModel {
 
 		} while (big_c.isEmpty() && size <= alternativesComparison.getCriteria().size());
 
-		if (big_c.isEmpty()) {
+		ivtPermutation = big_c;
+		
+		if (ivtPermutation.isEmpty()) {
 			LOGGER.info("IVT false");
 			return false;
 		}
