@@ -422,19 +422,21 @@ public class Examples {
 	public static List<List<Criterion>> getExample10Permutation() {
 
 		List<List<Criterion>> permutationsExpected = new ArrayList<>();
-		
+
 		List<Criterion> perm1 = new ArrayList<>();
 		List<Criterion> perm2 = new ArrayList<>();
-		
+
 		Criterion c6 = new Criterion(6, "c6", new ArrayList<Double>());
 		Criterion c8 = new Criterion(8, "c8", new ArrayList<Double>());
-				
+
 		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
 		Criterion c9 = new Criterion(9, "c9", new ArrayList<Double>());
-		
-		perm1.add(c6); perm1.add(c8);
-		perm2.add(c3); perm2.add(c9);
-		
+
+		perm1.add(c6);
+		perm1.add(c8);
+		perm2.add(c3);
+		perm2.add(c9);
+
 		permutationsExpected.add(perm1);
 		permutationsExpected.add(perm2);
 
@@ -466,42 +468,43 @@ public class Examples {
 	}
 
 	public static List<List<Criterion>> getExample15Permutation() {
-		
+
 		List<List<Criterion>> permutationsExpected = new ArrayList<>();
-		
+
 		List<Criterion> perm1 = new ArrayList<>();
-		
+
 		Criterion c4 = new Criterion(4, "c4", new ArrayList<Double>());
 		Criterion c6 = new Criterion(6, "c6", new ArrayList<Double>());
-		
-		perm1.add(c4); perm1.add(c6);
-	
-		
+
+		perm1.add(c4);
+		perm1.add(c6);
+
 		permutationsExpected.add(perm1);
 
 		return permutationsExpected;
 	}
 
-	public static List<List<Criterion>>  getExample16Permutation() {
+	public static List<List<Criterion>> getExample16Permutation() {
 		List<List<Criterion>> permutationsExpected = new ArrayList<>();
-		
+
 		List<Criterion> perm1 = new ArrayList<>();
 		List<Criterion> perm2 = new ArrayList<>();
-		
+
 		Criterion c1 = new Criterion(1, "c1", new ArrayList<Double>());
 		Criterion c7 = new Criterion(7, "c7", new ArrayList<Double>());
-		
+
 		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
 		Criterion c4 = new Criterion(4, "c4", new ArrayList<Double>());
 
-		
-		perm1.add(c1); perm1.add(c7);
-		perm2.add(c3); perm2.add(c4);
-		
+		perm1.add(c1);
+		perm1.add(c7);
+		perm2.add(c3);
+		perm2.add(c4);
+
 		permutationsExpected.add(perm1);
 		permutationsExpected.add(perm2);
 
-		return permutationsExpected;		
+		return permutationsExpected;
 	}
 
 	public static RMGCOMPOutput getExample17Output() {

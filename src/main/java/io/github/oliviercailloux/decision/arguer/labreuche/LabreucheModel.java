@@ -44,8 +44,8 @@ public class LabreucheModel {
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
-	
-		public LabreucheModel(AlternativesComparison alternativesComparaison) {
+
+	public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 
 		this.ivtPermutation = new ArrayList<>();
@@ -81,8 +81,8 @@ public class LabreucheModel {
 	public LabreucheOutput getLabreucheOutput() {
 		return this.labreucheOutput;
 	}
-	
-	public List<List<Criterion>> getIVTPermutation(){
+
+	public List<List<Criterion>> getIVTPermutation() {
 		return this.ivtPermutation;
 	}
 
@@ -100,7 +100,8 @@ public class LabreucheModel {
 		LOGGER.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
 
 		List<List<Criterion>> a_copy = new ArrayList<>(a);
-		List<List<Criterion>> b_copy = new ArrayList<>(b);
+		List<List<Criterion>> b_copy = new ArrayList<>();
+
 		List<List<Criterion>> f = new ArrayList<>();
 
 		for (int i = k; i < setCIVT.size(); i++) { // L1
@@ -169,64 +170,75 @@ public class LabreucheModel {
 
 		return empty;
 	}
-	
-	
 
-	
-	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k){
-		LOGGER.info("CALLING ALGO( "+ Utils.showSet(c)+ " , "+ Utils.showSet(b)+ " , "+ k + 	" )" );	
-		
+	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
+		LOGGER.debug("CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
+
 		List<List<Criterion>> c_copy = new ArrayList<>(c);
-		List<List<Criterion>> b_copy = new ArrayList<>(b);
+		List<List<Criterion>> b_copy;
+
+		if (b == null) {
+			b_copy = new ArrayList<>();
+		} else {
+			b_copy = new ArrayList<>(b);
+		}
+
 		List<List<Criterion>> cPrime = new ArrayList<>();
 		List<Criterion> currentPerm = new ArrayList<>();
-		
-		for(int i = k; i < setCIVT.size(); i++) {
+
+		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
-			
-			LOGGER.info(k + " " + i +" Current permutation : " + Utils.showCriteria(currentPerm) +" current c = "+ Utils.showSet(c)+" cap = "+ Tools.isCapEmpty(c, currentPerm));
-			
-			
-			if(Tools.isCapEmpty(c,currentPerm)) {
+
+			LOGGER.debug(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
+					+ Utils.showSet(c) + " cap = " + Tools.isCapEmpty(c, currentPerm));
+
+			if (Tools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(c_copy);
 				cPrime.add(currentPerm);
-				
+
 				double sum = 0.0;
-				
-				if(!cPrime.isEmpty()) {
-					for(List<Criterion> perm : cPrime) {
-						sum += Tools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta()).getLeft();
+
+				if (!cPrime.isEmpty()) {
+					for (List<Criterion> perm : cPrime) {
+						sum += Tools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+								.getLeft();
 					}
 				}
-				
+
 				double vXminusVY = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
 						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
-				
+
 				c_copy.add(currentPerm);
-				
-				if(sum < vXminusVY) {
-					LOGGER.info("BRANCHING : c = "+ Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy) + " " + (i+1));
-					cPrime = algo(c_copy,b_copy,i+1);
+
+				if (sum < vXminusVY) {
+					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy)
+							+ " " + (i + 1));
+					cPrime = algo(c_copy, b_copy, i + 1);
+					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy) + " "
+							+ (i + 1));
 				}
-				
-				if(Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(), alternativesComparison.getDelta())) {
-					LOGGER.info("UPDATE B!");
+
+				if (Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(),
+						alternativesComparison.getDelta())) {
+					LOGGER.debug("UPDATE B!");
 					b_copy = new ArrayList<>(cPrime);
 				}
-				
-				LOGGER.info(Utils.showSet(c_copy) + " incluDiscri "+ Utils.showSet(b_copy));
-				
-				if(!Tools.includeDiscri(c_copy, b_copy, alternativesComparison.getWeight(), alternativesComparison.getDelta())){
-					LOGGER.info("RETURN B");
+
+				c_copy.add(currentPerm);
+
+				LOGGER.debug(Utils.showSet(c_copy) + " incluDiscri " + Utils.showSet(b_copy));
+
+				if (!Tools.includeDiscri(c_copy, b_copy, alternativesComparison.getWeight(),
+						alternativesComparison.getDelta())) {
+					LOGGER.debug("RETURN B");
 					return b_copy;
 				}
 			}
-			c_copy = new ArrayList<>(c);	
+			c_copy = new ArrayList<>(c);
 		}
-		
-		List<List<Criterion>> empty = new ArrayList<>();
-		LOGGER.info("RETURN EMPTY");
-		return empty;
+
+		LOGGER.debug("RETURN INVALID");
+		return null;
 	}
 
 	/*
@@ -338,7 +350,7 @@ public class LabreucheModel {
 		List<List<Criterion>> subsets = new ArrayList<>();
 		List<List<Criterion>> big_a = new ArrayList<>(); // -> first variable for algo() calls
 		List<List<Criterion>> big_b = new ArrayList<>(); // -> second variable for algo() calls
-		List<List<Criterion>> big_c = new ArrayList<>(); // result of algo()
+		List<List<Criterion>> big_c; // result of algo()
 		Double d_eu = null;
 		List<Criterion> pi = new ArrayList<>();
 
@@ -351,7 +363,6 @@ public class LabreucheModel {
 			pi.clear();
 			big_a.clear();
 			big_b.clear();
-			big_c.clear();
 			subsets.clear();
 			setCIVT.clear();
 
@@ -379,15 +390,14 @@ public class LabreucheModel {
 						+ Utils.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
-			big_c = algo(big_a, big_b, 0);
+			big_c = algo(big_a, null, 0);
 			size++;
 
-		} while (big_c.isEmpty() && size <= alternativesComparison.getCriteria().size());
+		} while (big_c == null && size <= alternativesComparison.getCriteria().size());
 
 		ivtPermutation = big_c;
-		
-		if (ivtPermutation.isEmpty()) {
-			LOGGER.info("IVT false");
+
+		if (ivtPermutation == null) {
 			return false;
 		}
 
@@ -396,9 +406,9 @@ public class LabreucheModel {
 		MutableGraph<Criterion> cpls = GraphBuilder.directed().build();
 		ImmutableGraph<Criterion> r_s;
 
-		LOGGER.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
+		LOGGER.debug("Minimal permutation : " + Utils.showSet(ivtPermutation) + "\n");
 
-		for (List<Criterion> l : big_c) {
+		for (List<Criterion> l : ivtPermutation) {
 
 			r_s = Tools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 

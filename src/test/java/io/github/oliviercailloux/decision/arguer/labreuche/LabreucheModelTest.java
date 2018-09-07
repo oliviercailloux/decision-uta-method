@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.graph.EndpointPair;
-
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
@@ -131,7 +129,7 @@ public class LabreucheModelTest {
 		LabreucheModel lm = Examples.getExample16();
 
 		List<List<Criterion>> permutationExpected = Examples.getExample16Permutation();
-		
+
 		assertTrue(lm.isApplicable(Anchor.IVT));
 		assertEquals(permutationExpected, lm.getIVTPermutation());
 	}
