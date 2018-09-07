@@ -16,9 +16,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesCompariso
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**
- *
  * Immutable.
- *
  */
 public class IVTOutput implements LabreucheOutput {
 

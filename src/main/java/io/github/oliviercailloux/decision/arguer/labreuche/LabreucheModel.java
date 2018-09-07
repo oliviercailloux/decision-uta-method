@@ -43,8 +43,8 @@ public class LabreucheModel {
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
-
-	public LabreucheModel(AlternativesComparison alternativesComparaison) {
+	
+		public LabreucheModel(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 
 		this.setCIVT = new ArrayList<>();
@@ -93,7 +93,7 @@ public class LabreucheModel {
 
 		LOGGER.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
 
-		List<List<Criterion>> a_copy = new ArrayList<>(a);
+			List<List<Criterion>> a_copy = new ArrayList<>(a);
 		List<List<Criterion>> b_copy = new ArrayList<>(b);
 		List<List<Criterion>> f = new ArrayList<>();
 
@@ -178,7 +178,8 @@ public class LabreucheModel {
 
 	/**
 	 * @return the right explanation of the problem given in alternativesComparison.
-	 * @throws IllegalException if none anchors applicable. 
+	 * @throws IllegalException
+	 *             if none anchors applicable.
 	 * @precondition : labreucheOutput == null.
 	 */
 	private LabreucheOutput computeExplanation() {
@@ -292,10 +293,11 @@ public class LabreucheModel {
 			subsets = Tools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				Couple<Double, List<Criterion>> res = Tools.d_eu(subset, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+				Couple<Double, List<Criterion>> res = Tools.d_eu(subset, alternativesComparison.getWeight(),
+						alternativesComparison.getDelta());
 				d_eu = res.getLeft();
 				pi = res.getRight();
-				
+
 				if (d_eu > 0 && pi.containsAll(subset) && subset.containsAll(pi) && pi.containsAll(subset)) {
 					setCIVT.add(subset);
 				}
@@ -330,6 +332,7 @@ public class LabreucheModel {
 		LOGGER.debug("Minimal permutation : " + Utils.showSet(big_c) + "\n");
 
 		for (List<Criterion> l : big_c) {
+
 			r_s = Tools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
 			for (EndpointPair<Criterion> cp : r_s.edges()) {
@@ -339,7 +342,7 @@ public class LabreucheModel {
 			r_s = null;
 		}
 
-		ImmutableGraph<Criterion> rStar = Tools.buildRStarG(cpls);
+		ImmutableGraph<Criterion> rStar = Tools.buildRStarG(ImmutableGraph.copyOf(cpls));
 
 		// R* determined
 
@@ -529,8 +532,8 @@ public class LabreucheModel {
 			RMGCOMPOutput phiRMGCOMP = (RMGCOMPOutput) labreucheOutput;
 
 			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
-			Double maxW = phiRMGCOMP.getMaxW();
-			Double eps = phiRMGCOMP.getEpsilon();
+			double maxW = phiRMGCOMP.getMaxW();
+			double eps = phiRMGCOMP.getEpsilon();
 
 			if (maxW > eps) {
 				if (maxW <= eps * 2) {

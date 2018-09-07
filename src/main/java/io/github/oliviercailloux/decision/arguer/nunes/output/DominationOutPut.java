@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer.nunes;
+package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import java.util.Map;
 
@@ -19,7 +19,6 @@ public class DominationOutPut implements NunesOutPut {
 		deltas = d;
 	}
 
-	@Override
 	public String argue() {
 
 		if (particular_case_domination)
@@ -50,6 +49,11 @@ public class DominationOutPut implements NunesOutPut {
 		}
 
 		return true;
+	}
+
+	@Override
+	public Pattern getPattern() {
+		return Pattern.DOMINATION;
 	}
 
 }

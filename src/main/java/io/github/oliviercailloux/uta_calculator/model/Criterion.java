@@ -1,6 +1,7 @@
 package io.github.oliviercailloux.uta_calculator.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -76,7 +77,7 @@ public class Criterion {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return Objects.hash(id);
 	}
 
 }

@@ -1,6 +1,6 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -8,160 +8,155 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.graph.EndpointPair;
+
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
-import io.github.oliviercailloux.uta_calculator.view.MainLabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
+import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
+import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheModelTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
 
 	@Test
-	public void labreucheModelNOATest() {
-		MainLabreucheModel mlm5 = new MainLabreucheModel(5);
-		MainLabreucheModel mlm6 = new MainLabreucheModel(6);
-		MainLabreucheModel mlm13 = new MainLabreucheModel(13);
-		MainLabreucheModel mlm14 = new MainLabreucheModel(14);
+	public void testExampl5() {
+		LOGGER.info("Example 5 test");
 
-		LOGGER.info("anchor ALL applicable on NOA examples?");
+		LabreucheModel lm = Examples.getExample5();
 
-		assertFalse(mlm5.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm6.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm13.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm14.lm.isApplicable(Anchor.ALL));
+		NOAOutput noa = lm.getNOAExplanation();
+		NOAOutput noaExpected = Examples.getExample5Output();
 
-		LOGGER.info("anchor NOA applicable on NOA examples?");
-
-		assertTrue(mlm5.lm.isApplicable(Anchor.NOA));
-		assertTrue(mlm6.lm.isApplicable(Anchor.NOA));
-		assertTrue(mlm13.lm.isApplicable(Anchor.NOA));
-		assertTrue(mlm14.lm.isApplicable(Anchor.NOA));
-
-		LOGGER.info("anchor IVT applicable on NOA examples?");
-
-		assertFalse(mlm5.lm.isApplicable(Anchor.IVT));
-		assertFalse(mlm6.lm.isApplicable(Anchor.IVT));
-		assertFalse(mlm13.lm.isApplicable(Anchor.IVT));
-		assertFalse(mlm14.lm.isApplicable(Anchor.IVT));
-
-		LOGGER.info("anchor RMGAVG applicable on NOA examples?");
-
-		assertFalse(mlm5.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm6.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm13.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm14.lm.isApplicable(Anchor.RMGAVG));
-
-		LOGGER.info("anchor RMGCOMP applicable on NOA examples?");
-
-		assertFalse(mlm5.lm.isApplicable(Anchor.RMGCOMP));
-		assertFalse(mlm6.lm.isApplicable(Anchor.RMGCOMP));
-		assertFalse(mlm13.lm.isApplicable(Anchor.RMGCOMP));
-		assertFalse(mlm14.lm.isApplicable(Anchor.RMGCOMP));
-
-		LOGGER.info("Checking if getExplenation() return not null");
-
-		assertNotNull(mlm5.lm.getExplanation());
-		assertNotNull(mlm6.lm.getExplanation());
-		assertNotNull(mlm13.lm.getExplanation());
-		assertNotNull(mlm14.lm.getExplanation());
-
-		LOGGER.info("cheking if arguer() return not null");
-
-		assertNotNull(mlm5.lm.arguer());
-		assertNotNull(mlm6.lm.arguer());
-		assertNotNull(mlm13.lm.arguer());
-		assertNotNull(mlm14.lm.arguer());
+		assertTrue(lm.isApplicable(Anchor.NOA));
+		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
 	}
 
 	@Test
-	public void labreucheModelRMGAVGTest() {
-		MainLabreucheModel mlm = new MainLabreucheModel(18);
+	public void testExampl6() {
+		LOGGER.info("Example 6 test");
 
-		LOGGER.info("anchor all anchors applicable on RMGAVG examples?");
+		LabreucheModel lm = Examples.getExample6();
 
-		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm.lm.isApplicable(Anchor.NOA));
-		assertFalse(mlm.lm.isApplicable(Anchor.IVT));
-		assertTrue(mlm.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm.lm.isApplicable(Anchor.RMGCOMP));
-		assertNotNull(mlm.lm.getExplanation());
-		assertNotNull(mlm.lm.arguer());
+		NOAOutput noa = lm.getNOAExplanation();
+		NOAOutput noaExpected = Examples.getExample6Output();
+
+		assertTrue(lm.isApplicable(Anchor.NOA));
+		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
 	}
 
 	@Test
-	public void labreucheModelRMGCOMPTest() {
-		MainLabreucheModel mlm = new MainLabreucheModel(17);
+	public void testExample13() {
+		LOGGER.info("Example 13 test");
 
-		LOGGER.info("anchor all anchors applicable on RMGCOMP examples?");
+		LabreucheModel lm = Examples.getExample13();
 
-		assertFalse(mlm.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm.lm.isApplicable(Anchor.NOA));
-		assertFalse(mlm.lm.isApplicable(Anchor.IVT));
-		assertFalse(mlm.lm.isApplicable(Anchor.RMGAVG));
-		assertTrue(mlm.lm.isApplicable(Anchor.RMGCOMP));
-		assertNotNull(mlm.lm.getExplanation());
-		assertNotNull(mlm.lm.arguer());
+		NOAOutput noa = lm.getNOAExplanation();
+		NOAOutput noaExpected = Examples.getExample13Output();
+
+		assertTrue(lm.isApplicable(Anchor.NOA));
+		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
 	}
 
 	@Test
-	public void labreucheModelIVTTest() {
-		MainLabreucheModel mlm9 = new MainLabreucheModel(9);
-		MainLabreucheModel mlm15 = new MainLabreucheModel(15);
-		MainLabreucheModel mlm16 = new MainLabreucheModel(16);
+	public void testExampl14() {
+		LOGGER.info("Example 14 test");
 
-		LOGGER.info("anchor ALL applicable on IVT examples?");
+		LabreucheModel lm = Examples.getExample14();
 
-		assertFalse(mlm9.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm15.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm16.lm.isApplicable(Anchor.ALL));
+		NOAOutput noa = lm.getNOAExplanation();
+		NOAOutput noaExpected = Examples.getExample14Output();
 
-		LOGGER.info("anchor NOA applicable on IVT examples?");
+		assertTrue(lm.isApplicable(Anchor.NOA));
+		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
+	}
 
-		assertFalse(mlm9.lm.isApplicable(Anchor.NOA));
-		assertFalse(mlm15.lm.isApplicable(Anchor.NOA));
-		assertFalse(mlm16.lm.isApplicable(Anchor.NOA));
+	@Test
+	public void testExample18() {
+		LOGGER.info("Example 18 test");
 
-		LOGGER.info("anchor IVT applicable on IVT examples?");
+		LabreucheModel lm = Examples.getExample18();
 
-		assertTrue(mlm9.lm.isApplicable(Anchor.IVT));
-		assertTrue(mlm15.lm.isApplicable(Anchor.IVT));
-		assertTrue(mlm16.lm.isApplicable(Anchor.IVT));
+		RMGAVGOutput rmgavg = lm.getRMGAVGExplanation();
 
-		LOGGER.info("anchor RMGAVG applicable on IVT examples?");
+		assertTrue(lm.isApplicable(Anchor.RMGAVG));
+		assertNotNull(rmgavg);
+	}
 
-		assertFalse(mlm9.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm15.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm16.lm.isApplicable(Anchor.RMGAVG));
+	@Test
+	public void testExample17() {
+		LOGGER.info("Example 17 test");
 
-		LOGGER.info("anchor RMGCOMP applicable on IVT examples?");
+		LabreucheModel lm = Examples.getExample17();
 
-		assertFalse(mlm9.lm.isApplicable(Anchor.RMGCOMP));
-		assertFalse(mlm15.lm.isApplicable(Anchor.RMGCOMP));
-		assertFalse(mlm16.lm.isApplicable(Anchor.RMGCOMP));
+		RMGCOMPOutput rmgcomp = lm.getRMGCOMPExplanation();
 
-		LOGGER.info("Checking if getExplenation() return not null");
+		assertTrue(lm.isApplicable(Anchor.RMGCOMP));
+		assertNotNull(rmgcomp);
+	}
 
-		assertNotNull(mlm9.lm.getExplanation());
-		assertNotNull(mlm15.lm.getExplanation());
-		assertNotNull(mlm16.lm.getExplanation());
+	@Test
+	public void testExample9() {
+		LOGGER.info("Example 9 test");
 
-		LOGGER.info("Checking if aruger() return not null");
+		LabreucheModel lm = Examples.getExample9();
 
-		assertNotNull(mlm9.lm.arguer());
-		assertNotNull(mlm15.lm.arguer());
-		assertNotNull(mlm16.lm.arguer());
+		IVTOutput ivt = lm.getIVTExplanation();
+		IVTOutput ivtExpected = Examples.getExample9Output();
+
+		assertTrue(lm.isApplicable(Anchor.IVT));
+		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+	}
+
+	@Test
+	public void testExample15() {
+		LOGGER.info("Example 15 test");
+
+		LabreucheModel lm = Examples.getExample15();
+
+		IVTOutput ivt = lm.getIVTExplanation();
+		IVTOutput ivtExpected = Examples.getExample15Output();
+
+		assertTrue(lm.isApplicable(Anchor.IVT));
+		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+	}
+
+	@Test
+	public void testExample16() {
+		LOGGER.info("Example 16 test");
+
+		LabreucheModel lm = Examples.getExample16();
+
+		IVTOutput ivt = lm.getIVTExplanation();
+		IVTOutput ivtExpected = Examples.getExample16Output();
+
+		LOGGER.info("Graph in ivt actual");
+		for (EndpointPair<Criterion> end : ivt.getRStar().edges())
+			LOGGER.info(end.nodeU().getName() + " -> " + end.nodeV().getName());
+
+		LOGGER.info("Graph in ivt expected");
+		for (EndpointPair<Criterion> end : ivtExpected.getRStar().edges())
+			LOGGER.info(end.nodeU().getName() + " -> " + end.nodeV().getName());
+		
+		lm.solvesProblem();
+
+		assertTrue(lm.isApplicable(Anchor.IVT));
+		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
 	}
 
 	// @Test
-	public void labreucehModelIVTExample10Test() {
-		MainLabreucheModel mlm10 = new MainLabreucheModel(10);
+	public void testExample10() {
+		LOGGER.info("Example 10 test");
 
-		assertFalse(mlm10.lm.isApplicable(Anchor.ALL));
-		assertFalse(mlm10.lm.isApplicable(Anchor.NOA));
-		assertTrue(mlm10.lm.isApplicable(Anchor.IVT));
-		assertFalse(mlm10.lm.isApplicable(Anchor.RMGAVG));
-		assertFalse(mlm10.lm.isApplicable(Anchor.RMGCOMP));
-		assertNotNull(mlm10.lm.getExplanation());
-		assertNotNull(mlm10.lm.arguer());
+		LabreucheModel lm = Examples.getExample10();
+
+		IVTOutput ivt = lm.getIVTExplanation();
+		IVTOutput ivtExpected = Examples.getExample10Output();
+
+		assertTrue(lm.isApplicable(Anchor.IVT));
+		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
 	}
 
 }

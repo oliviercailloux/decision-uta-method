@@ -5,8 +5,8 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class Constraint {
 
 	private Criterion criterion;
-	private Double treshold; // hard constraint
-	private boolean flag_min; // flag_min equal 0 if we want a better value than threshold on the criterion;
+	private Double treshold;
+	private boolean flag_min; // e qual 0 if we want a better value than threshold on the criterion;
 	private Double value_pref;
 	private boolean isHard; // isHardOrSoft equal 1 when it is a hard constraint
 	private int id;

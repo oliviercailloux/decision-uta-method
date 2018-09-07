@@ -26,12 +26,13 @@ public class Tools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Tools.class);
 
-	static Double score(Alternative x, Map<Criterion, Double> w) {
-		Double score = 0.0;
+	static double score(Alternative x, Map<Criterion, Double> w) {
+		double score = 0.0;
 
 		// Sum w_i * x_i
-		for (Criterion c : w.keySet())
+		for (Criterion c : w.keySet()) {
 			score += w.get(c) * x.getEvaluations().get(c);
+		}
 
 		return score;
 	}
@@ -142,8 +143,6 @@ public class Tools {
 			for (Criterion c : subset)
 				sum += delta.get(c) * w_modified.get(c);
 
-			LOGGER.debug("Current Min part of " + Utils.showCriteria(pi) + " = " + sum);
-
 			if (sum < min_pi_value) {
 				min_pi_value = sum;
 				min_pi = pi;
@@ -195,18 +194,8 @@ public class Tools {
 				List<Criterion> set_light = new ArrayList<>(set);
 
 				for (List<Criterion> subset : copy_subsets) {
-					LOGGER.debug("######## changing subset ###########");
 
 					int born_sup = set.indexOf(subset.get(subset.size() - 1));
-
-					LOGGER.debug(" subset " + Utils.showCriteria(subset));
-					LOGGER.debug(" last element " + subset.get(subset.size() - 1));
-					LOGGER.debug(" born sup " + born_sup);
-
-					LOGGER.debug(" before " + Utils.showCriteria(set_light));
-					LOGGER.debug("set : " + Utils.showCriteria(set));
-					LOGGER.debug(" sublist " + Utils.showCriteria(set.subList(0, born_sup + 1)));
-					// set_light.removeAll(subset);
 
 					set_light.removeAll(set.subList(0, born_sup + 1));
 

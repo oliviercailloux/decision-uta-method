@@ -1,10 +1,11 @@
-package io.github.oliviercailloux.decision.arguer.nunes;
+package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.nunes.Constraint;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -23,7 +24,6 @@ public class CutOffOutPut implements NunesOutPut {
 		this.values_constrain = new HashMap<>();
 	}
 
-	@Override
 	public String argue() {
 
 		return x.getName() + " is rejected because she doesn't satisfied the constrain on the criteria "
@@ -89,6 +89,11 @@ public class CutOffOutPut implements NunesOutPut {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Pattern getPattern() {
+		return Pattern.CUTOFF;
 	}
 
 }
