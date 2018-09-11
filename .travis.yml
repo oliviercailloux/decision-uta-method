@@ -14,5 +14,5 @@ notifications:
   on_failure: always
 addons:
   sonarcloud:
-    organization: "tonyseg-github
+    organization: tonyseg-github
 
