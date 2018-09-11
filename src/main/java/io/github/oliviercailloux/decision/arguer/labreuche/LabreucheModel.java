@@ -94,83 +94,6 @@ public class LabreucheModel {
 	 * @return the minimal set of permutation that inverse the decision between x
 	 *         and y.
 	 */
-
-	private List<List<Criterion>> algoEU(List<List<Criterion>> a, List<List<Criterion>> b, int k) {
-
-		LOGGER.debug(" \n #### Calling ALGO_EU : " + Utils.showSet(a) + " and k = " + k);
-
-		List<List<Criterion>> a_copy = new ArrayList<>(a);
-		List<List<Criterion>> b_copy = new ArrayList<>();
-
-		List<List<Criterion>> f = new ArrayList<>();
-
-		for (int i = k; i < setCIVT.size(); i++) { // L1
-
-			LOGGER.debug(k + " " + i + " T_i = " + Utils.showCriteria(setCIVT.get(i)) + " i = " + i);
-			LOGGER.debug(k + " " + i + " Is " + Utils.showSet(a) + " CAP " + Utils.showCriteria(setCIVT.get(i))
-					+ " empty  : " + Tools.isCapEmpty(a, setCIVT.get(i)));
-
-			if (Tools.isCapEmpty(a, setCIVT.get(i))) { // L2
-				Double sum = 0.0;
-
-				if (!a.isEmpty()) {
-					for (List<Criterion> l : a) {
-						sum += Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
-								.getLeft();
-					}
-				}
-				sum += Tools.d_eu(setCIVT.get(i), alternativesComparison.getWeight(), alternativesComparison.getDelta())
-						.getLeft();
-
-				Double hache = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
-						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
-
-				LOGGER.debug(k + " " + i + " sum better than hache? " + sum + " >= " + hache);
-
-				if (sum >= hache) { // L3
-					LOGGER.debug(k + " " + i + " Adding to F" + Utils.showCriteria(setCIVT.get(i)));
-					a_copy.add(setCIVT.get(i));
-					f = new ArrayList<>(a_copy); // L4
-				} else { // L5
-					a_copy.add(setCIVT.get(i));
-					LOGGER.debug(k + " " + i + " Calling algo_eu" + Utils.showSet(a_copy) + " " + Utils.showSet(b)
-							+ " , " + (i + 1));
-					f = algoEU(a_copy, b_copy, (i + 1)); // L6
-
-				}
-
-				LOGGER.debug(k + " " + i + " Test for update :" + !f.isEmpty() + " and [ " + b_copy.isEmpty() + " or "
-						+ Tools.includeDiscri(f, b, alternativesComparison.getWeight(),
-								alternativesComparison.getDelta())
-						+ " ]");
-
-				if (!f.isEmpty() && (b_copy.isEmpty() || Tools.includeDiscri(f, b_copy,
-						alternativesComparison.getWeight(), alternativesComparison.getDelta()))) { // L8
-					LOGGER.debug(k + " " + i + " UPDATE");
-					b_copy = new ArrayList<>(f); // L8
-				}
-
-				LOGGER.debug(k + " " + i + " A" + Utils.showSet(a));
-				LOGGER.debug(k + " " + i + " B" + Utils.showSet(b));
-				LOGGER.debug(
-						k + " " + i + " Test for return B :" + !b.isEmpty() + " and " + !Tools.includeDiscri(a_copy, b,
-								alternativesComparison.getWeight(), alternativesComparison.getDelta()));
-
-				if (!b_copy.isEmpty() && !Tools.includeDiscri(a_copy, b_copy, alternativesComparison.getWeight(),
-						alternativesComparison.getDelta())) { // L10
-					return b_copy;
-				}
-			}
-
-			a_copy.clear();
-		}
-		List<List<Criterion>> empty = new ArrayList<>();
-
-		LOGGER.debug("#### END ALGO EU : k = " + k);
-
-		return empty;
-	}
-
 	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
 		LOGGER.debug("CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
 
@@ -178,7 +101,7 @@ public class LabreucheModel {
 		List<List<Criterion>> b_copy;
 
 		if (b == null) {
-			b_copy = new ArrayList<>();
+			b_copy = null;
 		} else {
 			b_copy = new ArrayList<>(b);
 		}
@@ -213,18 +136,26 @@ public class LabreucheModel {
 				if (sum < vXminusVY) {
 					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy)
 							+ " " + (i + 1));
-					cPrime = algo(c_copy, b_copy, i + 1);
+					
+					if(b == null) {
+						cPrime = algo(c_copy, null, i + 1);
+					}
+					else {
+						cPrime = algo(c_copy, b_copy, i + 1);
+					}
+					
 					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy) + " "
 							+ (i + 1));
 				}
 
+				LOGGER.debug(Utils.showSet(cPrime) +" inclu_discri "+Utils.showSet(b_copy));
 				if (Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("UPDATE B!");
 					b_copy = new ArrayList<>(cPrime);
 				}
 
-				c_copy.add(currentPerm);
+				//c_copy.add(currentPerm);
 
 				LOGGER.debug(Utils.showSet(c_copy) + " incluDiscri " + Utils.showSet(b_copy));
 
@@ -516,131 +447,6 @@ public class LabreucheModel {
 		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
 	}
 
-	public String arguer() {
-		String explanation = "";
-
-		switch (labreucheOutput.getAnchor()) {
-		case ALL:
-			ALLOutput phiALL = (ALLOutput) labreucheOutput;
-
-			AlternativesComparison alcoALL = phiALL.getAlternativesComparison();
-
-			explanation = alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
-					+ alcoALL.getX().getName() + " is better then " + alcoALL.getY().getName() + " on ALL criteria.";
-
-			return explanation;
-
-		case NOA:
-			NOAOutput phiNOA = (NOAOutput) labreucheOutput;
-
-			AlternativesComparison alcoNOA = phiNOA.getAlternativesComparison();
-			Set<Criterion> ConPA = phiNOA.getPositiveNoaCriteria();
-			Set<Criterion> ConNA = phiNOA.getNegativeNoaCriteria();
-
-			explanation = "Even though " + alcoNOA.getY().getName() + " is better than " + alcoNOA.getX().getName()
-					+ " on average, " + alcoNOA.getX().getName() + " is preferred to " + alcoNOA.getY().getName()
-					+ " since \n" + alcoNOA.getX().getName() + " is better than " + alcoNOA.getY().getName()
-					+ " on the criteria " + Utils.showCriteria(ConPA) + " that are important whereas \n"
-					+ alcoNOA.getX().getName() + " is worse than " + alcoNOA.getY().getName() + " on the criteria "
-					+ Utils.showCriteria(ConNA) + " that are not important.";
-
-			Double addSentence = 0.0;
-
-			for (Criterion c : alcoNOA.getCriteria()) {
-				if (!phiNOA.getNoaCriteria().contains(c)) {
-					addSentence += alcoNOA.getDelta().get(c) * alcoNOA.getWeight().get(c);
-				}
-			}
-
-			if (addSentence > 0) {
-				explanation += "\n" + "Moroever, " + alcoNOA.getX().getName() + " is on average better than "
-						+ alcoNOA.getY().getName() + " on the other criteria.";
-			}
-
-			return explanation;
-
-		case IVT:
-			IVTOutput phiIVT = (IVTOutput) labreucheOutput;
-
-			AlternativesComparison alcoIVT = phiIVT.getAlternativesComparison();
-
-			ImmutableSet<Criterion> k_nrw = phiIVT.getNegativeRelativelyWeak();
-			ImmutableSet<Criterion> k_nw = phiIVT.getNegativeWeak();
-			ImmutableSet<Criterion> k_prs = phiIVT.getPositiveRelativelyStrong();
-			ImmutableSet<Criterion> k_ps = phiIVT.getPositiveStrong();
-			ImmutableGraph<Criterion> k_pn = phiIVT.getPositiveNegative();
-
-			explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
-					+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-					+ Utils.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
-					+ Utils.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
-					+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(k_nw)
-					+ "\n" + "that are not important and on the criteria " + Utils.showCriteria(k_nrw)
-					+ " that are not really important.";
-
-			if (!k_pn.edges().isEmpty()) {
-				explanation += "And ";
-
-				for (EndpointPair<Criterion> couple : k_pn.edges()) {
-
-					explanation += couple.nodeV().getName() + " for wich " + alcoIVT.getX().getName()
-							+ " is better than " + alcoIVT.getY().getName() + " is more important than criterion "
-							+ couple.nodeU().getName() + " for wich " + alcoIVT.getX().getName() + " is worse than "
-							+ alcoIVT.getY().getName() + " ";
-				}
-
-				explanation += ".";
-			}
-
-			return explanation;
-
-		case RMGAVG:
-			RMGAVGOutput phiRMGAVG = (RMGAVGOutput) labreucheOutput;
-
-			AlternativesComparison alcoRMGAVG = phiRMGAVG.getAlternativesComparison();
-
-			explanation = alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
-					+ alcoRMGAVG.getX().getName() + " is on average better than " + alcoRMGAVG.getY().getName() + "\n"
-					+ " and all the criteria have almost the same weights.";
-
-			return explanation;
-
-		case RMGCOMP:
-			RMGCOMPOutput phiRMGCOMP = (RMGCOMPOutput) labreucheOutput;
-
-			AlternativesComparison alcoRMGCOMP = phiRMGCOMP.getAlternativesComparison();
-			double maxW = phiRMGCOMP.getMaxW();
-			double eps = phiRMGCOMP.getEpsilon();
-
-			if (maxW > eps) {
-				if (maxW <= eps * 2) {
-					explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
-							+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-							+ alcoRMGCOMP.getY().getName() + " on \n"
-							+ Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
-							+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName()
-							+ " over " + alcoRMGCOMP.getX().getName() + " on \n"
-							+ Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
-							+ ", and all the criteria have more or less the same weights.";
-
-					return explanation;
-				}
-			}
-
-			explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
-					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
-					+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
-					+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
-					+ ".";
-
-			return explanation;
-
-		default:
-			return "No possible argumentation found";
-		}
-	}
-
 	public void showProblem() {
 
 		String display = "****************************************************************";
@@ -680,9 +486,8 @@ public class LabreucheModel {
 		@SuppressWarnings("unused")
 		LabreucheOutput lo = getExplanation();
 
-		String c = arguer();
+		Arguer arg = new Arguer(lo);
 
-		LOGGER.info(c);
+		LOGGER.info(arg.argue());
 	}
-
 }

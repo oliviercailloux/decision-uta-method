@@ -328,14 +328,17 @@ public class Tools {
 		return sorted;
 	}
 
+	/**
+	 * to do : redefine this method
+	 * */
 	// return true if a is include in b in a sense en include_discri
 	static boolean includeDiscri(List<List<Criterion>> a, List<List<Criterion>> b, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 
-		if (a == null && b == null) {
+		if(a== null && b == null) {
 			return false;
 		}
-
+		
 		if (b == null) {
 			return true;
 		}
@@ -344,20 +347,19 @@ public class Tools {
 			return false;
 		}
 
-		if (a.isEmpty() && b.isEmpty()) {
+		if(a.isEmpty() && b.isEmpty()) {
 			return false;
 		}
-
-		if (a.isEmpty()) {
-			return false;
+		
+		if(!a.isEmpty() && b.isEmpty()) {
+				return false;
 		}
-
-		if (b.isEmpty()) {
+		
+		if(!b.isEmpty() && a.isEmpty()) {
 			return true;
 		}
-
-		boolean result = true;
-
+		
+		
 		if (a.size() > b.size())
 			return false;
 
@@ -381,17 +383,15 @@ public class Tools {
 					LOGGER.debug(k + "");
 				} while (k < a.size());
 
-				if (d_eu(a.get(k), w, delta).getLeft() > d_eu(b.get(k), w, delta).getLeft())
-					result = true;
-				else
-					result = false;
-			} else
-				result = false;
+				if (d_eu(a.get(k), w, delta).getLeft() > d_eu(b.get(k), w, delta).getLeft()) {
+					return true;
+				}
+			}
 		}
 
 		else {
 
-			int t = Math.min(a.size(), b.size());
+			int t = Math.min(a.size() - 1, b.size() - 1);
 
 			int j = 0;
 			int max_a = a.size() - 1;
@@ -406,26 +406,25 @@ public class Tools {
 
 			if (j < t && a.get(max_a - j).size() < b.get(max_b - j).size())
 				return true;
-			else
-				result = false;
 
 			if (max_a < max_b) {
 				boolean flag = false;
+				
 				for (int i = 0; i <= max_a; i++) {
 					if (a.get(max_a - i).size() != b.get(max_b - i).size())
 						flag = false;
 				}
 
-				if (flag)
+				if (flag) {
 					return true;
-				else
-					result = false;
+				}	
 			}
 		}
 
-		return result;
+		return false;
 	}
 
+	
 	/* * * * * * * * * * Methods for build R Star used in IVT anchor * * * * * */
 
 	static ImmutableGraph<Criterion> couples_ofG(List<Criterion> l, Map<Criterion, Double> w,

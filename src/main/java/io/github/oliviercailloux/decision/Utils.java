@@ -33,7 +33,7 @@ public class Utils {
 
 	public static String showSet(List<List<Criterion>> big_a) {
 		if (big_a == null) {
-			return "{ }";
+			return "{ / }";
 		}
 
 		String str = "{ ";

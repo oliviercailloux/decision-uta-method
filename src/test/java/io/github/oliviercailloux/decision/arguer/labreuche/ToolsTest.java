@@ -26,13 +26,19 @@ public class ToolsTest {
 		AlternativesComparison altsComp = newAlternativesComparison();
 
 		List<List<Criterion>> setA = new ArrayList<>();
-		List<List<Criterion>> setB = new ArrayList<>();
+		List<List<Criterion>> setB = null;
+		
+		List<List<Criterion>> emptySet = new ArrayList<>();
 
 		setA.add(toList(altsComp.getCriteria()));
 
-		assertFalse(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
-		assertTrue(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertTrue(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
+		
+		assertTrue(Tools.includeDiscri(emptySet, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(setA, emptySet, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(Tools.includeDiscri(emptySet, emptySet, altsComp.getWeight(), altsComp.getDelta()));
 	}
 
 	@Test
