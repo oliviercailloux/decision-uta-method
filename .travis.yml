@@ -1,6 +1,6 @@
 language: java
 git:
-  depth: 1
+  depth: false
 jdk:
   - oraclejdk8
 dist: trusty
@@ -12,4 +12,7 @@ notifications:
     -tony.seguin9@gmail.com
   on_success: never 
   on_failure: always
+addons:
+  sonarcloud:
+    organization: "tonyseg-github
 
