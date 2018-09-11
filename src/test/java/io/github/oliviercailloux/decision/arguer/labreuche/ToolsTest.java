@@ -27,7 +27,7 @@ public class ToolsTest {
 
 		List<List<Criterion>> setA = new ArrayList<>();
 		List<List<Criterion>> setB = null;
-		
+
 		List<List<Criterion>> emptySet = new ArrayList<>();
 
 		setA.add(toList(altsComp.getCriteria()));
@@ -35,7 +35,7 @@ public class ToolsTest {
 		assertTrue(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
 		assertFalse(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
 		assertFalse(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
-		
+
 		assertTrue(Tools.includeDiscri(emptySet, setA, altsComp.getWeight(), altsComp.getDelta()));
 		assertFalse(Tools.includeDiscri(setA, emptySet, altsComp.getWeight(), altsComp.getDelta()));
 		assertFalse(Tools.includeDiscri(emptySet, emptySet, altsComp.getWeight(), altsComp.getDelta()));

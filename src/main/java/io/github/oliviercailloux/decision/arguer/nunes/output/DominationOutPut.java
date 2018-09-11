@@ -2,6 +2,7 @@ package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import java.util.Map;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -28,7 +29,6 @@ public class DominationOutPut implements NunesOutPut {
 				+ "is better on all criteria.";
 	}
 
-	@Override
 	public Boolean isApplicable() {
 		int count = 0;
 		Criterion critical = null;
@@ -54,6 +54,11 @@ public class DominationOutPut implements NunesOutPut {
 	@Override
 	public Pattern getPattern() {
 		return Pattern.DOMINATION;
+	}
+
+	@Override
+	public AlternativesComparison getAlternativesComparison() {
+		return null;
 	}
 
 }

@@ -1,8 +1,10 @@
 package io.github.oliviercailloux.decision.arguer.nunes.output;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+
 public interface NunesOutPut {
 
-	abstract Pattern getPattern();
+	public Pattern getPattern();
 
-	abstract Boolean isApplicable();
+	public AlternativesComparison getAlternativesComparison();
 }

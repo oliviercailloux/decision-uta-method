@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.GraphBuilder;
@@ -22,6 +21,7 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.Arguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
@@ -136,26 +136,25 @@ public class LabreucheModel {
 				if (sum < vXminusVY) {
 					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy)
 							+ " " + (i + 1));
-					
-					if(b == null) {
+
+					if (b == null) {
 						cPrime = algo(c_copy, null, i + 1);
-					}
-					else {
+					} else {
 						cPrime = algo(c_copy, b_copy, i + 1);
 					}
-					
+
 					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(c_copy) + " b = " + Utils.showSet(b_copy) + " "
 							+ (i + 1));
 				}
 
-				LOGGER.debug(Utils.showSet(cPrime) +" inclu_discri "+Utils.showSet(b_copy));
+				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(b_copy));
 				if (Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("UPDATE B!");
 					b_copy = new ArrayList<>(cPrime);
 				}
 
-				//c_copy.add(currentPerm);
+				// c_copy.add(currentPerm);
 
 				LOGGER.debug(Utils.showSet(c_copy) + " incluDiscri " + Utils.showSet(b_copy));
 

@@ -330,15 +330,15 @@ public class Tools {
 
 	/**
 	 * to do : redefine this method
-	 * */
+	 */
 	// return true if a is include in b in a sense en include_discri
 	static boolean includeDiscri(List<List<Criterion>> a, List<List<Criterion>> b, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
 
-		if(a== null && b == null) {
+		if (a == null && b == null) {
 			return false;
 		}
-		
+
 		if (b == null) {
 			return true;
 		}
@@ -347,19 +347,18 @@ public class Tools {
 			return false;
 		}
 
-		if(a.isEmpty() && b.isEmpty()) {
+		if (a.isEmpty() && b.isEmpty()) {
 			return false;
 		}
-		
-		if(!a.isEmpty() && b.isEmpty()) {
-				return false;
+
+		if (!a.isEmpty() && b.isEmpty()) {
+			return false;
 		}
-		
-		if(!b.isEmpty() && a.isEmpty()) {
+
+		if (!b.isEmpty() && a.isEmpty()) {
 			return true;
 		}
-		
-		
+
 		if (a.size() > b.size())
 			return false;
 
@@ -409,7 +408,7 @@ public class Tools {
 
 			if (max_a < max_b) {
 				boolean flag = false;
-				
+
 				for (int i = 0; i <= max_a; i++) {
 					if (a.get(max_a - i).size() != b.get(max_b - i).size())
 						flag = false;
@@ -417,14 +416,13 @@ public class Tools {
 
 				if (flag) {
 					return true;
-				}	
+				}
 			}
 		}
 
 		return false;
 	}
 
-	
 	/* * * * * * * * * * Methods for build R Star used in IVT anchor * * * * * */
 
 	static ImmutableGraph<Criterion> couples_ofG(List<Criterion> l, Map<Criterion, Double> w,
