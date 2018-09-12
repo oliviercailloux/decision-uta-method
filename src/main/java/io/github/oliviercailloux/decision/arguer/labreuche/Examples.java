@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.graph.GraphBuilder;
@@ -24,32 +25,13 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class Examples {
 
 	public static LabreucheModel getExampleAll() { // ALL example
-		Double[] w = { 0.41, 0.06, 0.24, 0.29 };
-		Double[] x = { 0.20, 0.60, 0.60, 0.50 };
-		Double[] y = { 0.54, 0.67, 0.89, 0.76 };
+		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
 
-		Set<Criterion> criteria = new LinkedHashSet<>();
+		builder.setX(ImmutableList.of(0.20, 0.60, 0.60, 0.50));
+		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
+		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 
-		for (int i = 0; i < w.length; i++) {
-			criteria.add(new Criterion(i + 1, "c" + (i + 1), new ArrayList<Double>()));
-		}
-
-		Map<Criterion, Double> x_perf = new LinkedHashMap<>();
-		Map<Criterion, Double> y_perf = new LinkedHashMap<>();
-		Map<Criterion, Double> weights = new LinkedHashMap<>();
-
-		int ind = 0;
-		for (Criterion c : criteria) {
-			x_perf.put(c, x[ind]);
-			y_perf.put(c, y[ind]);
-			weights.put(c, w[ind]);
-			ind++;
-		}
-
-		Alternative altX = new Alternative(1, "X", x_perf);
-		Alternative altY = new Alternative(2, "Y", y_perf);
-		AlternativesComparison altsComp = new AlternativesComparison(altX, altY, weights);
-
+		final AlternativesComparison altsComp = builder.build();
 		return new LabreucheModel(altsComp);
 	}
 
