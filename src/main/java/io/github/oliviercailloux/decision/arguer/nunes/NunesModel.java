@@ -1,137 +1,167 @@
 package io.github.oliviercailloux.decision.arguer.nunes;
 
-import java.util.LinkedHashMap;
+import static java.util.Objects.requireNonNull;
+
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Table;
+
+import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.Arguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
+import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
+import io.github.oliviercailloux.decision.arguer.nunes.output.Pattern;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class NunesModel {
 
-	public Set<Alternative> alternatives;
-	public Set<Criterion> criteria;
-	public Set<Constraint> constrains;
-	public Map<Criterion, Double> weights;
-	public Set<Criterion> positiveArguments;
-	public Set<Criterion> negativeArguments;
-	public Set<Criterion> nullArguments;
-	public Alternative recommended;
-	public AlternativesComparison alternativesComparison;
-	public Map<Couple<Alternative, Alternative>, Double> tradoffs;
-	public Set<Alternative> alt_rejected;
+	private Set<Constraint> constraints;
+	private AlternativesComparison alternativesComparison;
+	private Table<Alternative, Alternative, Double> tradoffs;
+	private NunesOutput nunesOutput;
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
 
-	public NunesModel(Set<Alternative> x, Set<Criterion> criteria, Set<Constraint> c, Map<Criterion, Double> weights) {
-		this.alternatives = x;
-		this.criteria = criteria;
-		this.constrains = c;
-		this.weights = weights;
-		this.positiveArguments = new LinkedHashSet<>();
-		this.negativeArguments = new LinkedHashSet<>();
-		this.nullArguments = new LinkedHashSet<>();
-		this.alternativesComparison = null;
-		this.tradoffs = new LinkedHashMap<>();
-		this.alt_rejected = new LinkedHashSet<>();
+	public NunesModel(AlternativesComparison alternativesComparison, Set<Constraint> constraints) {
+		this.alternativesComparison = requireNonNull(alternativesComparison);
+		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
+		this.nunesOutput = null;
+		this.tradoffs = Tools.computeTos(alternativesComparison);
 	}
 
-	public double score_d(Alternative x, Alternative y) {
-		return cost(x, y) - extAversion(x, y) - toContrast(x, y);
+	public NunesOutput getNunesOutput() {
+		return this.nunesOutput;
 	}
 
-	public double cost(Alternative x, Alternative y) {
-		double res = 0.0;
-
-		for (Criterion c : criteria)
-			res += attCost(x, y, c) * weights.get(c);
-
-		return res;
+	public NunesOutput getExplanation() {
+		if (nunesOutput != null) {
+			return nunesOutput;
+		}
+		return computeExplanation();
 	}
 
-	public double attCost(Alternative x, Alternative y, Criterion c) {
-		if (y.getEvaluations().get(c) > x.getEvaluations().get(c))
-			return y.getEvaluations().get(c) - x.getEvaluations().get(c);
+	private NunesOutput computeExplanation() {
+		Preconditions.checkState(nunesOutput == null);
 
-		return 0.0;
-	}
-
-	public double extAversion(Alternative x, Alternative y) {
-		double ext_x = standardDeviation(x);
-		double ext_y = standardDeviation(y);
-
-		if (ext_x < ext_y)
-			return ext_y - ext_x;
-
-		return 0.0;
-	}
-
-	public double standardDeviation(Alternative x) {
-		Set<Double> dv = new LinkedHashSet<>();
-		double mean = 0.0;
-
-		for (Criterion c : x.getEvaluations().keySet()) {
-			dv.add(1 - x.getEvaluations().get(c));
+		if (tryDOM()) {
+			assert nunesOutput != null;
+			return nunesOutput;
 		}
 
-		for (Double v : dv)
-			mean += v;
-
-		mean *= 1.0 / x.getEvaluations().keySet().size();
-
-		double sum = 0.0;
-
-		for (Double v : dv)
-			sum += Math.pow(v - mean, 2);
-
-		return Math.sqrt((1.0 / (dv.size() - 1)) * sum);
+		throw new IllegalStateException();
 	}
 
-	public double toContrast(Alternative x, Alternative y) {
-		Couple<Alternative, Alternative> toxy = new Couple<>(x, y);
-		Couple<Alternative, Alternative> toyx = new Couple<>(y, x);
+	public boolean isApplicable(Pattern pattern) {
+		getExplanation();
 
-		computeTos();
-		double avgTo = avgTo();
-
-		if (tradoffs.containsKey(toxy) && tradoffs.get(toxy) <= avgTo)
-			return avgTo - tradoffs.get(toxy);
-
-		if (tradoffs.containsKey(toyx) && tradoffs.get(toyx) > avgTo)
-			return tradoffs.get(toyx) - avgTo;
-
-		return 0.0;
+		return nunesOutput.getPattern() == pattern;
 	}
 
-	public double avgTo() {
-		double res = 0.0;
-
-		for (Couple<Alternative, Alternative> c : tradoffs.keySet())
-			res += tradoffs.get(c);
-
-		return res / tradoffs.keySet().size();
+	/**
+	 * @param anchor
+	 *            : the type of Anchor explanation claimed
+	 * @throws IllegalArgumentException
+	 *             if anchor type is not the same a labreucheOutput value.
+	 */
+	private NunesOutput getCheckedExplanation(Pattern pattern) {
+		getExplanation();
+		Preconditions.checkState(nunesOutput.getPattern() == pattern, "This pattern is not the one applicable");
+		return nunesOutput;
 	}
 
-	public void computeTos() {
-		Set<Alternative> list = new LinkedHashSet<>(alternatives);
+	public DominationOutput getDOMINATIONExplanation() {
+		return (DominationOutput) getCheckedExplanation(Pattern.DOMINATION);
+	}
 
-		for (Alternative x : alternatives) {
-			list.remove(x);
-			for (Alternative y : list) {
-				Double valx = cost(x, y);
-				Double valy = cost(y, x);
-				if (valx > valy) {
-					Couple<Alternative, Alternative> to = new Couple<>(x, y);
-					tradoffs.put(to, valy / valx);
-				}
+	private boolean tryDOM() {
+		Preconditions.checkState(nunesOutput == null);
+
+		int count = 0;
+		Criterion critical = null;
+
+		for (Entry<Criterion, Double> entry : alternativesComparison.getDelta().entrySet()) {
+			if (entry.getValue() > 0.0) {
+				count++;
+				critical = entry.getKey();
+			}
+
+			if (entry.getValue() < 0.0) {
+				LOGGER.info("DOM false");
+
+				return false;
 			}
 		}
+
+		if (count == 1) {
+			LOGGER.info("DOM (critical) true");
+			nunesOutput = new DominationOutput(alternativesComparison, critical);
+		}
+
+		LOGGER.info("DOM true");
+		nunesOutput = new DominationOutput(alternativesComparison);
+
+		return true;
+	}
+
+	public void showProblem() {
+
+		String display = "****************************************************************";
+		display += "\n" + "*                                                              *";
+		display += "\n" + "*         Recommender system based on Nunes and al Model       *";
+		display += "\n" + "*                                                              *";
+		display += "\n" + "****************************************************************" + "\n";
+
+		display += "\n    Criteria    <-   Weight : \n";
+
+		for (Criterion c : alternativesComparison.getWeight().keySet()) {
+			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = "
+					+ alternativesComparison.getWeight().get(c);
+		}
+
+		display += "\n    Constrains : \n";
+
+		for (Constraint c : constraints) {
+			display += "\n" + "	" + c.toString() + ", v(" + c.getCriterion().getName() + ") = " + c.getValuePref();
+		}
+
+		display += "\n \n Alternatives : ";
+
+		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
+				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values());
+		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
+				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values());
+
+		display += "\n" + "			Alternatives ranked";
+		display += "\n" + alternativesComparison.getX().getName() + " = "
+				+ Tools.score_d(alternativesComparison.getX(), alternativesComparison.getY(),
+						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
+		display += "\n" + alternativesComparison.getY().getName() + " = "
+				+ Tools.score_d(alternativesComparison.getY(), alternativesComparison.getX(),
+						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
+
+		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "
+				+ alternativesComparison.getY().getName() + " :";
+
+		LOGGER.info(display);
 	}
 
 	public void resolved() {
+		showProblem();
 
-		// todo
+		NunesOutput no = getExplanation();
+
+		Arguer arg = new Arguer();
+		String explanation = arg.argue(no);
+
+		LOGGER.info(explanation);
 	}
 
 }

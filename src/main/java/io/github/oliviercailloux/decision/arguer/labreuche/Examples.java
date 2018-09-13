@@ -23,7 +23,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Examples {
 
-	public static LabreucheModel getExampleAll() { // ALL example
+	public static LabreucheModel getExampleAll() {
 		Double[] w = { 0.41, 0.06, 0.24, 0.29 };
 		Double[] x = { 0.20, 0.60, 0.60, 0.50 };
 		Double[] y = { 0.54, 0.67, 0.89, 0.76 };
@@ -53,8 +53,7 @@ public class Examples {
 		return new LabreucheModel(altsComp);
 	}
 
-	public static LabreucheModel getExample5() { // NOA example
-
+	public static LabreucheModel getExample5() {
 		Double[] w5 = { 0.41, 0.06, 0.24, 0.29 };
 		Double[] x5 = { 0.42, 0.66, 0.66, 0.57 };
 		Double[] y5 = { 0.54, 0.04, 0.89, 0.76 };
@@ -84,7 +83,7 @@ public class Examples {
 		return new LabreucheModel(altsEx5);
 	}
 
-	public static LabreucheModel getExample6() { // NOA example
+	public static LabreucheModel getExample6() {
 
 		Double[] w6 = { 0.18, 0.11, 0.12, 0.24, 0.35 };
 		Double[] x6 = { 0.95, 0.67, 0.64, 0.27, 0.39 };
@@ -116,7 +115,7 @@ public class Examples {
 
 	}
 
-	public static LabreucheModel getExample9() { // IVT example
+	public static LabreucheModel getExample9() {
 
 		Double[] w9 = { 0.06, 0.11, 0.21, 0.29, 0.33 };
 		Double[] x9 = { 0.89, 0.03, 0.07, 0.32, 0.38 };
@@ -148,7 +147,7 @@ public class Examples {
 
 	}
 
-	public static LabreucheModel getExample10() { // IVT example
+	public static LabreucheModel getExample10() {
 
 		Double[] w10 = { 0.13, 0.04, 0.12, 0.10, 0.07, 0.19, 0.15, 0.03, 0.01, 0.16 };
 		Double[] x10 = { 0.61, 0.28, 0.08, 0.02, 0.81, 0.15, 0.16, 0.38, 0.24, 0.75 };
@@ -180,11 +179,11 @@ public class Examples {
 
 	}
 
-	public static LabreucheModel getExample13() { // NOA example
+	public static LabreucheModel getExample13() {
 
+		Double[] w13 = { 0.06, 0.11, 0.19, 0.11, 0.31, 0.08, 0.14 };
 		Double[] x13 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y13 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w13 = { 0.06, 0.11, 0.19, 0.11, 0.31, 0.08, 0.14 };
 
 		Set<Criterion> criteriaEx13 = new LinkedHashSet<>();
 
@@ -211,11 +210,11 @@ public class Examples {
 		return new LabreucheModel(altsEx13);
 	}
 
-	public static LabreucheModel getExample14() { // NOA example
+	public static LabreucheModel getExample14() {
 
+		Double[] w14 = { 0.14, 0.05, 0.17, 0.23, 0.17, 0.11, 0.13 };
 		Double[] x14 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y14 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w14 = { 0.14, 0.05, 0.17, 0.23, 0.17, 0.11, 0.13 };
 
 		Set<Criterion> criteriaEx14 = new LinkedHashSet<>();
 
@@ -242,10 +241,10 @@ public class Examples {
 		return new LabreucheModel(altsEx14);
 	}
 
-	public static LabreucheModel getExample15() { // IVT example
+	public static LabreucheModel getExample15() {
+		Double[] w15 = { 0.11, 0.14, 0.13, 0.02, 0.27, 0.25, 0.08 };
 		Double[] x15 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y15 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w15 = { 0.11, 0.14, 0.13, 0.02, 0.27, 0.25, 0.08 };
 
 		Set<Criterion> criteriaEx15 = new LinkedHashSet<>();
 
@@ -272,11 +271,11 @@ public class Examples {
 		return new LabreucheModel(altsEx15);
 	}
 
-	public static LabreucheModel getExample16() { // IVT example
+	public static LabreucheModel getExample16() {
 
+		Double[] w16 = { 0.24, 0.20, 0.25, 0.06, 0.02, 0.19, 0.04 };
 		Double[] x16 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y16 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w16 = { 0.24, 0.20, 0.25, 0.06, 0.02, 0.19, 0.04 };
 
 		Set<Criterion> criteriaEx16 = new LinkedHashSet<>();
 
@@ -303,11 +302,11 @@ public class Examples {
 		return new LabreucheModel(altsEx16);
 	}
 
-	public static LabreucheModel getExample17() { // RMGCOMP example
+	public static LabreucheModel getExample17() {
 
+		Double[] w17 = { 0.16, 0.14, 0.15, 0.10, 0.16, 0.15, 0.14 };
 		Double[] x17 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y17 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w17 = { 0.16, 0.14, 0.15, 0.10, 0.16, 0.15, 0.14 };
 
 		Set<Criterion> criteriaEx17 = new LinkedHashSet<>();
 
@@ -335,11 +334,11 @@ public class Examples {
 
 	}
 
-	public static LabreucheModel getExample18() { // RMGAVG example
+	public static LabreucheModel getExample18() {
 
+		Double[] w18 = { 0.12, 0.16, 0.15, 0.16, 0.15, 0.14, 0.12 };
 		Double[] x18 = { 0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95 };
 		Double[] y18 = { 0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52 };
-		Double[] w18 = { 0.12, 0.16, 0.15, 0.16, 0.15, 0.14, 0.12 };
 
 		Set<Criterion> criteriaEx18 = new LinkedHashSet<>();
 
@@ -364,7 +363,6 @@ public class Examples {
 		AlternativesComparison altsEx18 = new AlternativesComparison(x_18, y_18, weightsEx18);
 
 		return new LabreucheModel(altsEx18);
-
 	}
 
 	public static ALLOutput getExampleAllOutput() {

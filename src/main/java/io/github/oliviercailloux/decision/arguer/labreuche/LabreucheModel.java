@@ -482,11 +482,11 @@ public class LabreucheModel {
 	public void solvesProblem() {
 		showProblem();
 
-		@SuppressWarnings("unused")
 		LabreucheOutput lo = getExplanation();
 
-		Arguer arg = new Arguer(lo);
+		Arguer arg = new Arguer();
+		String explanation = arg.argue(lo);
 
-		LOGGER.info(arg.argue());
+		LOGGER.info(explanation);
 	}
 }

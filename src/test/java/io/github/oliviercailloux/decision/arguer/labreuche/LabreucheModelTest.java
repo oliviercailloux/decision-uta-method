@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
@@ -20,6 +21,15 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class LabreucheModelTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
+
+	@Test
+	public void testExampleAll() {
+		LOGGER.info("Example All test");
+
+		LabreucheModel lm = Examples.getExampleAll();
+
+		assertTrue(lm.isApplicable(Anchor.ALL));
+	}
 
 	@Test
 	public void testExampl5() {

@@ -1,23 +1,23 @@
 package io.github.oliviercailloux.decision.arguer.nunes;
 
+import java.util.Objects;
+
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Constraint {
 
 	private Criterion criterion;
-	private Double treshold;
-	private boolean flag_min; // e qual 0 if we want a better value than threshold on the criterion;
-	private Double value_pref;
-	private boolean isHard; // isHardOrSoft equal 1 when it is a hard constraint
+	private double treshold;
+	private boolean flagMin; // equal 0 if we want a better value than threshold on the criterion;
+	private double valuePref; // equal 1 or -1 when it is a hard constraint.
 	private int id;
 
-	public Constraint(int id, Criterion c, Double t, boolean f, Double vp, boolean ih) {
+	public Constraint(int id, Criterion criterion, double treshold, boolean flagMin, double valuePref) {
 		this.id = id;
-		this.criterion = c;
-		this.treshold = t;
-		this.flag_min = f;
-		this.value_pref = vp;
-		this.isHard = ih;
+		this.criterion = criterion;
+		this.treshold = treshold;
+		this.flagMin = flagMin;
+		this.valuePref = valuePref;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class Constraint {
 	public String toString() {
 		String s = "";
 
-		if (flag_min)
+		if (flagMin)
 			s += criterion.getName() + " <= " + treshold;
 		else
 			s += criterion.getName() + " >= " + treshold;
@@ -51,7 +51,7 @@ public class Constraint {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return Objects.hash(id);
 	}
 
 	public Criterion getCriterion() {
@@ -62,16 +62,12 @@ public class Constraint {
 		return treshold;
 	}
 
-	public boolean isFlag_min() {
-		return flag_min;
+	public boolean isFlagMin() {
+		return flagMin;
 	}
 
-	public Double getValue_pref() {
-		return value_pref;
-	}
-
-	public boolean isHard() {
-		return isHard;
+	public Double getValuePref() {
+		return valuePref;
 	}
 
 	public int getId() {
