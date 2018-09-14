@@ -16,5 +16,4 @@ notifications:
 addons:
   sonarcloud:
     organization: tonyseg-github
-script:
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+
