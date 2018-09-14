@@ -20,7 +20,7 @@ public class CutOffOutput implements NunesOutput {
 
 	@Override
 	public AlternativesComparison getAlternativesComparison() {
-		return null;
+		return this.alternativesComparison;
 	}
 
 	public Constraint getConstraint() {

@@ -37,6 +37,18 @@ public class NunesModel {
 		this.tradoffs = Tools.computeTos(alternativesComparison);
 	}
 
+	public Set<Constraint> getConstraints() {
+		return this.constraints;
+	}
+
+	public Table<Alternative, Alternative, Double> getTradOffs() {
+		return this.tradoffs;
+	}
+
+	public AlternativesComparison getAlternativesComparison() {
+		return this.alternativesComparison;
+	}
+
 	public NunesOutput getNunesOutput() {
 		return this.nunesOutput;
 	}
@@ -91,11 +103,11 @@ public class NunesModel {
 			if (entry.getValue() > 0.0) {
 				count++;
 				critical = entry.getKey();
+
 			}
 
 			if (entry.getValue() < 0.0) {
 				LOGGER.info("DOM false");
-
 				return false;
 			}
 		}
@@ -103,6 +115,7 @@ public class NunesModel {
 		if (count == 1) {
 			LOGGER.info("DOM (critical) true");
 			nunesOutput = new DominationOutput(alternativesComparison, critical);
+			return true;
 		}
 
 		LOGGER.info("DOM true");

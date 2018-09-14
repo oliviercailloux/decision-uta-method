@@ -1,7 +1,5 @@
 package io.github.oliviercailloux.decision.arguer;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
