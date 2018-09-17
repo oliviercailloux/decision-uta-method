@@ -9,7 +9,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 

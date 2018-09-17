@@ -5,8 +5,8 @@ import java.util.LinkedHashSet;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparisonBuilder;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparisonBuilder;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 

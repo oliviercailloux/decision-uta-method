@@ -15,7 +15,7 @@ import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;

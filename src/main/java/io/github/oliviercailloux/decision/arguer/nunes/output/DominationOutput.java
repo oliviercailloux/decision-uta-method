@@ -2,7 +2,7 @@ package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import static java.util.Objects.requireNonNull;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class DominationOutput implements NunesOutput {

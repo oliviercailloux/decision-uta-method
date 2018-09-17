@@ -7,19 +7,15 @@ import com.google.common.graph.EndpointPair;
 import com.google.common.graph.ImmutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.decision.arguer.nunes.output.CutOffOutput;
-import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
-import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class Arguer {
+public class LabreucheArguer {
 
 	public String argue(LabreucheOutput output) {
 		switch (output.getAnchor()) {
@@ -163,59 +159,4 @@ public class Arguer {
 
 	}
 
-	public String argue(NunesOutput output) {
-		String explanation = "";
-
-		switch (output.getPattern()) {
-
-		case DOMINATION:
-			return argueDomination((DominationOutput) output);
-
-		case CUTOFF:
-			return argueCutOff((CutOffOutput) output);
-
-		case MINREQM:
-			return explanation;
-
-		case MINREQP:
-			return explanation;
-
-		case DECISIVE:
-			return explanation;
-
-		case PROSCONS:
-			return explanation;
-
-		default:
-			return "No possible argumentation found";
-
-		}
-	}
-
-	private String argueDomination(DominationOutput output) {
-		String explanation = "";
-
-		AlternativesComparison alcoDOM = output.getAlternativesComparison();
-
-		if (output.getCritical() != null) {
-			explanation = alcoDOM.getX().getName() + " is recommended because it got the best value on "
-					+ output.getCritical().getName();
-		}
-
-		explanation = "There is no reason to choose " + alcoDOM.getY().getName() + ", as " + alcoDOM.getX().getName()
-				+ "is better on all criteria.";
-
-		return explanation;
-	}
-
-	private String argueCutOff(CutOffOutput output) {
-
-		AlternativesComparison alcoCutoff = output.getAlternativesComparison();
-
-		String explanation = alcoCutoff.getX().getName()
-				+ " is rejected because she doesn't satisfied the constrain on the criteria "
-				+ output.getConstraint().getCriterion().getName();
-
-		return explanation;
-	}
 }

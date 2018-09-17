@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer.labreuche;
+package io.github.oliviercailloux.decision.arguer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,10 +6,17 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -19,6 +26,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  */
 public class AlternativesComparison {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AlternativesComparison.class);
 	private ImmutableMap<Criterion, Double> weights;
 	private Alternative x;
 	private Alternative y;
@@ -33,11 +41,14 @@ public class AlternativesComparison {
 	public AlternativesComparison(Alternative x, Alternative y, Map<Criterion, Double> weights) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
+		checkNotNull(weights);
 		this.weights = ImmutableMap.copyOf(requireNonNull(weights));
-		/** TODO check that value ≠. */
 		assert !weights.isEmpty();
 
-		(this).reorderXY();
+		LOGGER.info("Checking is X better than Y");
+		(this).isXbetterY();
+		
+		LOGGER.info("Weights vector normalized");
 		(this).WeightsSumInOne();
 	}
 
@@ -117,11 +128,12 @@ public class AlternativesComparison {
 		return weights.keySet();
 	}
 
-	private void reorderXY() {
+	private void isXbetterY() {
 		double scoreX = Tools.score(x, weights);
 		double scoreY = Tools.score(y, weights);
 
 		if (scoreY > scoreX) {
+			LOGGER.info("Y better than X => switch in AlternativesComparison");
 			Alternative tmp = this.x;
 			this.x = this.y;
 			this.y = tmp;

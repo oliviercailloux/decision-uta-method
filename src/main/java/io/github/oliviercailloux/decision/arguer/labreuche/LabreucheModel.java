@@ -21,7 +21,8 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
-import io.github.oliviercailloux.decision.arguer.Arguer;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
@@ -484,7 +485,7 @@ public class LabreucheModel {
 
 		LabreucheOutput lo = getExplanation();
 
-		Arguer arg = new Arguer();
+		LabreucheArguer arg = new LabreucheArguer();
 		String explanation = arg.argue(lo);
 
 		LOGGER.info(explanation);

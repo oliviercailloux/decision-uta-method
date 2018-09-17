@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer.labreuche;
+package io.github.oliviercailloux.decision.arguer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;

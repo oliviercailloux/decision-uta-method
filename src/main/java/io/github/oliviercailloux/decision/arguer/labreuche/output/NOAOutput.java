@@ -8,7 +8,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**

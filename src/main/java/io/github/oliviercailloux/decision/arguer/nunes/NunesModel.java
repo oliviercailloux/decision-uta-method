@@ -13,8 +13,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.Utils;
-import io.github.oliviercailloux.decision.arguer.Arguer;
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.NunesArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
@@ -171,7 +171,7 @@ public class NunesModel {
 
 		NunesOutput no = getExplanation();
 
-		Arguer arg = new Arguer();
+		NunesArguer arg = new NunesArguer();
 		String explanation = arg.argue(no);
 
 		LOGGER.info(explanation);

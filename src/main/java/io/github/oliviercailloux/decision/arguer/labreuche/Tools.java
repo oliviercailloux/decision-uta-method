@@ -26,7 +26,7 @@ public class Tools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Tools.class);
 
-	static double score(Alternative x, Map<Criterion, Double> w) {
+	public static double score(Alternative x, Map<Criterion, Double> w) {
 		double score = 0.0;
 
 		// Sum w_i * x_i

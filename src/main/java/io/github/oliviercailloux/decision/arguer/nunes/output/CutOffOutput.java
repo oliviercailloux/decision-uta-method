@@ -1,6 +1,6 @@
 package io.github.oliviercailloux.decision.arguer.nunes.output;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.nunes.Constraint;
 
 public class CutOffOutput implements NunesOutput {
