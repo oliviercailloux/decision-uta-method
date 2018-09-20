@@ -15,7 +15,7 @@ notifications:
   on_failure: always
 addons:
   sonarcloud:
-    organization: tonyseg-github
+    organization: oliviercailloux-github
 script:
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 
