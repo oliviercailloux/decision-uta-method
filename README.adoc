@@ -1,5 +1,5 @@
 image:https://travis-ci.org/oliviercailloux/decision-uta-method.svg?branch=master["Build Status", link="https://travis-ci.org/oliviercailloux/decision-uta-method"]
-image:https://sonarcloud.io/api/project_badges/measure?project=io.github.oliviercailloux%3Auta-calculator&metric=alert_status["SonarCloud Status", link ="https://sonarcloud.io/api/project_badges/measure?project=io.github.oliviercailloux%3Auta-calculator&metric=alert_status"]
+image:https://sonarcloud.io/api/project_badges/measure?project=io.github.oliviercailloux%3Auta-calculator&metric=alert_status["SonarCloud Status", link ="https://sonarcloud.io/dashboard?id=io.github.oliviercailloux%3Auta-calculator"]
 
 
 
