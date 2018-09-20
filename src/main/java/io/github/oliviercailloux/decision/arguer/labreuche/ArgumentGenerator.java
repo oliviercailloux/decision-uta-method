@@ -41,7 +41,7 @@ public class ArgumentGenerator {
 		ProblemGenerator pg = new ProblemGenerator();
 		pg.setCriteria(new ArrayList<>(weights.keySet()));
 		pg.generateAlternatives(alternativesNumber);
-		this.alternatives = new HashSet<>(pg.getAlternatives());
+		this.alternatives = new LinkedHashSet<>(pg.getAlternatives());
 	}
 
 	public void generateWeightVector(int criteriaNumber) {
