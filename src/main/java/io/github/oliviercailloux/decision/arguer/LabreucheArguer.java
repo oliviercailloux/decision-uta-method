@@ -151,7 +151,7 @@ public class LabreucheArguer {
 
 		explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 				+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-				+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
+				+ alcoRMGCOMP.getY().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 				+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
 				+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria()) + ".";
 

@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.ArgumentGenerator;
 import io.github.oliviercailloux.decision.arguer.labreuche.Examples;
@@ -286,7 +292,44 @@ public class LabreucheUI {
 				JTextArea text = new JTextArea(display);
 
 				p.add(text);
+				
+				Alternative best = null;
+				Alternative second = null;
+				
+				try {
+					best = ag.findUniqueBest();
+					
+				}catch(IllegalArgumentException e6) {
+					e6.printStackTrace();
+					
+					Iterator<Alternative> itr = ag.findBest().iterator();
 
+					best = itr.next();
+					second = itr.next();
+				}
+				
+				if(second == null) {
+					Set<Alternative> copy = new HashSet<>(ag.getAlternatives());
+					copy.remove(best);			
+					
+					 ag.setAlternatives(copy);
+					
+					try {
+						second = ag.findUniqueBest();
+						
+					}catch(IllegalArgumentException e6) {
+						e6.printStackTrace();
+						
+						Iterator<Alternative> itr = ag.findBest().iterator();
+
+						second = itr.next();
+					}					
+				}
+				
+				AlternativesComparison altComp = new AlternativesComparison(best, second, ag.getWeights());
+				
+				lm = new LabreucheModel(altComp);
+				
 				windowInfo.pack();
 				windowInfo.setVisible(true);
 			}

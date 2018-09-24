@@ -19,8 +19,16 @@ public class ArgumentGenerator {
 
 	Set<Alternative> alternatives;
 	Map<Criterion, Double> weights;
+	ProblemGenerator problemGenerator;
+	
+	public ArgumentGenerator(Set<Alternative> alternatives, Map<Criterion,Double> weights) {
+		this.alternatives = alternatives;
+		this.weights = weights;
+		this.problemGenerator = new ProblemGenerator(new ArrayList<>(weights.keySet()), new ArrayList<>(alternatives));
+	}
 
 	public ArgumentGenerator(int alternativesNumber, int criteriaNumber) {
+		this.problemGenerator = new ProblemGenerator();
 		this.alternatives = new LinkedHashSet<>();
 		this.weights = new LinkedHashMap<>();
 
@@ -31,22 +39,24 @@ public class ArgumentGenerator {
 	public Map<Criterion, Double> getWeights() {
 		return this.weights;
 	}
+	
+	public void setAlternatives(Set<Alternative> alternatives) {
+		this.alternatives = alternatives;
+	}
 
 	public Set<Alternative> getAlternatives() {
 		return this.alternatives;
 	}
 
 	public void generateAlternatives(int alternativesNumber) {
-		ProblemGenerator pg = new ProblemGenerator();
-		pg.setCriteria(new ArrayList<>(weights.keySet()));
-		pg.generateAlternatives(alternativesNumber);
-		this.alternatives = new LinkedHashSet<>(pg.getAlternatives());
+		problemGenerator.setCriteria(new ArrayList<>(weights.keySet()));
+		problemGenerator.generateAlternatives(alternativesNumber);
+		this.alternatives = new LinkedHashSet<>(problemGenerator.getAlternatives());
 	}
 
 	public void generateWeightVector(int criteriaNumber) {
-		ProblemGenerator pg = new ProblemGenerator();
-		pg.generateCriteria(criteriaNumber, 1, 10, 1);
-		List<Criterion> criteria = pg.getCriteria();
+		problemGenerator.generateCriteria(criteriaNumber, 0, 10, 2);
+		List<Criterion> criteria = problemGenerator.getCriteria();
 		NumbersGenerator ng = new NumbersGenerator();
 		List<Double> weightsGenerated = ng.generate(criteriaNumber, 1.0);
 
