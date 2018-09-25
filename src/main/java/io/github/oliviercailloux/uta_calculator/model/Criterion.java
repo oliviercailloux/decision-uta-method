@@ -63,9 +63,8 @@ public class Criterion {
 		if (getClass() != obj.getClass())
 			return false;
 		Criterion other = (Criterion) obj;
-		if (id != other.id)
-			return false;
-		return true;
+		
+		return id != other.id;
 	}
 
 	@Override

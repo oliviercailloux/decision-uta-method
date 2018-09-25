@@ -51,19 +51,21 @@ public class AlternativesComparison {
 	}
 
 	private void WeightsSumInOne() {
-		double sum_weights = 0.0;
+		double sumWeights = 0.0;
 
 		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
-			sum_weights += entry.getValue().doubleValue();
+			sumWeights += entry.getValue().doubleValue();
 		}
 
-		Builder<Criterion, Double> builder = ImmutableMap.builder();
+		if(sumWeights > 1.0 || (sumWeights > 0 && sumWeights < 1.0)) {
+			Builder<Criterion, Double> builder = ImmutableMap.builder();
 
-		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
-			builder.put(entry.getKey(), entry.getValue().doubleValue() / sum_weights);
+			for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
+				builder.put(entry.getKey(), entry.getValue().doubleValue() / sumWeights);
+			}
+
+			weights = builder.build();
 		}
-
-		weights = builder.build();
 	}
 
 	/**
@@ -73,7 +75,7 @@ public class AlternativesComparison {
 		Map<Criterion, Double> evalX = this.x.getEvaluations();
 		Map<Criterion, Double> evalY = this.y.getEvaluations();
 
-		return getFilteredCriteria((crit) -> evalX.get(crit) < evalY.get(crit));
+		return getFilteredCriteria(crit -> evalX.get(crit) < evalY.get(crit));
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class AlternativesComparison {
 		Map<Criterion, Double> evalX = this.x.getEvaluations();
 		Map<Criterion, Double> evalY = this.y.getEvaluations();
 
-		return getFilteredCriteria((crit) -> evalX.get(crit) > evalY.get(crit));
+		return getFilteredCriteria(crit -> evalX.get(crit) > evalY.get(crit));
 	}
 
 	/**
@@ -115,8 +117,8 @@ public class AlternativesComparison {
 	private ImmutableSet<Criterion> getFilteredCriteria(Predicate<Criterion> predicate) {
 		Stream<Criterion> allCriteriaStream = weights.keySet().stream().sequential();
 		Stream<Criterion> criteriaFilteredStream = allCriteriaStream.filter(predicate);
-		ImmutableSet<Criterion> criteriaFiltered = criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
-		return criteriaFiltered;
+		
+		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
 	}
 
 	/**

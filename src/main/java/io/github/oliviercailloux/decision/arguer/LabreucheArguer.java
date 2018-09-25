@@ -44,24 +44,22 @@ public class LabreucheArguer {
 
 		AlternativesComparison alcoALL = output.getAlternativesComparison();
 
-		String explanation = alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
+		return alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
 				+ alcoALL.getX().getName() + " is better then " + alcoALL.getY().getName() + " on ALL criteria.";
-
-		return explanation;
 	}
 
 	private String argueNOA(NOAOutput output) {
 
 		AlternativesComparison alcoNOA = output.getAlternativesComparison();
-		Set<Criterion> ConPA = output.getPositiveNoaCriteria();
-		Set<Criterion> ConNA = output.getNegativeNoaCriteria();
+		Set<Criterion> cOnPA = output.getPositiveNoaCriteria();
+		Set<Criterion> cOnNA = output.getNegativeNoaCriteria();
 
 		String explanation = "Even though " + alcoNOA.getY().getName() + " is better than " + alcoNOA.getX().getName()
 				+ " on average, " + alcoNOA.getX().getName() + " is preferred to " + alcoNOA.getY().getName()
 				+ " since \n" + alcoNOA.getX().getName() + " is better than " + alcoNOA.getY().getName()
-				+ " on the criteria " + Utils.showCriteria(ConPA) + " that are important whereas \n"
+				+ " on the criteria " + Utils.showCriteria(cOnPA) + " that are important whereas \n"
 				+ alcoNOA.getX().getName() + " is worse than " + alcoNOA.getY().getName() + " on the criteria "
-				+ Utils.showCriteria(ConNA) + " that are not important.";
+				+ Utils.showCriteria(cOnNA) + " that are not important.";
 
 		Double addSentence = 0.0;
 
@@ -84,24 +82,24 @@ public class LabreucheArguer {
 
 		AlternativesComparison alcoIVT = output.getAlternativesComparison();
 
-		ImmutableSet<Criterion> k_nrw = output.getNegativeRelativelyWeak();
-		ImmutableSet<Criterion> k_nw = output.getNegativeWeak();
-		ImmutableSet<Criterion> k_prs = output.getPositiveRelativelyStrong();
-		ImmutableSet<Criterion> k_ps = output.getPositiveStrong();
-		ImmutableGraph<Criterion> k_pn = output.getPositiveNegative();
+		ImmutableSet<Criterion> kNRW = output.getNegativeRelativelyWeak();
+		ImmutableSet<Criterion> kNW = output.getNegativeWeak();
+		ImmutableSet<Criterion> kPRS = output.getPositiveRelativelyStrong();
+		ImmutableSet<Criterion> kPS = output.getPositiveStrong();
+		ImmutableGraph<Criterion> kPN = output.getPositiveNegative();
 
 		String explanation = alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 				+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-				+ Utils.showCriteria(k_ps) + " that are important " + "\n" + "and on the criteria "
-				+ Utils.showCriteria(k_prs) + " that are relativily important, " + alcoIVT.getY().getName()
-				+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(k_nw) + "\n"
-				+ "that are not important and on the criteria " + Utils.showCriteria(k_nrw)
+				+ Utils.showCriteria(kPS) + " that are important " + "\n" + "and on the criteria "
+				+ Utils.showCriteria(kPRS) + " that are relativily important, " + alcoIVT.getY().getName()
+				+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(kNW) + "\n"
+				+ "that are not important and on the criteria " + Utils.showCriteria(kNRW)
 				+ " that are not really important.";
 
-		if (!k_pn.edges().isEmpty()) {
+		if (!kPN.edges().isEmpty()) {
 			explanation += "And ";
 
-			for (EndpointPair<Criterion> couple : k_pn.edges()) {
+			for (EndpointPair<Criterion> couple : kPN.edges()) {
 
 				explanation += couple.nodeV().getName() + " for wich " + alcoIVT.getX().getName() + " is better than "
 						+ alcoIVT.getY().getName() + " is more important than criterion " + couple.nodeU().getName()
@@ -119,24 +117,19 @@ public class LabreucheArguer {
 
 		AlternativesComparison alcoRMGAVG = output.getAlternativesComparison();
 
-		String explanation = alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
+		return alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
 				+ alcoRMGAVG.getX().getName() + " is on average better than " + alcoRMGAVG.getY().getName() + "\n"
 				+ " and all the criteria have almost the same weights.";
-
-		return explanation;
 	}
 
 	private String argueRMGCOMP(RMGCOMPOutput output) {
-
-		String explanation = "";
 
 		AlternativesComparison alcoRMGCOMP = output.getAlternativesComparison();
 		double maxW = output.getMaxW();
 		double eps = output.getEpsilon();
 
-		if (maxW > eps) {
-			if (maxW <= eps * 2) {
-				explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
+		if (maxW > eps && maxW <= eps * 2) {
+				return alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 						+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
 						+ alcoRMGCOMP.getY().getName() + " on \n"
 						+ Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
@@ -144,19 +137,13 @@ public class LabreucheArguer {
 						+ alcoRMGCOMP.getX().getName() + " on \n"
 						+ Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 						+ ", and all the criteria have more or less the same weights.";
-
-				return explanation;
-			}
 		}
 
-		explanation = alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
+		return alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 				+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
 				+ alcoRMGCOMP.getY().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 				+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
 				+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria()) + ".";
-
-		return explanation;
-
 	}
 
 }
