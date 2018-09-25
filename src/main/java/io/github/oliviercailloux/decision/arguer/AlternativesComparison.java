@@ -57,7 +57,7 @@ public class AlternativesComparison {
 			sumWeights += entry.getValue().doubleValue();
 		}
 
-		if(sumWeights > 1.0 || (sumWeights > 0 && sumWeights < 1.0)) {
+		if (sumWeights > 1.0 || (sumWeights > 0 && sumWeights < 1.0)) {
 			Builder<Criterion, Double> builder = ImmutableMap.builder();
 
 			for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
@@ -117,7 +117,7 @@ public class AlternativesComparison {
 	private ImmutableSet<Criterion> getFilteredCriteria(Predicate<Criterion> predicate) {
 		Stream<Criterion> allCriteriaStream = weights.keySet().stream().sequential();
 		Stream<Criterion> criteriaFilteredStream = allCriteriaStream.filter(predicate);
-		
+
 		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
 	}
 
@@ -126,6 +126,16 @@ public class AlternativesComparison {
 	 */
 	public ImmutableSet<Criterion> getCriteria() {
 		return weights.keySet();
+	}
+
+	public ImmutableMap<Criterion, Double> getWeightReference() {
+		Builder<Criterion, Double> weightsReference = ImmutableMap.builder();
+
+		for (Criterion c : weights.keySet()) {
+			weightsReference.put(c, 1.0 / weights.keySet().size());
+		}
+
+		return weightsReference.build();
 	}
 
 	private void isXbetterY() {
@@ -138,16 +148,6 @@ public class AlternativesComparison {
 			this.x = this.y;
 			this.y = tmp;
 		}
-	}
-
-	public ImmutableMap<Criterion, Double> getWeightReference() {
-		Builder<Criterion, Double> weightsReference = ImmutableMap.builder();
-
-		for (Criterion c : weights.keySet()) {
-			weightsReference.put(c, 1.0 / weights.keySet().size());
-		}
-
-		return weightsReference.build();
 	}
 
 }

@@ -3,6 +3,7 @@ package io.github.oliviercailloux.decision.arguer.nunes;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.HashBasedTable;
@@ -17,7 +18,7 @@ public class Tools {
 
 	public static double score_d(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
 			Table<Alternative, Alternative, Double> tradoffs) {
-		return cost(x, y, criteria, weight) - extAversion(x, y) - toContrast(x, y, tradoffs);
+		return cost(x, y, criteria, weight) + (0.25 * extAversion(x, y)) + (0.15 * toContrast(x, y, tradoffs));
 	}
 
 	public static double cost(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight) {
@@ -131,4 +132,27 @@ public class Tools {
 		return null;
 	}
 
+	public static double getPros(Alternative x, Alternative y, Map<Criterion, Double> weights) {
+		double sum = 0.0;
+		double tmp;
+		for (Entry<Criterion, Double> entry : weights.entrySet()) {
+			tmp = entry.getValue() * attCost(y, x, entry.getKey());
+			if (tmp > 0) {
+				sum += tmp;
+			}
+		}
+		return sum;
+	}
+
+	public static double getCons(Alternative x, Alternative y, Map<Criterion, Double> weights) {
+		double sum = 0.0;
+		double tmp;
+		for (Entry<Criterion, Double> entry : weights.entrySet()) {
+			tmp = entry.getValue() * attCost(x, y, entry.getKey());
+			if (tmp > 0) {
+				sum += tmp;
+			}
+		}
+		return sum;
+	}
 }

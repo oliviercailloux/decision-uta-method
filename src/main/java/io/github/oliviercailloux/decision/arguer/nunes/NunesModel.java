@@ -16,9 +16,11 @@ import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.NunesArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.Pattern;
+import io.github.oliviercailloux.decision.arguer.nunes.output.TradeOffOutput;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -63,7 +65,22 @@ public class NunesModel {
 	private NunesOutput computeExplanation() {
 		Preconditions.checkState(nunesOutput == null);
 
-		if (tryDOM()) {
+		if (tryDOMINATION()) {
+			assert nunesOutput != null;
+			return nunesOutput;
+		}
+
+		if (tryMINREQP()) {
+			assert nunesOutput != null;
+			return nunesOutput;
+		}
+
+		if (tryDECISIVE()) {
+			assert nunesOutput != null;
+			return nunesOutput;
+		}
+
+		if (tryTRADEOFF()) {
 			assert nunesOutput != null;
 			return nunesOutput;
 		}
@@ -93,7 +110,15 @@ public class NunesModel {
 		return (DominationOutput) getCheckedExplanation(Pattern.DOMINATION);
 	}
 
-	private boolean tryDOM() {
+	public DecisiveOutput getDECISIVEExplanation() {
+		return (DecisiveOutput) getCheckedExplanation(Pattern.DECISIVE);
+	}
+
+	public TradeOffOutput getTRADEOFFExplanation() {
+		return (TradeOffOutput) getCheckedExplanation(Pattern.TRADEOFF);
+	}
+
+	private boolean tryDOMINATION() {
 		Preconditions.checkState(nunesOutput == null);
 
 		int count = 0;
@@ -120,6 +145,21 @@ public class NunesModel {
 
 		LOGGER.info("DOM true");
 		nunesOutput = new DominationOutput(alternativesComparison);
+
+		return true;
+	}
+
+	private boolean tryMINREQP() {
+
+		return true;
+	}
+
+	private boolean tryDECISIVE() {
+
+		return true;
+	}
+
+	private boolean tryTRADEOFF() {
 
 		return true;
 	}

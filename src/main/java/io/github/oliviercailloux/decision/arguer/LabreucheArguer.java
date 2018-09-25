@@ -129,14 +129,12 @@ public class LabreucheArguer {
 		double eps = output.getEpsilon();
 
 		if (maxW > eps && maxW <= eps * 2) {
-				return alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
-						+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
-						+ alcoRMGCOMP.getY().getName() + " on \n"
-						+ Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
-						+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
-						+ alcoRMGCOMP.getX().getName() + " on \n"
-						+ Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
-						+ ", and all the criteria have more or less the same weights.";
+			return alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
+					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
+					+ alcoRMGCOMP.getY().getName() + " on \n" + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
+					+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
+					+ alcoRMGCOMP.getX().getName() + " on \n" + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
+					+ ", and all the criteria have more or less the same weights.";
 		}
 
 		return alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()

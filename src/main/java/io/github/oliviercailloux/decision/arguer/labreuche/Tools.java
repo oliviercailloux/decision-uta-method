@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.math3.exception.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +114,13 @@ public class Tools {
 			first_part += w.get(c) * delta.get(c);
 
 		List<Criterion> best_min_pi = pi_min(subset, w, delta);
+		
+		if(best_min_pi == null) {
+			throw new NullArgumentException();
+		}
+			
 		Map<Criterion, Double> pi_w = modified_w(best_min_pi, w);
+		
 		Double min_part = 0.0;
 
 		for (Criterion c : best_min_pi)

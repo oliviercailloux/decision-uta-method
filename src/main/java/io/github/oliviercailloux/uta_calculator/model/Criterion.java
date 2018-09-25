@@ -58,13 +58,16 @@ public class Criterion {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+
 		if (obj == null)
 			return false;
+
 		if (getClass() != obj.getClass())
 			return false;
+
 		Criterion other = (Criterion) obj;
-		
-		return id != other.id;
+
+		return id == other.id;
 	}
 
 	@Override
