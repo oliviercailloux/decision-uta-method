@@ -1,4 +1,4 @@
-	package io.github.oliviercailloux.uta_calculator.model;
+package io.github.oliviercailloux.uta_calculator.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -20,8 +20,8 @@ public class ArgumentGenerator {
 	Set<Alternative> alternatives;
 	Map<Criterion, Double> weights;
 	ProblemGenerator problemGenerator;
-	
-	public ArgumentGenerator(Set<Alternative> alternatives, Map<Criterion,Double> weights) {
+
+	public ArgumentGenerator(Set<Alternative> alternatives, Map<Criterion, Double> weights) {
 		this.alternatives = alternatives;
 		this.weights = weights;
 		this.problemGenerator = new ProblemGenerator(new ArrayList<>(weights.keySet()), new ArrayList<>(alternatives));
@@ -39,7 +39,7 @@ public class ArgumentGenerator {
 	public Map<Criterion, Double> getWeights() {
 		return this.weights;
 	}
-	
+
 	public void setAlternatives(Set<Alternative> alternatives) {
 		this.alternatives = alternatives;
 	}
@@ -68,7 +68,7 @@ public class ArgumentGenerator {
 	public Set<Alternative> findBest() {
 		Set<Alternative> bests = new LinkedHashSet<>();
 		double bestCurrentScore = 0.0;
-		double score = 0.0;
+		double score;
 
 		for (Alternative alt : alternatives) {
 			score = Tools.score(alt, weights);

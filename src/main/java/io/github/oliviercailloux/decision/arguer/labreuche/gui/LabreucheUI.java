@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JButton;
@@ -37,32 +35,14 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class LabreucheUI {
 
 	private JFrame frame;
-	private JLabel lblNumberOfAlternatives;
-	private JLabel lblNumberOfCriteria;
-	private JLabel lblRandomModel;
-	private JLabel lblChooseExample;
-	private JLabel lblOr;
-	private JLabel lblBestAlternative;
-	private JLabel lblPossibleType;
-	private JLabel lblOfExplanations;
-	private JLabel lblAnchorUsed;
-
-	private JButton btnGenerate;
-	private JButton btnLoad;
-	private JButton btnResolve;
-	private JButton btnRMGCOMP;
-	private JButton btnRmgavg;
-	private JButton btnIvt;
-	private JButton btnNoa;
-	private JButton btnAll;
 
 	private JTextField varNbrAlternatives;
 	private JTextField varNbrCriteria;
 	private JComboBox<String> comboBox;
 
-	private JEditorPane BestAlternativePane;
-	private JEditorPane ExplanationPane;
-	private JTextPane AnchorPane;
+	private JEditorPane bestAlternativePane;
+	private JEditorPane explanationPane;
+	private JTextPane anchorPane;
 
 	private LabreucheModel lm = null;
 	private ArgumentGenerator ag = null;
@@ -80,7 +60,7 @@ public class LabreucheUI {
 					LabreucheUI window = new LabreucheUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.debug(" BUG : " + e.getMessage());
 				}
 			}
 		});
@@ -125,11 +105,11 @@ public class LabreucheUI {
 		btnHelp.setBounds(34, 455, 97, 25);
 		frame.getContentPane().add(btnHelp);
 
-		lblNumberOfAlternatives = new JLabel("Number of alternatives");
+		JLabel lblNumberOfAlternatives = new JLabel("Number of alternatives");
 		lblNumberOfAlternatives.setBounds(12, 59, 169, 15);
 		frame.getContentPane().add(lblNumberOfAlternatives);
 
-		lblNumberOfCriteria = new JLabel("Number of criteria");
+		JLabel lblNumberOfCriteria = new JLabel("Number of criteria");
 		lblNumberOfCriteria.setBounds(12, 88, 169, 15);
 		frame.getContentPane().add(lblNumberOfCriteria);
 
@@ -143,15 +123,15 @@ public class LabreucheUI {
 		frame.getContentPane().add(varNbrCriteria);
 		varNbrCriteria.setColumns(10);
 
-		lblRandomModel = new JLabel("Random Example");
+		JLabel lblRandomModel = new JLabel("Random Example");
 		lblRandomModel.setBounds(101, 12, 127, 15);
 		frame.getContentPane().add(lblRandomModel);
 
-		lblChooseExample = new JLabel("Choose Example");
+		JLabel lblChooseExample = new JLabel("Choose Example");
 		lblChooseExample.setBounds(386, 12, 127, 15);
 		frame.getContentPane().add(lblChooseExample);
 
-		lblOr = new JLabel("or");
+		JLabel lblOr = new JLabel("or");
 		lblOr.setBounds(292, 77, 70, 15);
 		frame.getContentPane().add(lblOr);
 
@@ -171,25 +151,25 @@ public class LabreucheUI {
 		comboBox.addItem("example17");
 		comboBox.addItem("example18");
 
-		lblBestAlternative = new JLabel("Best alternative :");
+		JLabel lblBestAlternative = new JLabel("Best alternative :");
 		lblBestAlternative.setBounds(22, 182, 137, 15);
 		frame.getContentPane().add(lblBestAlternative);
 
-		ExplanationPane = new JEditorPane();
-		ExplanationPane.setBounds(153, 248, 448, 221);
-		ExplanationPane.setEditable(false);
-		frame.getContentPane().add(ExplanationPane);
+		explanationPane = new JEditorPane();
+		explanationPane.setBounds(153, 248, 448, 221);
+		explanationPane.setEditable(false);
+		frame.getContentPane().add(explanationPane);
 
-		BestAlternativePane = new JEditorPane();
-		BestAlternativePane.setBounds(153, 182, 60, 21);
-		BestAlternativePane.setEditable(false);
-		frame.getContentPane().add(BestAlternativePane);
+		bestAlternativePane = new JEditorPane();
+		bestAlternativePane.setBounds(153, 182, 60, 21);
+		bestAlternativePane.setEditable(false);
+		frame.getContentPane().add(bestAlternativePane);
 
 		JLabel lblExplanations = new JLabel("Explanations");
 		lblExplanations.setBounds(310, 225, 144, 15);
 		frame.getContentPane().add(lblExplanations);
 
-		btnResolve = new JButton("Resolve");
+		JButton btnResolve = new JButton("Resolve");
 		btnResolve.setBounds(24, 408, 117, 25);
 		frame.getContentPane().add(btnResolve);
 
@@ -205,24 +185,17 @@ public class LabreucheUI {
 					} catch (IllegalStateException e5) {
 						JOptionPane.showMessageDialog(null, " Message Error :" + e5.getMessage());
 					}
-					String old = ExplanationPane.getText();
+					String old = explanationPane.getText();
 
-					AnchorPane.setText(lm.getLabreucheOutput().getAnchor().toString());
-					BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-					ExplanationPane.setText(old + "\n" + message);
+					anchorPane.setText(lm.getLabreucheOutput().getAnchor().toString());
+					bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+					explanationPane.setText(old + "\n" + message);
 					return;
 				}
-
-				if (ag != null) {
-					// TODO();
-
-					return;
-				}
-
 			}
 		});
 
-		btnGenerate = new JButton("Generate");
+		JButton btnGenerate = new JButton("Generate");
 		btnGenerate.setBounds(101, 131, 117, 25);
 		frame.getContentPane().add(btnGenerate);
 
@@ -247,7 +220,7 @@ public class LabreucheUI {
 					alternatives = Integer.parseInt(varNbrAlternatives.getText());
 				} catch (NumberFormatException e1) {
 					JOptionPane.showMessageDialog(null, " Required numeric number in Number of alternative");
-					e1.printStackTrace();
+					LOGGER.debug(" BUG : " + e1.getMessage());
 					return;
 				}
 
@@ -255,7 +228,7 @@ public class LabreucheUI {
 					criteria = Integer.parseInt(varNbrCriteria.getText());
 				} catch (NumberFormatException e2) {
 					JOptionPane.showMessageDialog(null, " Required numeric number in Number of criteria");
-					e2.printStackTrace();
+					LOGGER.debug(" BUG : " + e2.getMessage());
 					return;
 				}
 
@@ -269,15 +242,16 @@ public class LabreucheUI {
 
 				ag = new ArgumentGenerator(alternatives, criteria);
 
-				String display = "    Criteria    <-   Weight : \n";
+				StringBuilder display = new StringBuilder("    Criteria    <-   Weight : \n");
 
 				for (Criterion c : ag.getWeights().keySet())
-					display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + ag.getWeights().get(c);
+					display.append("\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = " + ag.getWeights().get(c));
 
-				display += "\n \n    Alternatives : ";
+				display.append("\n \n    Alternatives : ");
 
 				for (Alternative a : ag.getAlternatives()) {
-					display += "\n" + "	" + a.getName() + " " + " : " + Utils.showVector(a.getEvaluations().values());
+					display.append(
+							"\n" + "	" + a.getName() + " " + " : " + Utils.showVector(a.getEvaluations().values()));
 				}
 
 				JFrame windowInfo = new JFrame();
@@ -289,57 +263,57 @@ public class LabreucheUI {
 				JPanel p = new JPanel();
 				windowInfo.getContentPane().add(p);
 
-				JTextArea text = new JTextArea(display);
+				JTextArea text = new JTextArea(display.toString());
 
 				p.add(text);
-				
+
 				Alternative best = null;
 				Alternative second = null;
-				
+
 				try {
 					best = ag.findUniqueBest();
-					
-				}catch(IllegalArgumentException e6) {
-					e6.printStackTrace();
-					
+
+				} catch (IllegalArgumentException e6) {
+					LOGGER.debug(" BUG : " + e6.getMessage());
+
 					Iterator<Alternative> itr = ag.findBest().iterator();
 
 					best = itr.next();
 					second = itr.next();
 				}
-				
-				if(second == null) {
+
+				if (second == null) {
 					Set<Alternative> copy = new HashSet<>(ag.getAlternatives());
-					copy.remove(best);			
-					
-					 ag.setAlternatives(copy);
-					
+					copy.remove(best);
+
+					ag.setAlternatives(copy);
+
 					try {
 						second = ag.findUniqueBest();
-						
-					}catch(IllegalArgumentException e6) {
-						e6.printStackTrace();
-						
+
+					} catch (IllegalArgumentException e8) {
+						LOGGER.debug(" BUG : " + e8.getMessage());
+
 						Iterator<Alternative> itr = ag.findBest().iterator();
 
 						second = itr.next();
-					}					
+					}
 				}
-				
+
 				AlternativesComparison altComp = new AlternativesComparison(best, second, ag.getWeights());
-				
+
 				lm = new LabreucheModel(altComp);
-				
+
 				windowInfo.pack();
 				windowInfo.setVisible(true);
 			}
 		});
 
-		btnLoad = new JButton("Load");
+		JButton btnLoad = new JButton("Load");
 		btnLoad.setBounds(386, 131, 117, 25);
 		frame.getContentPane().add(btnLoad);
 
-		btnRMGCOMP = new JButton("RMGCOMP");
+		JButton btnRMGCOMP = new JButton("RMGCOMP");
 		btnRMGCOMP.setBounds(24, 367, 117, 25);
 		frame.getContentPane().add(btnRMGCOMP);
 
@@ -352,18 +326,18 @@ public class LabreucheUI {
 				try {
 					message = largue.argue(lm.getRMGCOMPExplanation());
 				} catch (IllegalStateException e3) {
-					JOptionPane.showMessageDialog(null, "The anchor NOA is not applicable on this example"
+					JOptionPane.showMessageDialog(null, "The anchor RMGCOMP is not applicable on this example"
 							+ "\n Message Error :" + e3.getMessage());
 				}
-				String old = ExplanationPane.getText();
+				String old = explanationPane.getText();
 
-				AnchorPane.setText(Anchor.RMGCOMP.toString());
-				BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-				ExplanationPane.setText(old + "\n" + message);
+				anchorPane.setText(Anchor.RMGCOMP.toString());
+				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				explanationPane.setText(old + "\n" + message);
 			}
 		});
 
-		btnRmgavg = new JButton("RMGAVG");
+		JButton btnRmgavg = new JButton("RMGAVG");
 		btnRmgavg.setBounds(24, 337, 117, 25);
 		frame.getContentPane().add(btnRmgavg);
 
@@ -376,18 +350,18 @@ public class LabreucheUI {
 				try {
 					message = largue.argue(lm.getRMGAVGExplanation());
 				} catch (IllegalStateException e2) {
-					JOptionPane.showMessageDialog(null, "The anchor NOA is not applicable on this example"
+					JOptionPane.showMessageDialog(null, "The anchor RMGAVG is not applicable on this example"
 							+ "\n Message Error :" + e2.getMessage());
 				}
-				String old = ExplanationPane.getText();
+				String old = explanationPane.getText();
 
-				AnchorPane.setText(Anchor.RMGAVG.toString());
-				BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-				ExplanationPane.setText(old + "\n" + message);
+				anchorPane.setText(Anchor.RMGAVG.toString());
+				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				explanationPane.setText(old + "\n" + message);
 			}
 		});
 
-		btnIvt = new JButton("IVT");
+		JButton btnIvt = new JButton("IVT");
 		btnIvt.setBounds(24, 307, 117, 25);
 		frame.getContentPane().add(btnIvt);
 
@@ -400,18 +374,18 @@ public class LabreucheUI {
 				try {
 					message = largue.argue(lm.getIVTExplanation());
 				} catch (IllegalStateException e1) {
-					JOptionPane.showMessageDialog(null, "The anchor NOA is not applicable on this example"
+					JOptionPane.showMessageDialog(null, "The anchor IVT is not applicable on this example"
 							+ "\n Message Error :" + e1.getMessage());
 				}
-				String old = ExplanationPane.getText();
+				String old = explanationPane.getText();
 
-				AnchorPane.setText(Anchor.IVT.toString());
-				BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-				ExplanationPane.setText(old + "\n" + message);
+				anchorPane.setText(Anchor.IVT.toString());
+				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				explanationPane.setText(old + "\n" + message);
 			}
 		});
 
-		btnNoa = new JButton("NOA");
+		JButton btnNoa = new JButton("NOA");
 		btnNoa.setBounds(24, 277, 117, 25);
 		frame.getContentPane().add(btnNoa);
 
@@ -427,15 +401,15 @@ public class LabreucheUI {
 					JOptionPane.showMessageDialog(null,
 							"The anchor NOA is not applicable on this example" + "\n Message Error :" + e.getMessage());
 				}
-				String old = ExplanationPane.getText();
+				String old = explanationPane.getText();
 
-				AnchorPane.setText(Anchor.NOA.toString());
-				BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-				ExplanationPane.setText(old + "\n" + message);
+				anchorPane.setText(Anchor.NOA.toString());
+				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				explanationPane.setText(old + "\n" + message);
 			}
 		});
 
-		btnAll = new JButton("ALL");
+		JButton btnAll = new JButton("ALL");
 		btnAll.setBounds(24, 248, 117, 25);
 		frame.getContentPane().add(btnAll);
 
@@ -451,93 +425,93 @@ public class LabreucheUI {
 					JOptionPane.showMessageDialog(null,
 							"The anchor ALL is not applicable on this example" + "\n Message Error :" + e.getMessage());
 				}
-				String old = ExplanationPane.getText();
+				String old = explanationPane.getText();
 
-				AnchorPane.setText(Anchor.ALL.toString());
-				BestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
-				ExplanationPane.setText(old + "\n" + message);
+				anchorPane.setText(Anchor.ALL.toString());
+				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				explanationPane.setText(old + "\n" + message);
 			}
 		});
 
-		lblPossibleType = new JLabel("Possible type");
+		JLabel lblPossibleType = new JLabel("Possible type");
 		lblPossibleType.setBounds(32, 209, 127, 15);
 		frame.getContentPane().add(lblPossibleType);
 
-		lblOfExplanations = new JLabel("of explanations :");
+		JLabel lblOfExplanations = new JLabel("of explanations :");
 		lblOfExplanations.setBounds(26, 225, 130, 15);
 		frame.getContentPane().add(lblOfExplanations);
 
-		lblAnchorUsed = new JLabel("Anchor used : ");
+		JLabel lblAnchorUsed = new JLabel("Anchor used : ");
 		lblAnchorUsed.setBounds(348, 182, 119, 15);
 		frame.getContentPane().add(lblAnchorUsed);
 
-		AnchorPane = new JTextPane();
-		AnchorPane.setBounds(453, 182, 82, 21);
-		AnchorPane.setEditable(false);
-		frame.getContentPane().add(AnchorPane);
+		anchorPane = new JTextPane();
+		anchorPane.setBounds(453, 182, 82, 21);
+		anchorPane.setEditable(false);
+		frame.getContentPane().add(anchorPane);
 
 		btnLoad.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				lm = null;
-				String display = "";
+				StringBuilder display = new StringBuilder();
 
 				switch (comboBox.getSelectedItem().toString()) {
 
 				case "example1":
 					lm = Examples.getExampleAll();
-					display = "				Example 1";
+					display.append("				Example 1");
 					break;
 
 				case "example5":
 					lm = Examples.getExample5();
-					display = "				Example 5";
+					display.append("				Example 5");
 					break;
 
 				case "example6":
 					lm = Examples.getExample6();
-					display = "				Example 6";
+					display.append("				Example 6");
 					break;
 
 				case "example9":
 					lm = Examples.getExample9();
-					display = "				Example 9";
+					display.append("				Example 9");
 					break;
 
 				case "example10":
 					lm = Examples.getExample10();
-					display = "				Example 10";
+					display.append("				Example 10");
 					break;
 
 				case "example13":
 					lm = Examples.getExample13();
-					display = "				Example 13";
+					display.append("				Example 13");
 					break;
 
 				case "example14":
 					lm = Examples.getExample14();
-					display = "				Example 14";
+					display.append("				Example 14");
 					break;
 
 				case "example15":
 					lm = Examples.getExample15();
-					display = "				Example 15";
+					display.append("				Example 15");
 					break;
 
 				case "example16":
 					lm = Examples.getExample16();
-					display = "				Example 16";
+					display.append("				Example 16");
 					break;
 
 				case "example17":
 					lm = Examples.getExample17();
-					display = "				Example 17";
+					display.append("				Example 17");
 					break;
 
 				case "example18":
 					lm = Examples.getExample18();
-					display = "				Example 18";
+					display.append("				Example 18");
 					break;
 
 				default:
@@ -549,20 +523,21 @@ public class LabreucheUI {
 					return;
 				}
 
-				display += "\n Criteria         <-   Weights  : \n";
+				display.append("\n Criteria         <-   Weights  : \n");
 
 				for (Criterion c : lm.getAlternativesComparison().getWeight().keySet())
-					display += "\n" + c.getName() + "  <-  w_" + c.getId() + " = "
-							+ lm.getAlternativesComparison().getWeight().get(c);
+					display.append("\n" + c.getName() + "  <-  w_" + c.getId() + " = "
+							+ lm.getAlternativesComparison().getWeight().get(c));
 
-				display += "\n \n Alternatives : ";
+				display.append("\n \n Alternatives : ");
 
-				display += "\n" + "	" + lm.getAlternativesComparison().getX().getName() + " " + " : "
-						+ Utils.showVector(lm.getAlternativesComparison().getX().getEvaluations().values());
-				display += "\n" + "	" + lm.getAlternativesComparison().getY().getName() + " " + " : "
-						+ Utils.showVector(lm.getAlternativesComparison().getY().getEvaluations().values());
+				display.append("\n" + "	" + lm.getAlternativesComparison().getX().getName() + " " + " : "
+						+ Utils.showVector(lm.getAlternativesComparison().getX().getEvaluations().values()));
 
-				ExplanationPane.setText("Explanation why " + lm.getAlternativesComparison().getX().getName()
+				display.append("\n" + "	" + lm.getAlternativesComparison().getY().getName() + " " + " : "
+						+ Utils.showVector(lm.getAlternativesComparison().getY().getEvaluations().values()));
+
+				explanationPane.setText("Explanation why " + lm.getAlternativesComparison().getX().getName()
 						+ " is better than " + lm.getAlternativesComparison().getY().getName() + " : ");
 
 				JFrame windowInfo = new JFrame();
@@ -574,7 +549,7 @@ public class LabreucheUI {
 				JPanel p = new JPanel();
 				windowInfo.getContentPane().add(p);
 
-				JTextArea text = new JTextArea(display);
+				JTextArea text = new JTextArea(display.toString());
 
 				p.add(text);
 
@@ -582,6 +557,5 @@ public class LabreucheUI {
 				windowInfo.setVisible(true);
 			}
 		});
-
 	}
 }
