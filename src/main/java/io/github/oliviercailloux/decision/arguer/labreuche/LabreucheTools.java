@@ -41,14 +41,13 @@ public class LabreucheTools {
 		double score = 0.0;
 
 		// Sum w_i * x_i
-		for (Entry<Criterion,Double> c : w.entrySet()) {
+		for (Entry<Criterion, Double> c : w.entrySet()) {
 			score += w.get(c.getKey()) * x.getEvaluations().get(c.getKey());
 		}
 
 		return score;
 	}
 
-	
 	/* * * * * * * * * * * * Methods used by NOA anchor * * * * * * */
 
 	/**
@@ -145,11 +144,13 @@ public class LabreucheTools {
 
 		double result = firstPart - secondPart;
 
-		StringBuilder bld = new StringBuilder();
-		bld.append("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
+		if(LOGGER.isDebugEnabled()) {
+			StringBuilder bld = new StringBuilder();
+			bld.append("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
 				+ result + " pi best : " + Utils.showCriteria(bestMinPi));
-		LOGGER.debug(bld.toString());
-
+			LOGGER.debug(bld.toString());
+		}
+		
 		return new Couple<>(result, bestMinPi);
 	}
 
@@ -184,11 +185,13 @@ public class LabreucheTools {
 			wModified.clear();
 		}
 
-		StringBuilder bld = new StringBuilder();
-		bld.append("Calling minimalPi for " + Utils.showCriteria(subset) + " minimalPi returned : "
+		if(LOGGER.isDebugEnabled()) {
+			StringBuilder bld = new StringBuilder();
+			bld.append("Calling minimalPi for " + Utils.showCriteria(subset) + " minimalPi returned : "
 				+ Utils.showCriteria(minPi) + " = " + minPiValue);
-		LOGGER.debug(bld.toString());
-
+			LOGGER.debug(bld.toString());
+		}
+		
 		return minPi;
 	}
 
@@ -239,7 +242,7 @@ public class LabreucheTools {
 					int bornSup = set.indexOf(subset.get(subset.size() - 1));
 
 					setLight.removeAll(set.subList(0, bornSup + 1));
-					
+
 					if (!setLight.isEmpty()) {
 						for (Criterion c : setLight) {
 							newSubset = add(subset, c);
@@ -352,7 +355,7 @@ public class LabreucheTools {
 			for (List<Criterion> delete : tmp) {
 				lists.remove(delete);
 			}
-			
+
 			rankedSameSize.clear();
 			tmp.clear();
 			minSize = Integer.MAX_VALUE;
@@ -482,14 +485,10 @@ public class LabreucheTools {
 
 	static ImmutableGraph<Criterion> rTopG(Graph<Criterion> graph) {
 
-		// graph have a new couple added, changeFlag = true;
-		boolean changeFlag = false; 
-		
-		// -> used to avoid to check the same couples
+		boolean changeFlag = false;
 		MutableGraph<Criterion> light;
-				
 		MutableGraph<Criterion> copy = Graphs.copyOf(graph);
-		
+
 		do {
 			changeFlag = false;
 
@@ -501,15 +500,17 @@ public class LabreucheTools {
 				// c2 = (c d)
 				for (EndpointPair<Criterion> c2 : light.edges()) {
 					// (a b) , (c d) => b=c and a!=d
-					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV()) && !copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
-							copy.putEdge(c1.nodeU(), c2.nodeV());
-							changeFlag = true;
+					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())
+							&& !copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
+						copy.putEdge(c1.nodeU(), c2.nodeV());
+						changeFlag = true;
 					}
-					
+
 					// (c d) , (a b) => a=d and b!=d
-					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU()) && !copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
-							copy.putEdge(c1.nodeV(), c2.nodeU());
-							changeFlag = true;
+					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU())
+							&& !copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
+						copy.putEdge(c1.nodeV(), c2.nodeU());
+						changeFlag = true;
 					}
 				}
 			}

@@ -97,8 +97,10 @@ public class LabreucheModel {
 	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
 		StringBuilder bld = new StringBuilder();
 
-		bld.append("\n CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
-		LOGGER.debug(bld.toString());
+		if (LOGGER.isDebugEnabled()) {
+			bld.append("\n CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
+			LOGGER.debug(bld.toString());
+		}
 
 		List<List<Criterion>> cCopy = new ArrayList<>(c);
 		List<List<Criterion>> bCopy;
@@ -115,10 +117,12 @@ public class LabreucheModel {
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
 
-			bld = new StringBuilder();
-			bld.append(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
-					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
-			LOGGER.debug(bld.toString());
+			if (LOGGER.isDebugEnabled()) {
+				bld = new StringBuilder();
+				bld.append(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
+						+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
+				LOGGER.debug(bld.toString());
+			}
 
 			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(cCopy);
@@ -141,10 +145,12 @@ public class LabreucheModel {
 				cCopy.add(currentPerm);
 
 				if (sum < vXminusVY) {
-					bld = new StringBuilder();
-					bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
-							+ (i + 1));
-					LOGGER.debug(bld.toString());
+					if (LOGGER.isDebugEnabled()) {
+						bld = new StringBuilder();
+						bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy)
+								+ " " + (i + 1));
+						LOGGER.debug(bld.toString());
+					}
 
 					if (b == null) {
 						cPrime = algo(cCopy, null, i + 1);
@@ -152,13 +158,19 @@ public class LabreucheModel {
 						cPrime = algo(cCopy, bCopy, i + 1);
 					}
 
-					bld = new StringBuilder();
-					bld.append("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
-							+ (i + 1));
-					LOGGER.debug(bld.toString());
+					if (LOGGER.isDebugEnabled()) {
+						bld = new StringBuilder();
+						bld.append("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
+								+ (i + 1));
+						LOGGER.debug(bld.toString());
+					}
 				}
 
-				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
+				if (LOGGER.isDebugEnabled()) {
+					bld = new StringBuilder();
+					bld.append(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
+					LOGGER.debug(bld.toString());
+				}
 
 				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
@@ -166,7 +178,11 @@ public class LabreucheModel {
 					bCopy = new ArrayList<>(cPrime);
 				}
 
-				LOGGER.debug(Utils.showSet(cCopy) + " incluDiscri " + Utils.showSet(bCopy));
+				if (LOGGER.isDebugEnabled()) {
+					bld = new StringBuilder();
+					bld.append(Utils.showSet(cCopy) + " incluDiscri " + Utils.showSet(bCopy));
+					LOGGER.debug(bld.toString());
+				}
 
 				if (!LabreucheTools.includeDiscri(cCopy, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
@@ -288,6 +304,8 @@ public class LabreucheModel {
 	private boolean tryIVT() {
 		Preconditions.checkState(labreucheOutput == null);
 
+		StringBuilder bld = new StringBuilder();
+
 		int size = 2;
 		List<List<Criterion>> subsets = new ArrayList<>();
 		List<List<Criterion>> bigA = new ArrayList<>(); // -> first variable for algo() calls
@@ -296,9 +314,12 @@ public class LabreucheModel {
 		double dEU;
 		List<Criterion> pi = new ArrayList<>();
 
-		LOGGER.debug(
-				"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
-						+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
+		if (LOGGER.isDebugEnabled()) {
+			bld.append(
+					"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
+							+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
+			LOGGER.debug(bld.toString());
+		}
 
 		do {
 			pi.clear();
@@ -325,12 +346,18 @@ public class LabreucheModel {
 			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(),
 					alternativesComparison.getDelta());
 
-			LOGGER.debug("\n setCIVT : ");
-			for (List<Criterion> l : setCIVT)
-				LOGGER.debug(Utils.showCriteria(l) + " "
-						+ LabreucheTools.dEU(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
-						+ " " + Utils.showCriteria(LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),
-								alternativesComparison.getDelta())));
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("\n setCIVT : ");
+				bld = new StringBuilder();
+				for (List<Criterion> l : setCIVT) {
+					bld.append((Utils.showCriteria(l) + " "
+							+ LabreucheTools.dEU(l, alternativesComparison.getWeight(),
+									alternativesComparison.getDelta())
+							+ " " + Utils.showCriteria(LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),
+									alternativesComparison.getDelta()))));
+				}
+				LOGGER.debug(bld.toString());
+			}
 
 			bigC = algo(bigA, null, 0);
 			size++;
@@ -348,7 +375,11 @@ public class LabreucheModel {
 		MutableGraph<Criterion> cpls = GraphBuilder.directed().build();
 		ImmutableGraph<Criterion> rS;
 
-		LOGGER.debug("Minimal permutation : " + Utils.showSet(ivtPermutations) + "\n");
+		if (LOGGER.isDebugEnabled()) {
+			bld = new StringBuilder();
+			bld.append("Minimal permutation : " + Utils.showSet(ivtPermutations) + "\n");
+			LOGGER.debug(bld.toString());
+		}
 
 		for (List<Criterion> l : ivtPermutations) {
 

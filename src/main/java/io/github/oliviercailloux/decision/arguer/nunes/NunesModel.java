@@ -164,14 +164,14 @@ public class NunesModel {
 	}
 
 	public void showProblem() {
-		
+
 		StringBuilder bld = new StringBuilder();
-		
-		bld.append("****************************************************************"
-				  +"\n" + "*                                                              *"
-				  +"\n" + "*         Recommender system based on Nunes and al Model       *"
-				  +"\n" + "*                                                              *"
-				  +"\n" + "****************************************************************" + "\n");
+
+		bld.append("****************************************************************" + "\n"
+				+ "*                                                              *" + "\n"
+				+ "*         Recommender system based on Nunes and al Model       *" + "\n"
+				+ "*                                                              *" + "\n"
+				+ "****************************************************************" + "\n");
 
 		bld.append("\n    Criteria    <-   Weight : \n");
 

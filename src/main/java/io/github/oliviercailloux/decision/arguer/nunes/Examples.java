@@ -11,6 +11,10 @@ import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Examples {
+	
+	private Examples() {
+		throw new IllegalStateException("Nunes Examples class");
+	}
 
 	public static NunesModel getExampleCRITICAL() {
 		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();

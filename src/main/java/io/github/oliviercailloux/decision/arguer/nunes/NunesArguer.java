@@ -43,14 +43,12 @@ public class NunesArguer {
 		AlternativesComparison alcoDOM = output.getAlternativesComparison();
 
 		if (output.getCritical() != null) {
-			explanation = alcoDOM.getX().getName() + " is recommended because it got the best value on "
+			return alcoDOM.getX().getName() + " is recommended because it got the best value on "
 					+ output.getCritical().getName();
 		}
 
-		explanation = "There is no reason to choose " + alcoDOM.getY().getName() + ", as " + alcoDOM.getX().getName()
+		return "There is no reason to choose " + alcoDOM.getY().getName() + ", as " + alcoDOM.getX().getName()
 				+ "is better on all criteria.";
-
-		return explanation;
 	}
 
 	private String argueCutOff(CutOffOutput output) {

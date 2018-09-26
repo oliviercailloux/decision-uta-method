@@ -125,7 +125,7 @@ public class NunesTools {
 	}
 
 	public boolean lpv(Alternative alt, Constraint c) {
-		return (isSatisfied(alt, c) && c.getValuePref() < 0.0) || (!isSatisfied(alt, c) && c.getValuePref() > 0.0) ;
+		return (isSatisfied(alt, c) && c.getValuePref() < 0.0) || (!isSatisfied(alt, c) && c.getValuePref() > 0.0);
 	}
 
 	public Constraint strongestConstraint() {

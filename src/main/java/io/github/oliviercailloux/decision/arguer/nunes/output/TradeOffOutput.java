@@ -8,11 +8,9 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class TradeOffOutput implements NunesOutput {
 
 	private AlternativesComparison alternativesComparison;
-	private Set<Criterion> decisiveCriteria;
 
-	public TradeOffOutput(AlternativesComparison alternativesComparison, Set<Criterion> criteria) {
+	public TradeOffOutput(AlternativesComparison alternativesComparison) {
 		this.alternativesComparison = alternativesComparison;
-		this.decisiveCriteria = criteria;
 	}
 
 	@Override

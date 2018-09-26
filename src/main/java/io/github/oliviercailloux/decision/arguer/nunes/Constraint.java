@@ -5,11 +5,16 @@ import java.util.Objects;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Constraint {
+	
+	/** 
+	 * {@value} flagMin = equal 0 if we want a better value than threshold on the criterion;
+	 * {@value} valuePref = equal 1 or -1 when it is a hard constraint.
+	 */
 
 	private Criterion criterion;
 	private double treshold;
-	private boolean flagMin; // equal 0 if we want a better value than threshold on the criterion;
-	private double valuePref; // equal 1 or -1 when it is a hard constraint.
+	private boolean flagMin;
+	private double valuePref; 
 	private int id;
 
 	public Constraint(int id, Criterion criterion, double treshold, boolean flagMin, double valuePref) {

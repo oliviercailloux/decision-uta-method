@@ -60,7 +60,9 @@ public class LabreucheGUI {
 					LabreucheGUI window = new LabreucheGUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
-					LOGGER.debug(" BUG : " + e.getMessage());
+					StringBuilder bld = new StringBuilder();
+					bld.append(" BUG : " + e.getMessage());
+					LOGGER.debug(bld.toString());
 				}
 			}
 		});
@@ -219,7 +221,9 @@ public class LabreucheGUI {
 					alternatives = Integer.parseInt(varNbrAlternatives.getText());
 				} catch (NumberFormatException e1) {
 					JOptionPane.showMessageDialog(null, " Required numeric number in Number of alternative");
-					LOGGER.debug(" BUG : " + e1.getMessage());
+					StringBuilder bld = new StringBuilder();
+					bld.append(" BUG : " + e1.getMessage());
+					LOGGER.debug(bld.toString());
 					return;
 				}
 
@@ -227,7 +231,9 @@ public class LabreucheGUI {
 					criteria = Integer.parseInt(varNbrCriteria.getText());
 				} catch (NumberFormatException e2) {
 					JOptionPane.showMessageDialog(null, " Required numeric number in Number of criteria");
-					LOGGER.debug(" BUG : " + e2.getMessage());
+					StringBuilder bld = new StringBuilder();
+					bld.append(" BUG : " + e2.getMessage());
+					LOGGER.debug(bld.toString());
 					return;
 				}
 
@@ -272,8 +278,10 @@ public class LabreucheGUI {
 				try {
 					best = ag.findUniqueBest();
 
-				} catch (IllegalArgumentException e6) {
-					LOGGER.debug(" BUG : " + e6.getMessage());
+				} catch (IllegalArgumentException e3) {
+					StringBuilder bld = new StringBuilder();
+					bld.append(" BUG : " + e3.getMessage());
+					LOGGER.debug(bld.toString());
 
 					Iterator<Alternative> itr = ag.findBest().iterator();
 
@@ -290,8 +298,10 @@ public class LabreucheGUI {
 					try {
 						second = ag.findUniqueBest();
 
-					} catch (IllegalArgumentException e8) {
-						LOGGER.debug(" BUG : " + e8.getMessage());
+					} catch (IllegalArgumentException e4) {
+						StringBuilder bld = new StringBuilder();
+						bld.append(" BUG : " + e4.getMessage());
+						LOGGER.debug(bld.toString());
 
 						Iterator<Alternative> itr = ag.findBest().iterator();
 

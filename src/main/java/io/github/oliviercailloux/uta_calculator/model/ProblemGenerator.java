@@ -90,7 +90,7 @@ public class ProblemGenerator {
 		for (Alternative alternative : alternatives) {
 			bld.append(alternative.getName() + " --> ");
 			for (int i = 0; i < criteria.size(); i++) {
-				bld.append( alternative.getEvaluations().get(criteria.get(i)) + " ");
+				bld.append(alternative.getEvaluations().get(criteria.get(i)) + " ");
 			}
 			bld.append("\n");
 		}
