@@ -9,41 +9,54 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Utils {
 
+	private Utils() {
+		throw new IllegalStateException();
+	}
+
 	public static String showVector(Collection<Double> collect) {
-		String show2 = "( ";
+		StringBuilder bld = new StringBuilder();
+
+		bld.append("( ");
 
 		for (Double c : collect) {
-			Double c_scaled = BigDecimal.valueOf(c).setScale(3, RoundingMode.HALF_UP).doubleValue();
-			show2 += c_scaled + " ";
+			Double cScaled = BigDecimal.valueOf(c).setScale(3, RoundingMode.HALF_UP).doubleValue();
+			bld.append(cScaled + " ");
 		}
-		show2 += " )";
+		bld.append(" )");
 
-		return show2;
+		return bld.toString();
 	}
 
 	public static String showCriteria(Collection<Criterion> collect) {
-		String show = "{ ";
+		StringBuilder bld = new StringBuilder();
+
+		bld.append("{ ");
 
 		for (Criterion c : collect) {
-			show += c.getName() + " ";
+			bld.append(c.getName() + " ");
 		}
 
-		return show + " }";
+		bld.append(" }");
+
+		return bld.toString();
 	}
 
-	public static String showSet(List<List<Criterion>> big_a) {
-		if (big_a == null) {
+	public static String showSet(List<List<Criterion>> collections) {
+		if (collections == null) {
 			return "{ / }";
 		}
 
-		String str = "{ ";
+		StringBuilder bld = new StringBuilder();
 
-		for (Collection<Criterion> l : big_a)
-			str += showCriteria(l) + " ";
+		bld.append("{ ");
 
-		str += " }";
+		for (Collection<Criterion> l : collections) {
+			bld.append(showCriteria(l) + " ");
+		}
 
-		return str;
+		bld.append(" }");
+
+		return bld.toString();
 	}
 
 }

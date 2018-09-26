@@ -41,16 +41,19 @@ public class AlternativesComparison {
 		this.y = requireNonNull(y);
 		checkNotNull(weights);
 		this.weights = ImmutableMap.copyOf(requireNonNull(weights));
-		assert !weights.isEmpty();
+
+		if (weights.isEmpty()) {
+			throw new IllegalArgumentException("Weights vector is empty");
+		}
 
 		LOGGER.info("Checking is X better than Y");
 		(this).isXbetterY();
 
 		LOGGER.info("Weights vector normalized");
-		(this).WeightsSumInOne();
+		(this).weightsSumInOne();
 	}
 
-	private void WeightsSumInOne() {
+	private void weightsSumInOne() {
 		double sumWeights = 0.0;
 
 		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {

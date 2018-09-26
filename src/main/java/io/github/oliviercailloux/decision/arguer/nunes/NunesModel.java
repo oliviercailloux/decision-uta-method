@@ -149,17 +149,17 @@ public class NunesModel {
 	}
 
 	private boolean tryMINREQP() {
-		//TODO
+		// TODO
 		return false;
 	}
 
 	private boolean tryDECISIVE() {
-		//TODO
+		// TODO
 		return false;
 	}
 
 	private boolean tryTRADEOFF() {
-		//TODO
+		// TODO
 		return false;
 	}
 

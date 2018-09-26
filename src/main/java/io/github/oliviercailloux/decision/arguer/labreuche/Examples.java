@@ -21,6 +21,10 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Examples {
 
+	private Examples() {
+		throw new IllegalStateException("Examples Class");
+	}
+
 	public static LabreucheModel getExampleAll() {
 		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
 
@@ -145,9 +149,7 @@ public class Examples {
 	public static ALLOutput getExampleAllOutput() {
 		LabreucheModel lm = getExampleAll();
 
-		ALLOutput all = new ALLOutput(lm.getAlternativesComparison());
-
-		return all;
+		return new ALLOutput(lm.getAlternativesComparison());
 	}
 
 	public static NOAOutput getExample5Output() {
@@ -156,9 +158,7 @@ public class Examples {
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
 		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));
 
-		NOAOutput noa = new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
-
-		return noa;
+		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
 
 	public static NOAOutput getExample6Output() {
@@ -170,9 +170,7 @@ public class Examples {
 		resultShouldBe.add(new Criterion(4, "c4", new ArrayList<Double>()));
 		resultShouldBe.add(new Criterion(5, "c5", new ArrayList<Double>()));
 
-		NOAOutput noa = new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
-
-		return noa;
+		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
 
 	public static IVTOutput getExample9Output() {
@@ -189,9 +187,7 @@ public class Examples {
 
 		double epsilon = 0.2 / lm.getAlternativesComparison().getWeight().keySet().size();
 
-		IVTOutput ivt = new IVTOutput(lm.getAlternativesComparison(), ImmutableGraph.copyOf(graphShouldBe), epsilon);
-
-		return ivt;
+		return new IVTOutput(lm.getAlternativesComparison(), ImmutableGraph.copyOf(graphShouldBe), epsilon);
 	}
 
 	public static List<List<Criterion>> getExample10Permutation() {
@@ -225,9 +221,7 @@ public class Examples {
 		resultShouldBe.add(new Criterion(1, "c1", new ArrayList<Double>()));
 		resultShouldBe.add(new Criterion(5, "c5", new ArrayList<Double>()));
 
-		NOAOutput noa = new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
-
-		return noa;
+		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
 
 	public static NOAOutput getExample14Output() {
@@ -237,9 +231,7 @@ public class Examples {
 		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));
 		resultShouldBe.add(new Criterion(4, "c4", new ArrayList<Double>()));
 
-		NOAOutput noa = new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
-
-		return noa;
+		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
 
 	public static List<List<Criterion>> getExample15Permutation() {
@@ -287,17 +279,13 @@ public class Examples {
 
 		double epsilon = 0.2 / lm.getAlternativesComparison().getWeight().keySet().size();
 
-		RMGCOMPOutput rmgcomp = new RMGCOMPOutput(lm.getAlternativesComparison(), epsilon);
-
-		return rmgcomp;
+		return new RMGCOMPOutput(lm.getAlternativesComparison(), epsilon);
 	}
 
 	public static RMGAVGOutput getExample18Output() {
 		LabreucheModel lm = getExample18();
 
-		RMGAVGOutput rmgavg = new RMGAVGOutput(lm.getAlternativesComparison());
-
-		return rmgavg;
+		return new RMGAVGOutput(lm.getAlternativesComparison());
 	}
 
 }

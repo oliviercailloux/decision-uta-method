@@ -97,12 +97,12 @@ public class NunesTools {
 
 		double costX = cost(x, y, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
 		double costY = cost(y, x, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
-		
+
 		if (costX > costY && costX != 0.0) {
 			tradoffs.put(x, y, costY / costX);
 		}
-		
-		if(costY > costX && costY != 0.0) {
+
+		if (costY > costX && costY != 0.0) {
 			tradoffs.put(y, x, costX / costY);
 		}
 

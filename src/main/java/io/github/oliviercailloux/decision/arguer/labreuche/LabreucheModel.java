@@ -123,12 +123,14 @@ public class LabreucheModel {
 
 				if (!cPrime.isEmpty()) {
 					for (List<Criterion> perm : cPrime) {
-						sum += LabreucheTools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						sum += LabreucheTools
+								.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 								.getLeft();
 					}
 				}
 
-				double vXminusVY = LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
+				double vXminusVY = LabreucheTools.score(alternativesComparison.getX(),
+						alternativesComparison.getWeight())
 						- LabreucheTools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
 
 				c_copy.add(currentPerm);
@@ -234,8 +236,9 @@ public class LabreucheModel {
 	private boolean tryNOA() {
 		Preconditions.checkState(labreucheOutput == null);
 
-		if (LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= LabreucheTools
-				.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
+		if (LabreucheTools.score(alternativesComparison.getX(),
+				alternativesComparison.getWeightReference()) >= LabreucheTools.score(alternativesComparison.getY(),
+						alternativesComparison.getWeightReference())) {
 			LOGGER.info("NOA false");
 			return false;
 		}
@@ -311,13 +314,14 @@ public class LabreucheModel {
 				pi.clear();
 			}
 
-			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(),
+					alternativesComparison.getDelta());
 
 			LOGGER.debug("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				LOGGER.debug(Utils.showCriteria(l) + " "
-						+ LabreucheTools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
-						+ Utils.showCriteria(LabreucheTools.pi_min(l, alternativesComparison.getWeight(),
+						+ LabreucheTools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						+ " " + Utils.showCriteria(LabreucheTools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
 			big_c = algo(big_a, null, 0);
