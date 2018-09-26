@@ -112,8 +112,8 @@ public class MainSimulation {
 			}
 		});
 
-		List<Double> a1 = new ArrayList<Double>();
-		List<Double> a2 = new ArrayList<Double>();
+		List<Double> a1 = new ArrayList<>();
+		List<Double> a2 = new ArrayList<>();
 		int differenceRank = 0;
 		for (int i = 0; i < alternatives.size(); i++) {
 			if (alternativeR.get(i).getId() != alternativeT.get(i).getId()) {

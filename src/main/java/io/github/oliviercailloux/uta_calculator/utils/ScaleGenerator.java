@@ -15,8 +15,8 @@ public class ScaleGenerator {
 
 		List<Double> scale = new ArrayList<>();
 
-		double subrange_length = (maxValue - minValue) / (cuts - 1);
-		double current_start = minValue;
+		double subrangeLength = (maxValue - minValue) / (cuts - 1);
+		double currentStart = minValue;
 
 		for (int i = 0; i < cuts; ++i) {
 			if (i == 0) {
@@ -24,15 +24,16 @@ public class ScaleGenerator {
 			} else if (i == (cuts - 1)) {
 				scale.add(maxValue);
 			} else {
-				scale.add(current_start);
+				scale.add(currentStart);
 			}
-			current_start += subrange_length;
+			currentStart += subrangeLength;
 		}
 
 		Collections.sort(scale);
 		return scale;
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		double minValue;
 		double maxValue;

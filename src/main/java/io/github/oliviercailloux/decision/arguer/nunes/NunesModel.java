@@ -164,45 +164,47 @@ public class NunesModel {
 	}
 
 	public void showProblem() {
+		
+		StringBuilder bld = new StringBuilder();
+		
+		bld.append("****************************************************************"
+				  +"\n" + "*                                                              *"
+				  +"\n" + "*         Recommender system based on Nunes and al Model       *"
+				  +"\n" + "*                                                              *"
+				  +"\n" + "****************************************************************" + "\n");
 
-		String display = "****************************************************************";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "*         Recommender system based on Nunes and al Model       *";
-		display += "\n" + "*                                                              *";
-		display += "\n" + "****************************************************************" + "\n";
-
-		display += "\n    Criteria    <-   Weight : \n";
+		bld.append("\n    Criteria    <-   Weight : \n");
 
 		for (Criterion c : alternativesComparison.getWeight().keySet()) {
-			display += "\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = "
-					+ alternativesComparison.getWeight().get(c);
+			bld.append("\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = "
+					+ alternativesComparison.getWeight().get(c));
 		}
 
-		display += "\n    Constrains : \n";
+		bld.append("\n    Constrains : \n");
 
 		for (Constraint c : constraints) {
-			display += "\n" + "	" + c.toString() + ", v(" + c.getCriterion().getName() + ") = " + c.getValuePref();
+			bld.append("\n" + "	" + c.toString() + ", v(" + c.getCriterion().getName() + ") = " + c.getValuePref());
 		}
 
-		display += "\n \n Alternatives : ";
+		bld.append("\n \n Alternatives : ");
 
-		display += "\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
-				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values());
-		display += "\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
-				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values());
+		bld.append("\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
+				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values()));
+		bld.append("\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
+				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values()));
 
-		display += "\n" + "			Alternatives ranked";
-		display += "\n" + alternativesComparison.getX().getName() + " = "
-				+ NunesTools.score_d(alternativesComparison.getX(), alternativesComparison.getY(),
-						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
-		display += "\n" + alternativesComparison.getY().getName() + " = "
-				+ NunesTools.score_d(alternativesComparison.getY(), alternativesComparison.getX(),
-						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
+		bld.append("\n" + "			Alternatives ranked");
+		bld.append("\n" + alternativesComparison.getX().getName() + " = "
+				+ NunesTools.score(alternativesComparison.getX(), alternativesComparison.getY(),
+						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs));
+		bld.append("\n" + alternativesComparison.getY().getName() + " = "
+				+ NunesTools.score(alternativesComparison.getY(), alternativesComparison.getX(),
+						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs));
 
-		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "
-				+ alternativesComparison.getY().getName() + " :";
+		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
+				+ alternativesComparison.getY().getName() + " :");
 
-		LOGGER.info(display);
+		LOGGER.info(bld.toString());
 	}
 
 	public void resolved() {

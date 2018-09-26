@@ -39,17 +39,13 @@ public class Examples {
 
 		Criterion critical = new Criterion(4, "c4", new ArrayList<Double>());
 
-		DominationOutput domCrit = new DominationOutput(nm.getAlternativesComparison(), critical);
-
-		return domCrit;
+		return new DominationOutput(nm.getAlternativesComparison(), critical);
 	}
 
 	public static DominationOutput getExampleDOMINATIONOutput() {
 		NunesModel nm = getExampleDOMINATION();
 
-		DominationOutput dom = new DominationOutput(nm.getAlternativesComparison());
-
-		return dom;
+		return new DominationOutput(nm.getAlternativesComparison());
 	}
 
 }

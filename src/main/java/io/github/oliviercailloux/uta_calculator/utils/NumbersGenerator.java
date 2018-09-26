@@ -40,6 +40,7 @@ public class NumbersGenerator {
 		return result;
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		int counter;
 		double targetSum;

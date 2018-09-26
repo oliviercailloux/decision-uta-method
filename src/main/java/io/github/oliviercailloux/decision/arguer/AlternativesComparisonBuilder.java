@@ -49,7 +49,7 @@ public class AlternativesComparisonBuilder {
 	}
 
 	public Alternative getX() {
-		checkState(x.size() >= 1);
+		checkState(!x.isEmpty());
 
 		final Set<Criterion> criteria = getCriteria(x.size());
 
@@ -59,7 +59,7 @@ public class AlternativesComparisonBuilder {
 	}
 
 	public Alternative getY() {
-		checkState(y.size() >= 1);
+		checkState(!y.isEmpty());
 
 		final Set<Criterion> criteria = getCriteria(y.size());
 
@@ -69,7 +69,7 @@ public class AlternativesComparisonBuilder {
 	}
 
 	public ImmutableMap<Criterion, Double> getWeights() {
-		checkState(w.size() >= 1);
+		checkState(!w.isEmpty());
 
 		final Set<Criterion> criteria = getCriteria(w.size());
 

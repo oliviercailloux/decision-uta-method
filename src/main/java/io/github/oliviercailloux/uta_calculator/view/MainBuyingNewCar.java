@@ -53,15 +53,15 @@ public class MainBuyingNewCar {
 		}
 
 		System.out.println();
-		String orderStr = "";
+		StringBuilder orderStr = new StringBuilder();
 		Map<Alternative, Double> alternativesOrdered = sortByValue(alternativeValues);
 		for (Entry<Alternative, Double> alternativeValue : alternativesOrdered.entrySet()) {
-			if (!orderStr.isEmpty()) {
-				orderStr += " > ";
+			if (orderStr.length() > 0) {
+				orderStr.append(" > ");
 			}
-			orderStr += alternativeValue.getKey().getName();
+			orderStr.append(alternativeValue.getKey().getName());
 		}
-		System.out.println(orderStr);
+		System.out.println(orderStr.toString());
 
 	}
 
@@ -154,8 +154,7 @@ public class MainBuyingNewCar {
 		Alternative p308 = new Alternative(4, "Peugeot 308 Berline", evaluation);
 		alternatives.add(p308);
 
-		ProblemGenerator pb = new ProblemGenerator(criteria, alternatives);
-		return pb;
+		return new ProblemGenerator(criteria, alternatives);
 	}
 
 }

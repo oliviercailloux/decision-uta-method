@@ -45,6 +45,7 @@ public class ValueFunction {
 		return value;
 	}
 
+	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
 		stringHelper.add("partialValueFunctions", partialValueFunctions);

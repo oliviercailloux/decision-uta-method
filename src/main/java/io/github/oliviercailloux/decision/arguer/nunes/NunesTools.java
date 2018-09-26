@@ -16,7 +16,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class NunesTools {
 
-	public static double score_d(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
+	public static double score(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
 			Table<Alternative, Alternative, Double> tradoffs) {
 		return cost(x, y, criteria, weight) + (0.25 * extAversion(x, y)) + (0.15 * toContrast(x, y, tradoffs));
 	}
@@ -38,11 +38,12 @@ public class NunesTools {
 	}
 
 	public static double extAversion(Alternative x, Alternative y) {
-		double ext_x = standardDeviation(x);
-		double ext_y = standardDeviation(y);
+		double extX = standardDeviation(x);
+		double extY = standardDeviation(y);
 
-		if (ext_x < ext_y)
-			return ext_y - ext_x;
+		if (extX < extY) {
+			return extY - extX;
+		}
 
 		return 0.0;
 	}
@@ -124,10 +125,7 @@ public class NunesTools {
 	}
 
 	public boolean lpv(Alternative alt, Constraint c) {
-		if ((isSatisfied(alt, c) && c.getValuePref() < 0.0) || (!isSatisfied(alt, c) && c.getValuePref() > 0.0))
-			return true;
-
-		return false;
+		return (isSatisfied(alt, c) && c.getValuePref() < 0.0) || (!isSatisfied(alt, c) && c.getValuePref() > 0.0) ;
 	}
 
 	public Constraint strongestConstraint() {

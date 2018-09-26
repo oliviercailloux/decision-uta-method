@@ -51,7 +51,7 @@ public class Statistics {
 
 	public static void main(String[] args) {
 		Statistics statistics = new Statistics();
-		List<Double> list = new ArrayList<Double>();
+		List<Double> list = new ArrayList<>();
 		for (double i = 0; i < 10; i++) {
 			list.add(i);
 		}

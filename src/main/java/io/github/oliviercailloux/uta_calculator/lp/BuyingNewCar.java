@@ -117,7 +117,7 @@ public class BuyingNewCar {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		runLinearProgrammingExample("GLOP_LINEAR_PROGRAMMING", true);
 	}
 
