@@ -100,7 +100,7 @@ public class ToolsTest {
 
 	public ImmutableMap<Criterion, Double> genEqualWeights(Collection<Criterion> criteria) {
 		Builder<Criterion, Double> builder = ImmutableMap.builder();
-		double weight = 1 / criteria.size();
+		double weight = 1.0 / criteria.size();
 		for (Criterion criterion : criteria) {
 			builder.put(criterion, weight);
 		}
