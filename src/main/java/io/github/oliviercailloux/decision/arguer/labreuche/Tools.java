@@ -114,13 +114,13 @@ public class Tools {
 			first_part += w.get(c) * delta.get(c);
 
 		List<Criterion> best_min_pi = pi_min(subset, w, delta);
-		
-		if(best_min_pi == null) {
+
+		if (best_min_pi == null) {
 			throw new NullArgumentException();
 		}
-			
+
 		Map<Criterion, Double> pi_w = modified_w(best_min_pi, w);
-		
+
 		Double min_part = 0.0;
 
 		for (Criterion c : best_min_pi)

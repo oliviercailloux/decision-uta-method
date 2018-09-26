@@ -56,8 +56,8 @@ public class AlternativesComparison {
 		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
 			sumWeights += entry.getValue().doubleValue();
 		}
-		
-		if(sumWeights == 0.0) {
+
+		if (sumWeights == 0.0) {
 			throw new IllegalStateException();
 		}
 

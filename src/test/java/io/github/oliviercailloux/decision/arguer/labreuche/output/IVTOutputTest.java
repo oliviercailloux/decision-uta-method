@@ -47,7 +47,7 @@ class IVTOutputTest {
 
 	public AlternativesComparison newAlternativesComparison() {
 		ProblemGenerator gen = new ProblemGenerator();
-		gen.generateCriteria(2, 0, 10, 1);
+		gen.generateCriteria(2, 0, 10, 2);
 		gen.generateAlternatives(2);
 		List<Alternative> alternatives = gen.getAlternatives();
 		Alternative x = alternatives.get(0);
