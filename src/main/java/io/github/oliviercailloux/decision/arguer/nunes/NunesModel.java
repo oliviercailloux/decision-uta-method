@@ -35,7 +35,7 @@ public class NunesModel {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
 		this.nunesOutput = null;
-		this.tradoffs = Tools.computeTos(alternativesComparison);
+		this.tradoffs = NunesTools.computeTO(alternativesComparison);
 	}
 
 	public Set<Constraint> getConstraints() {
@@ -149,18 +149,18 @@ public class NunesModel {
 	}
 
 	private boolean tryMINREQP() {
-
-		return true;
+		//TODO
+		return false;
 	}
 
 	private boolean tryDECISIVE() {
-
-		return true;
+		//TODO
+		return false;
 	}
 
 	private boolean tryTRADEOFF() {
-
-		return true;
+		//TODO
+		return false;
 	}
 
 	public void showProblem() {
@@ -193,10 +193,10 @@ public class NunesModel {
 
 		display += "\n" + "			Alternatives ranked";
 		display += "\n" + alternativesComparison.getX().getName() + " = "
-				+ Tools.score_d(alternativesComparison.getX(), alternativesComparison.getY(),
+				+ NunesTools.score_d(alternativesComparison.getX(), alternativesComparison.getY(),
 						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
 		display += "\n" + alternativesComparison.getY().getName() + " = "
-				+ Tools.score_d(alternativesComparison.getY(), alternativesComparison.getX(),
+				+ NunesTools.score_d(alternativesComparison.getY(), alternativesComparison.getX(),
 						alternativesComparison.getCriteria(), alternativesComparison.getWeight(), tradoffs);
 
 		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "

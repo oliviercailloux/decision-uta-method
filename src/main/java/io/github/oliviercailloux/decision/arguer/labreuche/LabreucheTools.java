@@ -23,9 +23,9 @@ import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class Tools {
+public class LabreucheTools {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Tools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheTools.class);
 
 	public static double score(Alternative x, Map<Criterion, Double> w) {
 		double score = 0.0;
@@ -372,7 +372,7 @@ public class Tools {
 		if (a.size() == b.size()) {
 			boolean flag = true;
 			for (int i = 0; i < a.size(); i++) {
-				if (a.get(i).size() != a.get(i).size())
+				if (a.get(i).size() != b.get(i).size())
 					flag = false;
 			}
 

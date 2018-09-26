@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.Tools;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheTools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -143,8 +143,8 @@ public class AlternativesComparison {
 	}
 
 	private void isXbetterY() {
-		double scoreX = Tools.score(x, weights);
-		double scoreY = Tools.score(y, weights);
+		double scoreX = LabreucheTools.score(x, weights);
+		double scoreY = LabreucheTools.score(y, weights);
 
 		if (scoreY > scoreX) {
 			LOGGER.info("Y better than X => switch in AlternativesComparison");

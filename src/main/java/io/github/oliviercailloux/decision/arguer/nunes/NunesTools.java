@@ -14,7 +14,7 @@ import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class Tools {
+public class NunesTools {
 
 	public static double score_d(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
 			Table<Alternative, Alternative, Double> tradoffs) {
@@ -90,16 +90,20 @@ public class Tools {
 		return res / tradoffs.cellSet().size();
 	}
 
-	public static Table<Alternative, Alternative, Double> computeTos(AlternativesComparison alternativesComparison) {
+	public static Table<Alternative, Alternative, Double> computeTO(AlternativesComparison alternativesComparison) {
 		Table<Alternative, Alternative, Double> tradoffs = HashBasedTable.create();
 		Alternative x = alternativesComparison.getX();
 		Alternative y = alternativesComparison.getY();
 
-		double valx = cost(x, y, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
-		double valy = cost(y, x, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
-
-		if (valx > valy) {
-			tradoffs.put(x, y, valy / valx);
+		double costX = cost(x, y, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
+		double costY = cost(y, x, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
+		
+		if (costX > costY && costX != 0.0) {
+			tradoffs.put(x, y, costY / costX);
+		}
+		
+		if(costY > costX && costY != 0.0) {
+			tradoffs.put(y, x, costX / costY);
 		}
 
 		return tradoffs;

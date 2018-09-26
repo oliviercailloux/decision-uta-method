@@ -190,7 +190,6 @@ public class LabreucheGUI {
 					anchorPane.setText(lm.getLabreucheOutput().getAnchor().toString());
 					bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
 					explanationPane.setText(old + "\n" + message);
-					return;
 				}
 			}
 		});

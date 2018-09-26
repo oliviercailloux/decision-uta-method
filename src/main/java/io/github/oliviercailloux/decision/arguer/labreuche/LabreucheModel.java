@@ -113,9 +113,9 @@ public class LabreucheModel {
 			currentPerm = setCIVT.get(i);
 
 			LOGGER.debug(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
-					+ Utils.showSet(c) + " cap = " + Tools.isCapEmpty(c, currentPerm));
+					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
 
-			if (Tools.isCapEmpty(c, currentPerm)) {
+			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(c_copy);
 				cPrime.add(currentPerm);
 
@@ -123,13 +123,13 @@ public class LabreucheModel {
 
 				if (!cPrime.isEmpty()) {
 					for (List<Criterion> perm : cPrime) {
-						sum += Tools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						sum += LabreucheTools.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 								.getLeft();
 					}
 				}
 
-				double vXminusVY = Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
-						- Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+				double vXminusVY = LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeight())
+						- LabreucheTools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
 
 				c_copy.add(currentPerm);
 
@@ -148,7 +148,7 @@ public class LabreucheModel {
 				}
 
 				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(b_copy));
-				if (Tools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(),
+				if (LabreucheTools.includeDiscri(cPrime, b_copy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("UPDATE B!");
 					b_copy = new ArrayList<>(cPrime);
@@ -158,7 +158,7 @@ public class LabreucheModel {
 
 				LOGGER.debug(Utils.showSet(c_copy) + " incluDiscri " + Utils.showSet(b_copy));
 
-				if (!Tools.includeDiscri(c_copy, b_copy, alternativesComparison.getWeight(),
+				if (!LabreucheTools.includeDiscri(c_copy, b_copy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("RETURN B");
 					return b_copy;
@@ -234,7 +234,7 @@ public class LabreucheModel {
 	private boolean tryNOA() {
 		Preconditions.checkState(labreucheOutput == null);
 
-		if (Tools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= Tools
+		if (LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeightReference()) >= LabreucheTools
 				.score(alternativesComparison.getY(), alternativesComparison.getWeightReference())) {
 			LOGGER.info("NOA false");
 			return false;
@@ -260,8 +260,8 @@ public class LabreucheModel {
 			wcomposed.put(temp.get(keys.get(p)), alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
 			setC.add(temp.get(keys.get(p)));
 
-			scoreX = Tools.score(alternativesComparison.getX(), wcomposed);
-			scoreY = Tools.score(alternativesComparison.getY(), wcomposed);
+			scoreX = LabreucheTools.score(alternativesComparison.getX(), wcomposed);
+			scoreY = LabreucheTools.score(alternativesComparison.getY(), wcomposed);
 
 			p--;
 		} while (scoreX < scoreY);
@@ -296,10 +296,10 @@ public class LabreucheModel {
 			subsets.clear();
 			setCIVT.clear();
 
-			subsets = Tools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
+			subsets = LabreucheTools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				Couple<Double, List<Criterion>> res = Tools.d_eu(subset, alternativesComparison.getWeight(),
+				Couple<Double, List<Criterion>> res = LabreucheTools.d_eu(subset, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta());
 				d_eu = res.getLeft();
 				pi = res.getRight();
@@ -311,13 +311,13 @@ public class LabreucheModel {
 				pi.clear();
 			}
 
-			setCIVT = Tools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
 			LOGGER.debug("setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				LOGGER.debug(Utils.showCriteria(l) + " "
-						+ Tools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
-						+ Utils.showCriteria(Tools.pi_min(l, alternativesComparison.getWeight(),
+						+ LabreucheTools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta()) + " "
+						+ Utils.showCriteria(LabreucheTools.pi_min(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
 			big_c = algo(big_a, null, 0);
@@ -340,7 +340,7 @@ public class LabreucheModel {
 
 		for (List<Criterion> l : ivtPermutation) {
 
-			r_s = Tools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			r_s = LabreucheTools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
 			for (EndpointPair<Criterion> cp : r_s.edges()) {
 				cpls.putEdge(cp.nodeU(), cp.nodeV());
@@ -349,7 +349,7 @@ public class LabreucheModel {
 			r_s = null;
 		}
 
-		ImmutableGraph<Criterion> rStar = Tools.buildRStarG(ImmutableGraph.copyOf(cpls));
+		ImmutableGraph<Criterion> rStar = LabreucheTools.buildRStarG(ImmutableGraph.copyOf(cpls));
 
 		// R* determined
 
@@ -469,9 +469,9 @@ public class LabreucheModel {
 
 		display += "\n" + "			Alternatives ranked";
 		display += "\n" + alternativesComparison.getX().getName() + " = "
-				+ Tools.score(alternativesComparison.getX(), alternativesComparison.getWeight());
+				+ LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeight());
 		display += "\n" + alternativesComparison.getY().getName() + " = "
-				+ Tools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+				+ LabreucheTools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
 
 		display = "Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :";

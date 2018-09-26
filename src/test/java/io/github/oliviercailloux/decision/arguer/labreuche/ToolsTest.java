@@ -33,13 +33,13 @@ public class ToolsTest {
 
 		setA.add(toList(altsComp.getCriteria()));
 
-		assertTrue(Tools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(Tools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(Tools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(LabreucheTools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(LabreucheTools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(LabreucheTools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
 
-		assertTrue(Tools.includeDiscri(emptySet, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(Tools.includeDiscri(setA, emptySet, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(Tools.includeDiscri(emptySet, emptySet, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(LabreucheTools.includeDiscri(emptySet, setA, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(LabreucheTools.includeDiscri(setA, emptySet, altsComp.getWeight(), altsComp.getDelta()));
+		assertFalse(LabreucheTools.includeDiscri(emptySet, emptySet, altsComp.getWeight(), altsComp.getDelta()));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ public class ToolsTest {
 		list5.add(c5);
 		list5.add(c6);
 
-		assertFalse(Tools.isCapEmpty(list3, list4));
-		assertTrue(Tools.isCapEmpty(list3, list5));
+		assertFalse(LabreucheTools.isCapEmpty(list3, list4));
+		assertTrue(LabreucheTools.isCapEmpty(list3, list5));
 	}
 
 	private List<Criterion> toList(ImmutableSet<Criterion> criteria) {

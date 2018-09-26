@@ -11,7 +11,6 @@ import io.github.oliviercailloux.decision.arguer.nunes.output.TradeOffOutput;
 public class NunesArguer {
 
 	public String argue(NunesOutput output) {
-		String explanation = "";
 
 		switch (output.getPattern()) {
 

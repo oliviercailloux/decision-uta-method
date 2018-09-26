@@ -71,7 +71,7 @@ public class ArgumentGenerator {
 		double score;
 
 		for (Alternative alt : alternatives) {
-			score = Tools.score(alt, weights);
+			score = LabreucheTools.score(alt, weights);
 			if (score > bestCurrentScore) {
 				bests.clear();
 				bestCurrentScore = score;
