@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.math3.exception.NullArgumentException;
@@ -31,21 +32,24 @@ public class LabreucheTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheTools.class);
 
+	/**
+	 * @param x
+	 * @param w
+	 * @return the score of the alternative x.
+	 */
 	public static double score(Alternative x, Map<Criterion, Double> w) {
 		double score = 0.0;
 
 		// Sum w_i * x_i
-		for (Criterion c : w.keySet()) {
-			score += w.get(c) * x.getEvaluations().get(c);
+		for (Entry<Criterion,Double> c : w.entrySet()) {
+			score += w.get(c.getKey()) * x.getEvaluations().get(c.getKey());
 		}
 
 		return score;
 	}
 
-	/*
-	 * * * * * * * * * * * * * * * * * * * * Methods used by NOA anchor * * * * * *
-	 * * * * * * * * * * * * * *
-	 */
+	
+	/* * * * * * * * * * * * Methods used by NOA anchor * * * * * * */
 
 	/**
 	 * @param subset
@@ -72,7 +76,7 @@ public class LabreucheTools {
 				for (List<Criterion> cycle : copyCycles) {
 					listLight.removeAll(cycle);
 
-					if (!listLight.isEmpty() && listLight.size() >= 1) {
+					if (!listLight.isEmpty()) {
 						for (Criterion c : listLight) {
 							newCycle = add(cycle, c);
 							cycles.add(newCycle);
@@ -141,8 +145,10 @@ public class LabreucheTools {
 
 		double result = firstPart - secondPart;
 
-		LOGGER.debug("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
+		StringBuilder bld = new StringBuilder();
+		bld.append("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
 				+ result + " pi best : " + Utils.showCriteria(bestMinPi));
+		LOGGER.debug(bld.toString());
 
 		return new Couple<>(result, bestMinPi);
 	}
@@ -178,8 +184,10 @@ public class LabreucheTools {
 			wModified.clear();
 		}
 
-		LOGGER.debug("Calling minimalPi for " + Utils.showCriteria(subset) + " minimalPi returned : "
+		StringBuilder bld = new StringBuilder();
+		bld.append("Calling minimalPi for " + Utils.showCriteria(subset) + " minimalPi returned : "
 				+ Utils.showCriteria(minPi) + " = " + minPiValue);
+		LOGGER.debug(bld.toString());
 
 		return minPi;
 	}
@@ -209,6 +217,7 @@ public class LabreucheTools {
 	 * @return all the subset of size size in set
 	 */
 	static List<List<Criterion>> allSubset(List<Criterion> set, int size) {
+
 		List<List<Criterion>> subsets = new ArrayList<>();
 
 		for (int i = 0; i < size; i++) {
@@ -230,15 +239,11 @@ public class LabreucheTools {
 					int bornSup = set.indexOf(subset.get(subset.size() - 1));
 
 					setLight.removeAll(set.subList(0, bornSup + 1));
-
-					LOGGER.debug(" after " + Utils.showCriteria(setLight));
-
-					if (setLight.size() >= 1) {
+					
+					if (!setLight.isEmpty()) {
 						for (Criterion c : setLight) {
 							newSubset = add(subset, c);
 							subsets.add(newSubset);
-
-							LOGGER.debug("adding subset " + Utils.showCriteria(newSubset));
 						}
 						subsets.remove(subset);
 					}
@@ -271,10 +276,7 @@ public class LabreucheTools {
 		return result;
 	}
 
-	/*
-	 * * * * * * * * * * * * * * Methods used by IVT anchors * * * * * * * * * * * *
-	 * * * *
-	 */
+	/* * * * * * * * * * * * Methods used by IVT anchors * * * * * * * * */
 
 	/**
 	 * @param lists
@@ -322,26 +324,18 @@ public class LabreucheTools {
 		Map<Double, List<Criterion>> rankedSameSize = new LinkedHashMap<>();
 
 		while (!lists.isEmpty()) {
-			LOGGER.debug("Size of list = " + lists.size());
 
 			for (List<Criterion> l : lists) {
 				if (l.size() < minSize)
 					minSize = l.size();
 			}
 
-			LOGGER.debug("Size min find : " + minSize);
-
 			for (List<Criterion> minSizeL : lists) {
 				if (minSizeL.size() == minSize)
 					tmp.add(minSizeL);
 			}
 
-			LOGGER.debug("Size of tmp = " + tmp.size());
-
 			for (List<Criterion> l2 : tmp) {
-
-				LOGGER.debug("set " + Utils.showCriteria(l2) + " dEU = " + dEU(l2, w, delta));
-
 				rankedSameSize.put(dEU(l2, w, delta).getLeft(), l2);
 			}
 
@@ -349,18 +343,16 @@ public class LabreucheTools {
 			Collections.sort(keys);
 			Collections.reverse(keys);
 
-			LOGGER.debug("Size of keys = " + keys.size());
-
 			for (int i = 0; i < keys.size(); i++) {
-				if (!sorted.contains(rankedSameSize.get(keys.get(i))))
+				if (!sorted.contains(rankedSameSize.get(keys.get(i)))) {
 					sorted.add(rankedSameSize.get(keys.get(i)));
+				}
 			}
 
-			for (List<Criterion> delete : tmp)
+			for (List<Criterion> delete : tmp) {
 				lists.remove(delete);
-
-			LOGGER.debug("Size of List after remove = " + lists.size());
-
+			}
+			
 			rankedSameSize.clear();
 			tmp.clear();
 			minSize = Integer.MAX_VALUE;
@@ -417,13 +409,10 @@ public class LabreucheTools {
 				int k = 0;
 
 				do {
-					LOGGER.debug(k + "");
-
 					if (dEU(a.get(k), weights, deltas).getLeft() == dEU(b.get(k), weights, deltas).getLeft())
 						k++;
 					else
 						break;
-					LOGGER.debug(k + "");
 				} while (k < a.size());
 
 				if (dEU(a.get(k), weights, deltas).getLeft() > dEU(b.get(k), weights, deltas).getLeft()) {
@@ -483,10 +472,8 @@ public class LabreucheTools {
 
 		for (Criterion c1 : l) {
 			for (Criterion c2 : l) {
-				if (!c1.equals(c2)) {
-					if (delta.get(c1) < delta.get(c2) && w.get(c1) < w.get(c2)) {
-						result.putEdge(c1, c2);
-					}
+				if (!c1.equals(c2) && delta.get(c1) < delta.get(c2) && w.get(c1) < w.get(c2)) {
+					result.putEdge(c1, c2);
 				}
 			}
 		}
@@ -495,10 +482,14 @@ public class LabreucheTools {
 
 	static ImmutableGraph<Criterion> rTopG(Graph<Criterion> graph) {
 
-		boolean changeFlag = false; // -> graph have a new couple added, changeflag = true;
+		// graph have a new couple added, changeFlag = true;
+		boolean changeFlag = false; 
+		
+		// -> used to avoid to check the same couples
+		MutableGraph<Criterion> light;
+				
 		MutableGraph<Criterion> copy = Graphs.copyOf(graph);
-		MutableGraph<Criterion> light; // -> used to avoid to check the same couples
-
+		
 		do {
 			changeFlag = false;
 
@@ -510,18 +501,15 @@ public class LabreucheTools {
 				// c2 = (c d)
 				for (EndpointPair<Criterion> c2 : light.edges()) {
 					// (a b) , (c d) => b=c and a!=d
-					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())) {
-						if (!copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
+					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV()) && !copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
 							copy.putEdge(c1.nodeU(), c2.nodeV());
 							changeFlag = true;
-						}
 					}
+					
 					// (c d) , (a b) => a=d and b!=d
-					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU())) {
-						if (!copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
+					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU()) && !copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
 							copy.putEdge(c1.nodeV(), c2.nodeU());
 							changeFlag = true;
-						}
 					}
 				}
 			}
@@ -567,7 +555,7 @@ public class LabreucheTools {
 			} else {
 
 				Set<MutableGraph<Criterion>> copySubsets = new LinkedHashSet<>(subsets);
-				MutableGraph<Criterion> newSubset = GraphBuilder.directed().build();
+				MutableGraph<Criterion> newSubset;
 				MutableGraph<Criterion> setLight = Graphs.copyOf(set);
 
 				for (MutableGraph<Criterion> subset : copySubsets) {
@@ -576,7 +564,7 @@ public class LabreucheTools {
 						setLight.removeEdge(edge.nodeU(), edge.nodeV());
 					}
 
-					if (setLight.edges().size() >= 1) {
+					if (!setLight.edges().isEmpty()) {
 						for (EndpointPair<Criterion> c : setLight.edges()) {
 							newSubset = addCoupleG(subset, c);
 							subsets.add(newSubset);
