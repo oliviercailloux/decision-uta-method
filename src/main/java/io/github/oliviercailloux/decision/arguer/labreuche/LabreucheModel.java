@@ -129,7 +129,7 @@ public class LabreucheModel {
 				if (!cPrime.isEmpty()) {
 					for (List<Criterion> perm : cPrime) {
 						sum += LabreucheTools
-								.d_eu(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+								.dEU(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
 								.getLeft();
 					}
 				}
@@ -311,7 +311,7 @@ public class LabreucheModel {
 			subsets = LabreucheTools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				Couple<Double, List<Criterion>> res = LabreucheTools.d_eu(subset, alternativesComparison.getWeight(),
+				Couple<Double, List<Criterion>> res = LabreucheTools.dEU(subset, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta());
 				dEU = res.getLeft().doubleValue();
 				pi = res.getRight();
@@ -329,8 +329,8 @@ public class LabreucheModel {
 			LOGGER.debug("\n setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				LOGGER.debug(Utils.showCriteria(l) + " "
-						+ LabreucheTools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
-						+ " " + Utils.showCriteria(LabreucheTools.pi_min(l, alternativesComparison.getWeight(),
+						+ LabreucheTools.dEU(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+						+ " " + Utils.showCriteria(LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),
 								alternativesComparison.getDelta())));
 
 			bigC = algo(bigA, null, 0);
