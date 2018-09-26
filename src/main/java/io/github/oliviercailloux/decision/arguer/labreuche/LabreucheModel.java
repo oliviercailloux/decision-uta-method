@@ -95,7 +95,10 @@ public class LabreucheModel {
 	 *         and y.
 	 */
 	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
-		LOGGER.debug("CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
+		StringBuilder bld = new StringBuilder();
+		
+		bld.append("\n CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
+		LOGGER.debug(bld.toString());
 
 		List<List<Criterion>> cCopy = new ArrayList<>(c);
 		List<List<Criterion>> bCopy;
@@ -111,9 +114,11 @@ public class LabreucheModel {
 
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
-
-			LOGGER.debug(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
+			
+			bld = new StringBuilder();
+			bld.append(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
 					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
+			LOGGER.debug(bld.toString());
 
 			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(cCopy);
@@ -136,8 +141,10 @@ public class LabreucheModel {
 				cCopy.add(currentPerm);
 
 				if (sum < vXminusVY) {
-					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy)
+					bld = new StringBuilder();
+					bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy)
 							+ " " + (i + 1));
+					LOGGER.debug(bld.toString());
 
 					if (b == null) {
 						cPrime = algo(cCopy, null, i + 1);
@@ -145,11 +152,15 @@ public class LabreucheModel {
 						cPrime = algo(cCopy, bCopy, i + 1);
 					}
 
-					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
+					bld = new StringBuilder();
+					bld.append("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
 							+ (i + 1));
+					LOGGER.debug(bld.toString());
 				}
-
+				
 				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
+				
+				
 				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("UPDATE B!");
@@ -160,14 +171,14 @@ public class LabreucheModel {
 
 				if (!LabreucheTools.includeDiscri(cCopy, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
-					LOGGER.debug("RETURN B");
+					LOGGER.debug("RETURN B \n");
 					return bCopy;
 				}
 			}
 			cCopy = new ArrayList<>(c);
 		}
 
-		LOGGER.debug("RETURN INVALID");
+		LOGGER.debug("RETURN INVALID \n");
 				
 		return null;
 	}
@@ -283,7 +294,7 @@ public class LabreucheModel {
 		List<List<Criterion>> bigA = new ArrayList<>(); // -> first variable for algo() calls
 		List<List<Criterion>> bigB = new ArrayList<>(); // -> second variable for algo() calls
 		List<List<Criterion>> bigC; // result of algo()
-		Double dEU = null;
+		double dEU;
 		List<Criterion> pi = new ArrayList<>();
 
 		LOGGER.debug(
@@ -291,7 +302,6 @@ public class LabreucheModel {
 						+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
 
 		do {
-			dEU = null;
 			pi.clear();
 			bigA.clear();
 			bigB.clear();
@@ -303,7 +313,7 @@ public class LabreucheModel {
 			for (List<Criterion> subset : subsets) {
 				Couple<Double, List<Criterion>> res = LabreucheTools.d_eu(subset, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta());
-				dEU = res.getLeft();
+				dEU = res.getLeft().doubleValue();
 				pi = res.getRight();
 
 				if (dEU > 0 && pi.containsAll(subset) && subset.containsAll(pi)) {
@@ -316,7 +326,7 @@ public class LabreucheModel {
 			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(),
 					alternativesComparison.getDelta());
 
-			LOGGER.debug("setCIVT : ");
+			LOGGER.debug("\n setCIVT : ");
 			for (List<Criterion> l : setCIVT)
 				LOGGER.debug(Utils.showCriteria(l) + " "
 						+ LabreucheTools.d_eu(l, alternativesComparison.getWeight(), alternativesComparison.getDelta())

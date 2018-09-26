@@ -24,6 +24,10 @@ import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheTools {
+	
+	private LabreucheTools() {
+		throw new IllegalStateException("Labreuche Tools class");
+	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheTools.class);
 
