@@ -144,13 +144,13 @@ public class LabreucheTools {
 
 		double result = firstPart - secondPart;
 
-		if(LOGGER.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			StringBuilder bld = new StringBuilder();
 			bld.append("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
-				+ result + " pi best : " + Utils.showCriteria(bestMinPi));
+					+ result + " pi best : " + Utils.showCriteria(bestMinPi));
 			LOGGER.debug(bld.toString());
 		}
-		
+
 		return new Couple<>(result, bestMinPi);
 	}
 
@@ -185,13 +185,13 @@ public class LabreucheTools {
 			wModified.clear();
 		}
 
-		if(LOGGER.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			StringBuilder bld = new StringBuilder();
 			bld.append("Calling minimalPi for " + Utils.showCriteria(subset) + " minimalPi returned : "
-				+ Utils.showCriteria(minPi) + " = " + minPiValue);
+					+ Utils.showCriteria(minPi) + " = " + minPiValue);
 			LOGGER.debug(bld.toString());
 		}
-		
+
 		return minPi;
 	}
 

@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ScaleGenerator {
 
-	// Constructors
+	// Attribute
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScaleGenerator.class);
+
+	// Constructor
 	public ScaleGenerator() {
+		// Do nothing because of it is used to call methods below.
 	}
 
 	// Methods
@@ -47,28 +54,28 @@ public class ScaleGenerator {
 			try {
 				minValue = Double.parseDouble(args[0]);
 			} catch (NumberFormatException e) {
-				throw new Exception(args[0] + " is not an double. This should be the minValue");
+				throw new IllegalStateException(args[0] + " is not an double. This should be the minValue");
 			}
 			try {
 				maxValue = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
-				throw new Exception(args[1] + " is not a double. This should be the maxValue");
+				throw new IllegalStateException(args[1] + " is not a double. This should be the maxValue");
 			}
 			try {
 				cuts = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				throw new Exception(args[2] + " is not an integer. This should be the number of cuts");
+				throw new IllegalStateException(args[2] + " is not an integer. This should be the number of cuts");
 			}
 
 		} else {
-			throw new Exception("Please insert 0 or 3 arguments");
+			throw new IllegalStateException("Please insert 0 or 3 arguments");
 		}
 
 		ScaleGenerator scaleGenerator = new ScaleGenerator();
 
 		String result = "Generating a scale of " + cuts + " cuts between [" + minValue + "," + maxValue + "] : "
 				+ scaleGenerator.generate(minValue, maxValue, cuts);
-		System.out.println(result);
+		LOGGER.info(result);
 	}
 
 }

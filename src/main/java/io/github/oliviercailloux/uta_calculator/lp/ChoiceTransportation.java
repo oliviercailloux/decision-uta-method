@@ -3,12 +3,18 @@ package io.github.oliviercailloux.uta_calculator.lp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPVariable;
 
 public class ChoiceTransportation {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChoiceTransportation.class);
+
 	static {
 		System.loadLibrary("jniortools");
 	}
@@ -102,38 +108,37 @@ public class ChoiceTransportation {
 			c5.setCoefficient(entry.getValue(), 1);
 		}
 
-		System.out.println("Number of variables = " + solver.numVariables());
-		System.out.println("Number of constraints = " + solver.numConstraints());
+		LOGGER.info("Number of variables = " + solver.numVariables());
+		LOGGER.info("Number of constraints = " + solver.numConstraints());
 
 		if (printModel) {
 			String model = solver.exportModelAsLpFormat(false);
-			System.out.println(model);
+			LOGGER.info(model);
 		}
 
 		final MPSolver.ResultStatus resultStatus = solver.solve();
 
 		// Check that the problem has an optimal solution.
 		if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
-			System.err.println("The problem does not have an optimal solution!");
+			LOGGER.debug("The problem does not have an optimal solution!");
 			return;
 		}
 
 		// Verify that the solution satisfies all constraints (when using solvers
 		// others than GLOP_LINEAR_PROGRAMMING, this is highly recommended!).
 		if (!solver.verifySolution(/* tolerance= */1e-7, /* logErrors= */true)) {
-			System.err.println(
-					"The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
+			LOGGER.debug("The solution returned by the solver violated the" + " problem constraints by at least 1e-7");
 			return;
 		}
 
-		System.out.println("Problem solved in " + solver.wallTime() + " milliseconds");
+		LOGGER.info("Problem solved in " + solver.wallTime() + " milliseconds");
 
 		// The objective value of the solution.
-		System.out.println("Optimal objective value = " + solver.objective().value());
+		LOGGER.info("Optimal objective value = " + solver.objective().value());
 
 		// The value of each variable in the solution.
 		for (Map.Entry<String, MPVariable> entry : variables.entrySet()) {
-			System.out.println(entry.getKey() + " = " + entry.getValue().solutionValue());
+			LOGGER.info(entry.getKey() + " = " + entry.getValue().solutionValue());
 		}
 
 	}

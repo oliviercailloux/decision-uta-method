@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
@@ -24,6 +27,7 @@ public class UTASTAR {
 	public static final double SIGMA = 0.05;
 	private boolean print;
 	private Map<Alternative, Map<String, Double>> alternativesMarginalValues;
+	private static final Logger LOGGER = LoggerFactory.getLogger(UTASTAR.class);
 
 	// Constructor
 	public UTASTAR(List<Criterion> criteria, List<Alternative> alternatives) {
@@ -169,11 +173,11 @@ public class UTASTAR {
 
 		String model = solver.exportModelAsLpFormat(false);
 		if (resultStatus != MPSolver.ResultStatus.OPTIMAL) {
-			System.err.println("The problem does not have an optimal solution!");
+			LOGGER.debug("The problem does not have an optimal solution!");
 			return null;
 		}
 		if (!solver.verifySolution(/* tolerance= */1e-7, /* logErrors= */true)) {
-			System.err.println("The solution returned by the solver violated the problem constraints by at least 1e-7");
+			LOGGER.debug("The solution returned by the solver violated the problem constraints by at least 1e-7");
 			return null;
 		}
 
@@ -211,7 +215,7 @@ public class UTASTAR {
 		long time = System.currentTimeMillis() - start;
 		printStr.append("\n Problem solved in : " + time + " milliseconds");
 		if (print) {
-			System.out.println(printStr.toString());
+			LOGGER.info(printStr.toString());
 		}
 
 		solver.clear();

@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class NumbersGenerator {
 
-	// attributes
+	// Attributes
 	private Random random;
+	private static final Logger LOGGER = LoggerFactory.getLogger(NumbersGenerator.class);
 
 	// Constructors
 	public NumbersGenerator() {
 		this.random = new Random();
 	}
 
-	// Getters and Setters;
+	// Getters and Setters
 	public Random getRandom() {
 		return random;
 	}
@@ -52,23 +56,24 @@ public class NumbersGenerator {
 			try {
 				counter = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				throw new Exception(
+				throw new IllegalStateException(
 						args[0] + " is not an integer. This should be the counter of numbers you want to generate");
 			}
 			try {
 				targetSum = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
-				throw new Exception(args[1] + " is not a double. This should be the target sum you want to generate");
+				throw new IllegalStateException(
+						args[1] + " is not a double. This should be the target sum you want to generate");
 			}
 		} else {
-			throw new Exception("Please insert 0 or 2 arguments");
+			throw new IllegalStateException("Please insert 0 or 2 arguments");
 		}
 
 		NumbersGenerator numbersGenerator = new NumbersGenerator();
 
 		String result = "Generating " + counter + " number that have the sum of " + targetSum + " : "
 				+ numbersGenerator.generate(counter, targetSum);
-		System.out.println(result);
+		LOGGER.info(result);
 	}
 
 }

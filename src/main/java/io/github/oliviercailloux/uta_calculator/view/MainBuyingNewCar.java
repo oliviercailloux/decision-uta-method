@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
@@ -24,6 +27,7 @@ public class MainBuyingNewCar {
 	private ValueFunction vf;
 	private ProblemGenerator problem;
 	public UTASTAR utastar;
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainBuyingNewCar.class);
 
 	public MainBuyingNewCar() {
 		problem = generateBuyingNewCar();
@@ -36,23 +40,23 @@ public class MainBuyingNewCar {
 		MainBuyingNewCar main = new MainBuyingNewCar();
 
 		if (main.utastar.isPrint()) {
-			System.out.println("Information about the problem");
-			System.out.println(main.problem);
+			LOGGER.info("Information about the problem");
+			LOGGER.info(main.problem.toString());
 
-			System.out.println("Displaying Partial Value Function");
+			LOGGER.info("Displaying Partial Value Function");
 			for (PartialValueFunction pvf : main.vf.getPartialValueFunctions()) {
-				System.out.println(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
+				LOGGER.info(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
 			}
-			System.out.println();
+			LOGGER.info("");
 		}
 
-		System.out.println("Value of each alternative :");
+		LOGGER.info("Value of each alternative :");
 		Map<Alternative, Double> alternativeValues = main.getAlternativeValues(main.vf, main.problem.getAlternatives());
 		for (Entry<Alternative, Double> alternativeValue : alternativeValues.entrySet()) {
-			System.out.println(alternativeValue.getKey().getName() + " : " + alternativeValue.getValue());
+			LOGGER.info(alternativeValue.getKey().getName() + " : " + alternativeValue.getValue());
 		}
 
-		System.out.println();
+		LOGGER.info("");
 		StringBuilder orderStr = new StringBuilder();
 		Map<Alternative, Double> alternativesOrdered = sortByValue(alternativeValues);
 		for (Entry<Alternative, Double> alternativeValue : alternativesOrdered.entrySet()) {
@@ -61,7 +65,7 @@ public class MainBuyingNewCar {
 			}
 			orderStr.append(alternativeValue.getKey().getName());
 		}
-		System.out.println(orderStr.toString());
+		LOGGER.info(orderStr.toString());
 
 	}
 

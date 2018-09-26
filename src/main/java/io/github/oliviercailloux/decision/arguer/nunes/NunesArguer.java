@@ -38,7 +38,6 @@ public class NunesArguer {
 	}
 
 	private String argueDomination(DominationOutput output) {
-		String explanation = "";
 
 		AlternativesComparison alcoDOM = output.getAlternativesComparison();
 
@@ -60,18 +59,19 @@ public class NunesArguer {
 	}
 
 	private String argueDecisive(DecisiveOutput output) {
+
 		AlternativesComparison alco = output.getAlternativesComparison();
 
 		return alco.getX() + "was chosen because of its " + Utils.showCriteria(alco.getCriteria());
 	}
 
 	private String argueTradeOff(TradeOffOutput output) {
+
 		AlternativesComparison alco = output.getAlternativesComparison();
 
 		return "Even though " + alco.getY() + " rovides better pros than " + alco.getX() + " on "
 				+ Utils.showCriteria(alco.getPositiveCriteria()) + ", it has worse cons on "
 				+ Utils.showCriteria(alco.getNegativeCriteria()) + ".";
-
 	}
 
 }
