@@ -19,7 +19,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class LabreucheArguer {
 
 	public String argue(LabreucheOutput output) {
-		
+
 		switch (output.getAnchor()) {
 		case ALL:
 			return argueALL((ALLOutput) output);
@@ -42,18 +42,18 @@ public class LabreucheArguer {
 	}
 
 	private String argueALL(ALLOutput output) {
-		
+
 		StringBuilder bld = new StringBuilder();
 		AlternativesComparison alcoALL = output.getAlternativesComparison();
 
 		bld.append(alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
 				+ alcoALL.getX().getName() + " is better then " + alcoALL.getY().getName() + " on ALL criteria.");
-		
+
 		return bld.toString();
 	}
 
 	private String argueNOA(NOAOutput output) {
-		
+
 		StringBuilder bld = new StringBuilder();
 		AlternativesComparison alcoNOA = output.getAlternativesComparison();
 		Set<Criterion> cOnPA = output.getPositiveNoaCriteria();
@@ -83,7 +83,7 @@ public class LabreucheArguer {
 	}
 
 	private String argueIVT(IVTOutput output) {
-		
+
 		StringBuilder bld = new StringBuilder();
 		AlternativesComparison alcoIVT = output.getAlternativesComparison();
 		ImmutableSet<Criterion> kNRW = output.getNegativeRelativelyWeak();
@@ -94,9 +94,9 @@ public class LabreucheArguer {
 
 		bld.append(alcoIVT.getX().getName() + " is preferred to " + alcoIVT.getY().getName() + " since "
 				+ alcoIVT.getX().getName() + " is better than " + alcoIVT.getY().getName() + " on the criteria "
-				+ Utils.showCriteria(kPS) + " that are important and on the criteria "
-				+ Utils.showCriteria(kPRS) + " that are relativily important, " + alcoIVT.getY().getName()
-				+ " is better than " + alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(kNW)
+				+ Utils.showCriteria(kPS) + " that are important and on the criteria " + Utils.showCriteria(kPRS)
+				+ " that are relativily important, " + alcoIVT.getY().getName() + " is better than "
+				+ alcoIVT.getX().getName() + " on the criteria " + Utils.showCriteria(kNW)
 				+ " that are not important and on the criteria " + Utils.showCriteria(kNRW)
 				+ " that are not really important.");
 
@@ -110,7 +110,7 @@ public class LabreucheArguer {
 						+ " for wich " + alcoIVT.getX().getName() + " is worse than " + alcoIVT.getY().getName() + " ");
 			}
 
-			bld.replace(bld.length(),bld.length(), ".");
+			bld.replace(bld.length(), bld.length(), ".");
 		}
 
 		return bld.toString();
@@ -118,14 +118,14 @@ public class LabreucheArguer {
 	}
 
 	private String argueRMGAVG(RMGAVGOutput output) {
-		
+
 		StringBuilder bld = new StringBuilder();
 		AlternativesComparison alcoRMGAVG = output.getAlternativesComparison();
 
 		bld.append(alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
 				+ alcoRMGAVG.getX().getName() + " is on average better than " + alcoRMGAVG.getY().getName()
 				+ " and all the criteria have almost the same weights.");
-		
+
 		return bld.toString();
 	}
 
@@ -143,7 +143,7 @@ public class LabreucheArguer {
 					+ " is significantly larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
 					+ alcoRMGCOMP.getX().getName() + " on \n" + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria())
 					+ ", and all the criteria have more or less the same weights.");
-			
+
 			return bld.toString();
 		}
 
@@ -152,7 +152,7 @@ public class LabreucheArguer {
 				+ alcoRMGCOMP.getY().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
 				+ " is much larger than the intensity of " + alcoRMGCOMP.getY().getName() + " over "
 				+ alcoRMGCOMP.getX().getName() + " on " + Utils.showCriteria(alcoRMGCOMP.getNegativeCriteria()) + ".");
-		
+
 		return bld.toString();
 	}
 

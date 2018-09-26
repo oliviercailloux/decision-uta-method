@@ -24,7 +24,7 @@ import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheTools {
-	
+
 	private LabreucheTools() {
 		throw new IllegalStateException("Labreuche Tools class");
 	}
@@ -47,7 +47,7 @@ public class LabreucheTools {
 	 * * * * * * * * * * * * * *
 	 */
 
-	/** 
+	/**
 	 * @param subset
 	 * @param size
 	 * @return all permutations of size size in list.
@@ -120,11 +120,11 @@ public class LabreucheTools {
 		if (subset.isEmpty()) {
 			return new Couple<>(firstPart, subset);
 		}
-		
+
 		for (Criterion c : subset) {
 			firstPart += w.get(c) * delta.get(c);
 		}
-		
+
 		List<Criterion> bestMinPi = minimalPi(subset, w, delta);
 
 		if (bestMinPi == null) {
@@ -138,7 +138,7 @@ public class LabreucheTools {
 		for (Criterion c : bestMinPi) {
 			secondPart += piW.get(c) * delta.get(c);
 		}
-		
+
 		double result = firstPart - secondPart;
 
 		LOGGER.debug("Calling dEU for " + Utils.showCriteria(subset) + " : " + firstPart + " - " + secondPart + " = "
@@ -151,10 +151,11 @@ public class LabreucheTools {
 	 * @param subset
 	 * @param w
 	 * @param delta
-	 * @return the permutation that minimize Sum pi(i) * delta_i, for all i in subset
+	 * @return the permutation that minimize Sum pi(i) * delta_i, for all i in
+	 *         subset
 	 */
 	static List<Criterion> minimalPi(List<Criterion> subset, Map<Criterion, Double> w, Map<Criterion, Double> delta) {
-		
+
 		List<List<Criterion>> pis = allPi(subset);
 		Map<Criterion, Double> wModified = new LinkedHashMap<>();
 		Double minPiValue = Double.MAX_VALUE;
@@ -168,7 +169,7 @@ public class LabreucheTools {
 			for (Criterion c : subset) {
 				sum += delta.get(c) * wModified.get(c);
 			}
-			
+
 			if (sum < minPiValue) {
 				minPiValue = sum;
 				minPi = pi;
@@ -252,7 +253,7 @@ public class LabreucheTools {
 		return subsets;
 	}
 
-	/** 
+	/**
 	 * @param set
 	 * @return all the subset of set
 	 */
@@ -306,8 +307,6 @@ public class LabreucheTools {
 		return true;
 	}
 
-	
-	
 	/**
 	 * @param list
 	 * @param w
@@ -370,7 +369,6 @@ public class LabreucheTools {
 		return sorted;
 	}
 
-	
 	/**
 	 * @param a
 	 * @param b
@@ -475,7 +473,8 @@ public class LabreucheTools {
 	 * @param l
 	 * @param w
 	 * @param delta
-	 * @return a graph representing couples of criteria (C1,C2) in l as C1 is more important than C2
+	 * @return a graph representing couples of criteria (C1,C2) in l as C1 is more
+	 *         important than C2
 	 */
 	static ImmutableGraph<Criterion> couplesOfG(List<Criterion> l, Map<Criterion, Double> w,
 			Map<Criterion, Double> delta) {
@@ -494,9 +493,8 @@ public class LabreucheTools {
 		return ImmutableGraph.copyOf(result);
 	}
 
-	
 	static ImmutableGraph<Criterion> rTopG(Graph<Criterion> graph) {
-		
+
 		boolean changeFlag = false; // -> graph have a new couple added, changeflag = true;
 		MutableGraph<Criterion> copy = Graphs.copyOf(graph);
 		MutableGraph<Criterion> light; // -> used to avoid to check the same couples
@@ -534,7 +532,7 @@ public class LabreucheTools {
 	}
 
 	static ImmutableGraph<Criterion> buildRStarG(Graph<Criterion> cpls) {
-		
+
 		Set<ImmutableGraph<Criterion>> subsets = allSubsetCoupleG(cpls);
 		MutableGraph<Criterion> result = GraphBuilder.directed().build();
 		ImmutableGraph<Criterion> tmpTop;
@@ -553,9 +551,9 @@ public class LabreucheTools {
 	}
 
 	static Set<ImmutableGraph<Criterion>> allSubsetCoupleG(Graph<Criterion> set, int size) {
-		
+
 		Set<MutableGraph<Criterion>> subsets = new LinkedHashSet<>();
-		
+
 		for (int i = 0; i < size; i++) {
 			if (i == 0) {
 				MutableGraph<Criterion> singleton;
@@ -603,7 +601,7 @@ public class LabreucheTools {
 	}
 
 	static Set<ImmutableGraph<Criterion>> allSubsetCoupleG(Graph<Criterion> cpls) {
-		
+
 		Set<ImmutableGraph<Criterion>> result = new LinkedHashSet<>();
 		Set<ImmutableGraph<Criterion>> tmp;
 
@@ -618,7 +616,7 @@ public class LabreucheTools {
 	}
 
 	static MutableGraph<Criterion> addCoupleG(Graph<Criterion> graph, EndpointPair<Criterion> edge) {
-		
+
 		MutableGraph<Criterion> newGraph = Graphs.copyOf(graph);
 		newGraph.putEdge(edge.nodeU(), edge.nodeV());
 

@@ -96,7 +96,7 @@ public class LabreucheModel {
 	 */
 	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
 		StringBuilder bld = new StringBuilder();
-		
+
 		bld.append("\n CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
 		LOGGER.debug(bld.toString());
 
@@ -114,7 +114,7 @@ public class LabreucheModel {
 
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
-			
+
 			bld = new StringBuilder();
 			bld.append(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
 					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
@@ -142,8 +142,8 @@ public class LabreucheModel {
 
 				if (sum < vXminusVY) {
 					bld = new StringBuilder();
-					bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy)
-							+ " " + (i + 1));
+					bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
+							+ (i + 1));
 					LOGGER.debug(bld.toString());
 
 					if (b == null) {
@@ -157,10 +157,9 @@ public class LabreucheModel {
 							+ (i + 1));
 					LOGGER.debug(bld.toString());
 				}
-				
+
 				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
-				
-				
+
 				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
 					LOGGER.debug("UPDATE B!");
@@ -179,7 +178,7 @@ public class LabreucheModel {
 		}
 
 		LOGGER.debug("RETURN INVALID \n");
-				
+
 		return null;
 	}
 
@@ -353,7 +352,7 @@ public class LabreucheModel {
 
 		for (List<Criterion> l : ivtPermutations) {
 
-			rS = LabreucheTools.couples_ofG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			rS = LabreucheTools.couplesOfG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
 
 			for (EndpointPair<Criterion> cp : rS.edges()) {
 				cpls.putEdge(cp.nodeU(), cp.nodeV());
@@ -458,15 +457,14 @@ public class LabreucheModel {
 	}
 
 	public void showProblem() {
-		
+
 		StringBuilder bld = new StringBuilder();
 
-
-		bld.append("****************************************************************"
-				+ "\n" + "*                                                              *" 
-				+ "\n" + "*         Recommender system based on Labreuche Model          *" 
-				+ "\n" + "*                                                              *" 
-				+ "\n" + "****************************************************************" + "\n");
+		bld.append("****************************************************************" + "\n"
+				+ "*                                                              *" + "\n"
+				+ "*         Recommender system based on Labreuche Model          *" + "\n"
+				+ "*                                                              *" + "\n"
+				+ "****************************************************************" + "\n");
 
 		bld.append("\n    Criteria    <-   Weight : \n");
 
@@ -478,7 +476,7 @@ public class LabreucheModel {
 
 		bld.append("\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
 				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values()));
-		
+
 		bld.append("\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
 				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values()));
 
