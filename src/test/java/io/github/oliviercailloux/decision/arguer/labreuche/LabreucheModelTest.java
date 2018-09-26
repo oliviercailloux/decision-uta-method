@@ -128,7 +128,7 @@ public class LabreucheModelTest {
 		List<List<Criterion>> permutationExpected = Examples.getExample15Permutation();
 
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(permutationExpected, lm.getIVTPermutation());
+		assertEquals(permutationExpected, lm.getIVTPermutations());
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class LabreucheModelTest {
 		List<List<Criterion>> permutationExpected = Examples.getExample16Permutation();
 
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(permutationExpected, lm.getIVTPermutation());
+		assertEquals(permutationExpected, lm.getIVTPermutations());
 	}
 
 	// @Test
@@ -152,7 +152,7 @@ public class LabreucheModelTest {
 		List<List<Criterion>> permutationExpected = Examples.getExample10Permutation();
 
 		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(permutationExpected, lm.getIVTPermutation());
+		assertEquals(permutationExpected, lm.getIVTPermutations());
 	}
 
 }
