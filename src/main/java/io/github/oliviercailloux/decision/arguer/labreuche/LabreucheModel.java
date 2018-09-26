@@ -487,7 +487,7 @@ public class LabreucheModel {
 		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
 	}
 
-	public void showProblem() {
+	public void showProblem(boolean print) {
 
 		StringBuilder bld = new StringBuilder();
 
@@ -520,11 +520,13 @@ public class LabreucheModel {
 		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :");
 
-		LOGGER.info(bld.toString());
+		if(print) {
+			LOGGER.info(bld.toString());
+		}
 	}
 
 	public void solvesProblem() {
-		showProblem();
+		showProblem(true);
 
 		LabreucheOutput lo = getExplanation();
 

@@ -163,7 +163,7 @@ public class NunesModel {
 		return false;
 	}
 
-	public void showProblem() {
+	public void showProblem(boolean print) {
 
 		StringBuilder bld = new StringBuilder();
 
@@ -204,11 +204,13 @@ public class NunesModel {
 		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :");
 
-		LOGGER.info(bld.toString());
+		if(print) {
+			LOGGER.info(bld.toString());
+		}
 	}
 
 	public void resolved() {
-		showProblem();
+		showProblem(true);
 
 		NunesOutput no = getExplanation();
 
