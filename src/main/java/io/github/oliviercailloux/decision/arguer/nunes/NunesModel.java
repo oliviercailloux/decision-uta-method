@@ -14,7 +14,6 @@ import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.NunesArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;

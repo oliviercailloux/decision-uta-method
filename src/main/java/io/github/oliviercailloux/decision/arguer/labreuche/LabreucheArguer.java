@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.decision.arguer;
+package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.util.Set;
 
@@ -7,6 +7,7 @@ import com.google.common.graph.EndpointPair;
 import com.google.common.graph.ImmutableGraph;
 
 import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
@@ -35,7 +36,7 @@ public class LabreucheArguer {
 			return argueRMGCOMP((RMGCOMPOutput) output);
 
 		default:
-			return "No possible argumentation found";
+			throw new IllegalStateException();
 		}
 
 	}

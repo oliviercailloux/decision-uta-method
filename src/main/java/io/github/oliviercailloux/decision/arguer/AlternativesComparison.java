@@ -56,6 +56,10 @@ public class AlternativesComparison {
 		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
 			sumWeights += entry.getValue().doubleValue();
 		}
+		
+		if(sumWeights == 0.0) {
+			throw new IllegalStateException();
+		}
 
 		if (sumWeights > 1.0 || (sumWeights > 0 && sumWeights < 1.0)) {
 			Builder<Criterion, Double> builder = ImmutableMap.builder();

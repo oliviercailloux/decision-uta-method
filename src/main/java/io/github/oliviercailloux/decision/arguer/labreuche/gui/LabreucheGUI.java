@@ -24,15 +24,15 @@ import org.slf4j.LoggerFactory;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.ArgumentGenerator;
 import io.github.oliviercailloux.decision.arguer.labreuche.Examples;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class LabreucheUI {
+public class LabreucheGUI {
 
 	private JFrame frame;
 
@@ -57,7 +57,7 @@ public class LabreucheUI {
 			@Override
 			public void run() {
 				try {
-					LabreucheUI window = new LabreucheUI();
+					LabreucheGUI window = new LabreucheGUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					LOGGER.debug(" BUG : " + e.getMessage());
@@ -69,7 +69,7 @@ public class LabreucheUI {
 	/**
 	 * Create the application.
 	 */
-	public LabreucheUI() {
+	public LabreucheGUI() {
 		initialize();
 	}
 

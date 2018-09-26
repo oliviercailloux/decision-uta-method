@@ -1,6 +1,7 @@
-package io.github.oliviercailloux.decision.arguer;
+package io.github.oliviercailloux.decision.arguer.nunes;
 
 import io.github.oliviercailloux.decision.Utils;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.nunes.output.CutOffOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
@@ -21,10 +22,10 @@ public class NunesArguer {
 			return argueCutOff((CutOffOutput) output);
 
 		case MINREQM:
-			return explanation;
+			throw new UnsupportedOperationException();
 
 		case MINREQP:
-			return explanation;
+			throw new UnsupportedOperationException();
 
 		case DECISIVE:
 			return argueDecisive((DecisiveOutput) output);
@@ -33,8 +34,7 @@ public class NunesArguer {
 			return argueTradeOff((TradeOffOutput) output);
 
 		default:
-			return "No possible argumentation found";
-
+			throw new IllegalStateException();
 		}
 	}
 
