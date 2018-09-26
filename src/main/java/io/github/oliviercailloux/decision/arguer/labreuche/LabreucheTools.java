@@ -66,13 +66,13 @@ public class LabreucheTools {
 				}
 			} else {
 				List<List<Criterion>> copyCycles = new ArrayList<>(cycles);
-				List<Criterion> newCycle = new ArrayList<>();
+				List<Criterion> newCycle;
 				List<Criterion> listLight = new ArrayList<>(subset);
 
 				for (List<Criterion> cycle : copyCycles) {
 					listLight.removeAll(cycle);
 
-					if (listLight.size() >= 1) {
+					if (!listLight.isEmpty() && listLight.size() >= 1) {
 						for (Criterion c : listLight) {
 							newCycle = add(cycle, c);
 							cycles.add(newCycle);
@@ -157,7 +157,7 @@ public class LabreucheTools {
 	static List<Criterion> minimalPi(List<Criterion> subset, Map<Criterion, Double> w, Map<Criterion, Double> delta) {
 
 		List<List<Criterion>> pis = allPi(subset);
-		Map<Criterion, Double> wModified = new LinkedHashMap<>();
+		Map<Criterion, Double> wModified;
 		Double minPiValue = Double.MAX_VALUE;
 		List<Criterion> minPi = null;
 		Double sum = null;
@@ -222,7 +222,7 @@ public class LabreucheTools {
 				}
 			} else {
 				List<List<Criterion>> copySubsets = new ArrayList<>(subsets);
-				List<Criterion> newSubset = new ArrayList<>();
+				List<Criterion> newSubset;
 				List<Criterion> setLight = new ArrayList<>(set);
 
 				for (List<Criterion> subset : copySubsets) {
