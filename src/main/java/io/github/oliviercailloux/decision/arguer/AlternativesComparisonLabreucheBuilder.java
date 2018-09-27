@@ -13,35 +13,36 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class AlternativesComparisonBuilder {
+public class AlternativesComparisonLabreucheBuilder {
 	private List<Double> x;
 	private List<Double> y;
 	private List<Double> w;
 
-	public AlternativesComparisonBuilder() {
+	public AlternativesComparisonLabreucheBuilder() {
 		x = new ArrayList<>();
 		y = new ArrayList<>();
 		w = new ArrayList<>();
 	}
 
-	public AlternativesComparisonBuilder setX(List<Double> x) {
+	public AlternativesComparisonLabreucheBuilder setX(List<Double> x) {
 		checkNotNull(x);
 		this.x.clear();
 		this.x.addAll(x);
 		return this;
 	}
 
-	public AlternativesComparisonBuilder setY(List<Double> y) {
+	public AlternativesComparisonLabreucheBuilder setY(List<Double> y) {
 		checkNotNull(y);
 		this.y.clear();
 		this.y.addAll(y);
 		return this;
 	}
 
-	public AlternativesComparisonBuilder setW(List<Double> weights) {
+	public AlternativesComparisonLabreucheBuilder setW(List<Double> weights) {
 		checkNotNull(weights);
 		w.clear();
 		w.addAll(weights);
@@ -76,13 +77,14 @@ public class AlternativesComparisonBuilder {
 		return asMap(criteria, w);
 	}
 
-	public AlternativesComparison build() {
+	public AlternativesComparison<LabreucheModel> build() {
 		final int size = x.size();
 		checkState(size == y.size());
 		checkState(size == w.size());
 		checkState(size >= 1);
 
-		return new AlternativesComparison(getX(), getY(), getWeights());
+		final LabreucheModel model = new LabreucheModel(getWeights());
+		return new AlternativesComparison<>(getX(), getY(), model);
 	}
 
 	private Set<Criterion> getCriteria(int size) {

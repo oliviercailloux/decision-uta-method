@@ -1,8 +1,9 @@
 package io.github.oliviercailloux.decision.arguer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,10 +13,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheTools;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
@@ -24,82 +22,55 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**
  * Immutable.
+ *
+ * @param M the kind of preference model used in this comparison.
  */
-public class AlternativesComparison {
+public class AlternativesComparison<M extends Comparator<Alternative>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlternativesComparison.class);
-	private ImmutableMap<Criterion, Double> weights;
+	private M preferenceModel;
 	private Alternative x;
 	private Alternative y;
-	private Model model;
 
 	/**
-	 * weights must be not empty. x must be better than y.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param weights
+	 * <code>x</code> must be strictly better than <code>y</code> according to the
+	 * given preference model.
+	 *
+	 * @param x               not <code>null</code>, must be in the domain of the
+	 *                        preference model.
+	 * @param y               not <code>null</code>, must be in the domain of the
+	 *                        preference model, must be evaluated on the same
+	 *                        criteria than x, must be evaluated on some criteria.
+	 * @param preferenceModel must be immutable (no defensive copy is done).
 	 */
-	public AlternativesComparison(Alternative x, Alternative y, Map<Criterion, Double> weights) {
+	public AlternativesComparison(Alternative x, Alternative y, M preferenceModel) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
-		checkNotNull(weights);
-		this.weights = ImmutableMap.copyOf(requireNonNull(weights));
-
-		if (weights.isEmpty()) {
-			throw new IllegalArgumentException("Weights vector is empty");
-		}
+		requireNonNull(preferenceModel);
+		checkArgument(x.getEvaluations().keySet().equals(y.getEvaluations().keySet()));
+		checkArgument(x.getEvaluations().keySet().size() >= 1);
 
 		LOGGER.info("Checking is X better than Y");
-		(this).isXbetterY();
-
-		// checkArgument(score(this.x,this.y,this.model) >
-		// score(this.y,this.x,this.model));
-
-		LOGGER.info("Weights vector normalized");
-		(this).weightsSumInOne();
+		checkArgument(preferenceModel.compare(x, y) > 0);
 	}
 
-	@SuppressWarnings("unused")
-	private double score(Alternative a, Alternative b, Model modelType) {
-
-		switch (modelType) {
-
-		case LABREUCHE:
-			return LabreucheTools.score(a, weights);
-
-		case NUNES:
-			Set<Alternative> alts = new LinkedHashSet<>();
-			alts.add(x);
-			alts.add(y);
-
-			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO(alts, weights));
-
-		default:
-			throw new IllegalArgumentException("Model type undifined");
-		}
+	public Alternative getX() {
+		return this.x;
 	}
 
-	private void weightsSumInOne() {
-		double sumWeights = 0.0;
+	public Alternative getY() {
+		return this.y;
+	}
 
-		for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
-			sumWeights += entry.getValue().doubleValue();
-		}
+	public M getPreferenceModel() {
+		return preferenceModel;
+	}
 
-		if (sumWeights == 0.0) {
-			throw new IllegalStateException();
-		}
-
-		if (sumWeights > 1.0 || (sumWeights > 0 && sumWeights < 1.0)) {
-			Builder<Criterion, Double> builder = ImmutableMap.builder();
-
-			for (Map.Entry<Criterion, Double> entry : weights.entrySet()) {
-				builder.put(entry.getKey(), entry.getValue().doubleValue() / sumWeights);
-			}
-
-			weights = builder.build();
-		}
+	/**
+	 * @return non empty.
+	 */
+	public ImmutableSet<Criterion> getCriteria() {
+		return ImmutableSet.copyOf(x.getEvaluations().keySet());
 	}
 
 	/**
@@ -122,98 +93,31 @@ public class AlternativesComparison {
 		return getFilteredCriteria(crit -> evalX.get(crit) > evalY.get(crit));
 	}
 
-	/**
-	 * @return a map containing, for each criterion, the difference in evaluation on
-	 *         that criterion: evaluation of x minus evaluation of y.
-	 */
-	public ImmutableMap<Criterion, Double> getDelta() {
-		Builder<Criterion, Double> builder = ImmutableMap.builder();
-
-		for (Criterion c : weights.keySet()) {
-			builder.put(c, x.getEvaluations().get(c) - y.getEvaluations().get(c));
-		}
-
-		return builder.build();
-	}
-
-	public ImmutableMap<Criterion, Double> getWeight() {
-		return this.weights;
-	}
-
-	public Alternative getX() {
-		return this.x;
-	}
-
-	public Alternative getY() {
-		return this.y;
-	}
-
 	private ImmutableSet<Criterion> getFilteredCriteria(Predicate<Criterion> predicate) {
-		Stream<Criterion> allCriteriaStream = weights.keySet().stream().sequential();
+		Stream<Criterion> allCriteriaStream = x.getEvaluations().keySet().stream().sequential();
 		Stream<Criterion> criteriaFilteredStream = allCriteriaStream.filter(predicate);
 
 		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
 	}
 
-	/**
-	 * @return non empty.
-	 */
-	public ImmutableSet<Criterion> getCriteria() {
-		return weights.keySet();
-	}
+	@SuppressWarnings("unused")
+	private double score(Alternative a, Alternative b, Model modelType) {
 
-	public ImmutableMap<Criterion, Double> getWeightReference() {
-		Builder<Criterion, Double> weightsReference = ImmutableMap.builder();
-
-		for (Criterion c : weights.keySet()) {
-			weightsReference.put(c, 1.0 / weights.keySet().size());
-		}
-
-		return weightsReference.build();
-	}
-
-	private void isXbetterY() {
-		double scoreX;
-		double scoreY;
-
-		/*switch (model) {
+		switch (modelType) {
 
 		case LABREUCHE:
-			scoreX = LabreucheTools.score(x, weights);
-			scoreY = LabreucheTools.score(y, weights);
-			break;
+			return LabreucheTools.score(a, weights);
 
 		case NUNES:
-			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(getAlternatives(), weights);
-			scoreX = NunesTools.score(x, y, getCriteria(), weights, tradeoffs);
-			scoreY = NunesTools.score(y, x, getCriteria(), weights, tradeoffs);
-			break;
+			Set<Alternative> alts = new LinkedHashSet<>();
+			alts.add(x);
+			alts.add(y);
+
+			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO(alts, weights));
 
 		default:
-			throw new IllegalStateException();
-		}*/
-		
-		scoreX = LabreucheTools.score(x, weights);
-		scoreY = LabreucheTools.score(y, weights);
-
-		if (scoreY > scoreX) {
-			LOGGER.info("Y better than X => switch in AlternativesComparison");
-			Alternative tmp = this.x;
-			this.x = this.y;
-			this.y = tmp;
+			throw new IllegalArgumentException("Model type undifined");
 		}
-	}
-
-	public Model getModel() {
-		return this.model;
-	}
-
-	public Set<Alternative> getAlternatives() {
-		Set<Alternative> alternatives = new LinkedHashSet<>();
-		alternatives.add(x);
-		alternatives.add(y);
-
-		return alternatives;
 	}
 
 }

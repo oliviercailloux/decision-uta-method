@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.AlternativesComparisonBuilder;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -17,7 +17,7 @@ public class Examples {
 	}
 
 	public static NunesComputer getExampleCRITICAL() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.54, 0.67, 0.89, 0.90));
 		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
@@ -28,7 +28,7 @@ public class Examples {
 	}
 
 	public static NunesComputer getExampleDOMINATION() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.60, 0.69, 0.95, 0.91));
 		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));

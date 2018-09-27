@@ -11,7 +11,7 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.AlternativesComparisonBuilder;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
@@ -26,7 +26,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExampleAll() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.20, 0.60, 0.60, 0.50));
 		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
@@ -37,7 +37,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample5() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.42, 0.66, 0.66, 0.57));
 		builder.setY(ImmutableList.of(0.54, 0.04, 0.89, 0.76));
@@ -48,7 +48,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample6() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.95, 0.67, 0.64, 0.27, 0.39));
 		builder.setY(ImmutableList.of(0.30, 0.37, 0.41, 0.94, 0.49));
@@ -59,7 +59,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample9() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.89, 0.03, 0.07, 0.32, 0.38));
 		builder.setY(ImmutableList.of(0.36, 0.76, 0.60, 0.25, 0.75));
@@ -70,7 +70,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample10() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.61, 0.28, 0.08, 0.02, 0.81, 0.15, 0.16, 0.38, 0.24, 0.75));
 		builder.setY(ImmutableList.of(0.45, 0.64, 0.86, 0.76, 0.87, 0.54, 0.17, 0.04, 0.55, 0.05));
@@ -81,7 +81,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample13() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
@@ -92,7 +92,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample14() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
@@ -103,7 +103,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample15() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
@@ -114,7 +114,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample16() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
@@ -125,7 +125,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample17() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
@@ -136,7 +136,7 @@ public class Examples {
 	}
 
 	public static LabreucheComputer getExample18() {
-		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
 		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
