@@ -46,7 +46,7 @@ public class MainSimulation {
 				}
 				Statistics stats = new Statistics();
 				String current = "getDifferenceRank(" + numAlternative + "," + criteria + "," + comparing + ") : ";
-				LOGGER.info(current + " : " + stats.getMean(differenceList));
+				System.out.println(current + " : " + stats.getMean(differenceList));
 			}
 		}
 
@@ -112,8 +112,8 @@ public class MainSimulation {
 			}
 		});
 
-		List<Double> a1 = new ArrayList<>();
-		List<Double> a2 = new ArrayList<>();
+		List<Double> a1 = new ArrayList<Double>();
+		List<Double> a2 = new ArrayList<Double>();
 		int differenceRank = 0;
 		for (int i = 0; i < alternatives.size(); i++) {
 			if (alternativeR.get(i).getId() != alternativeT.get(i).getId()) {
@@ -134,8 +134,8 @@ public class MainSimulation {
 		if (differenceRank != 0) {
 			kendallTau = stats.getKendalTau(a1, a2);
 		}
-		LOGGER.debug("Difference of rank : " + differenceRank);
-		LOGGER.debug("Kendall tau : " + kendallTau);
+		LOGGER.debug("Difference of rank : ", differenceRank);
+		LOGGER.debug("Kendall tau : ", kendallTau);
 
 		return kendallTau;
 	}

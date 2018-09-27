@@ -69,10 +69,8 @@ public class PartialValueFunction {
 			}
 
 			if (x < criterion.getScale().get(i)) {
-				double x1 = criterion.getScale().get(i - 1);
-				double y1 = 0.0;
-				double x2 = criterion.getScale().get(i);
-				double y2 = 0.0;
+				double x1 = criterion.getScale().get(i - 1), y1 = 0.0;
+				double x2 = criterion.getScale().get(i), y2 = 0.0;
 				for (Point point : intervals) {
 					if (point.getX() == criterion.getScale().get(i)) {
 						y2 = point.getY();
@@ -102,8 +100,7 @@ public class PartialValueFunction {
 			if (x < criterion.getScale().get(i)) {
 				double x1 = criterion.getScale().get(i - 1);
 				double x2 = criterion.getScale().get(i);
-				double y1 = 0.0;
-				double y2 = 0.0;
+				double y1 = 0.0, y2 = 0.0;
 				for (Point point : intervals) {
 					if (point.getX() == x1) {
 						y1 = point.getY();
@@ -112,7 +109,8 @@ public class PartialValueFunction {
 						y2 = point.getY();
 					}
 				}
-				return ((x2 * y1) - (x1 * y2)) / (x2 - x1);
+				double result = ((x2 * y1) - (x1 * y2)) / (x2 - x1);
+				return result;
 			}
 		}
 
@@ -129,7 +127,6 @@ public class PartialValueFunction {
 		return maxWeight;
 	}
 
-	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
 		stringHelper.add("criterion", criterion).add("intervals", intervals);

@@ -5,15 +5,12 @@ import java.util.List;
 
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Statistics {
 
 	// Attributes
 	private DescriptiveStatistics stats;
 	private KendallsCorrelation kendallsCorrelation;
-	private static final Logger LOGGER = LoggerFactory.getLogger(Statistics.class);
 
 	// Constructors
 	public Statistics() {
@@ -54,13 +51,13 @@ public class Statistics {
 
 	public static void main(String[] args) {
 		Statistics statistics = new Statistics();
-		List<Double> list = new ArrayList<>();
+		List<Double> list = new ArrayList<Double>();
 		for (double i = 0; i < 10; i++) {
 			list.add(i);
 		}
-		LOGGER.info("List: " + list);
-		LOGGER.info("Mean: " + statistics.getMean(list));
-		LOGGER.info("Std: " + statistics.getStd(list));
+		System.out.println("List: " + list);
+		System.out.println("Mean: " + statistics.getMean(list));
+		System.out.println("Std: " + statistics.getStd(list));
 	}
 
 }

@@ -48,7 +48,8 @@ public class ValueFunctionGenerator {
 			partialValueFunctions.add(pvf);
 			j++;
 		}
-		return new ValueFunction(partialValueFunctions);
+		ValueFunction valueFunction = new ValueFunction(partialValueFunctions);
+		return valueFunction;
 	}
 
 }
