@@ -47,7 +47,17 @@ public class Alternative {
 	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
-		stringHelper.add("id", id).add("name", name).add("evaluations", evaluations);
+
+		stringHelper.addValue(id);
+		
+		if(!name.equals("c"+id)) {
+			stringHelper.addValue(name);
+		}
+		
+		if(!evaluations.isEmpty()) {
+			stringHelper.addValue(evaluations);
+		}
+		
 		return stringHelper.toString();
 	}
 
