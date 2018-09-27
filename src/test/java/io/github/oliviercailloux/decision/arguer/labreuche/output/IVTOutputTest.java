@@ -54,7 +54,7 @@ class IVTOutputTest {
 		Alternative y = alternatives.get(1);
 		List<Criterion> criteria = gen.getCriteria();
 		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
-		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights,"labreuche");
+		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights);
 		return altsComp;
 	}
 

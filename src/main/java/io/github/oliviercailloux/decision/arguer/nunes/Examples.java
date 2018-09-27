@@ -16,7 +16,7 @@ public class Examples {
 		throw new IllegalStateException("Nunes Examples class");
 	}
 
-	public static NunesModel getExampleCRITICAL() {
+	public static NunesComputer getExampleCRITICAL() {
 		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
 
 		builder.setX(ImmutableList.of(0.54, 0.67, 0.89, 0.90));
@@ -24,10 +24,10 @@ public class Examples {
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 
 		final AlternativesComparison altsComp = builder.build();
-		return new NunesModel(altsComp, new LinkedHashSet<Constraint>());
+		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>());
 	}
 
-	public static NunesModel getExampleDOMINATION() {
+	public static NunesComputer getExampleDOMINATION() {
 		final AlternativesComparisonBuilder builder = new AlternativesComparisonBuilder();
 
 		builder.setX(ImmutableList.of(0.60, 0.69, 0.95, 0.91));
@@ -35,11 +35,11 @@ public class Examples {
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 
 		final AlternativesComparison altsComp = builder.build();
-		return new NunesModel(altsComp, new LinkedHashSet<Constraint>());
+		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>());
 	}
 
 	public static DominationOutput getExampleCRITICALOutput() {
-		NunesModel nm = getExampleCRITICAL();
+		NunesComputer nm = getExampleCRITICAL();
 
 		Criterion critical = new Criterion(4, "c4", new ArrayList<Double>());
 
@@ -47,7 +47,7 @@ public class Examples {
 	}
 
 	public static DominationOutput getExampleDOMINATIONOutput() {
-		NunesModel nm = getExampleDOMINATION();
+		NunesComputer nm = getExampleDOMINATION();
 
 		return new DominationOutput(nm.getAlternativesComparison());
 	}

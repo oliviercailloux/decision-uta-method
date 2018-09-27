@@ -10,7 +10,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
 
-import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -91,20 +90,28 @@ public class NunesTools {
 		return res / tradoffs.cellSet().size();
 	}
 
-	public static Table<Alternative, Alternative, Double> computeTO(AlternativesComparison alternativesComparison) {
+	public static Table<Alternative, Alternative, Double> computeTO(Set<Alternative> alternatives,
+			Map<Criterion, Double> weights) {
 		Table<Alternative, Alternative, Double> tradoffs = HashBasedTable.create();
-		Alternative x = alternativesComparison.getX();
-		Alternative y = alternativesComparison.getY();
 
-		double costX = cost(x, y, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
-		double costY = cost(y, x, alternativesComparison.getCriteria(), alternativesComparison.getWeight());
+		double costA;
+		double costB;
 
-		if (costX > costY && costX != 0.0) {
-			tradoffs.put(x, y, costY / costX);
-		}
+		for (Alternative a : alternatives) {
+			for (Alternative b : alternatives) {
+				if (!a.equals(b)) {
+					costA = cost(a, b, weights.keySet(), weights);
+					costB = cost(b, a, weights.keySet(), weights);
 
-		if (costY > costX && costY != 0.0) {
-			tradoffs.put(y, x, costX / costY);
+					if (costA > costB && costA != 0.0) {
+						tradoffs.put(a, b, costB / costA);
+					}
+
+					if (costB > costA && costB != 0.0) {
+						tradoffs.put(b, a, costA / costB);
+					}
+				}
+			}
 		}
 
 		return tradoffs;
@@ -129,6 +136,7 @@ public class NunesTools {
 	}
 
 	public Constraint strongestConstraint() {
+		@SuppressWarnings("unused")
 		Map<Double, Constraint> cons = new HashMap<>();
 
 		return null;

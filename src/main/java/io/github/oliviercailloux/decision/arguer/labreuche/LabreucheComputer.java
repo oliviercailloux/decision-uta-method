@@ -31,7 +31,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class LabreucheModel {
+public class LabreucheComputer {
 
 	/**
 	 * @param labreuchOutput
@@ -43,9 +43,9 @@ public class LabreucheModel {
 	private List<List<Criterion>> ivtPermutations;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public LabreucheModel(AlternativesComparison alternativesComparaison) {
+	public LabreucheComputer(AlternativesComparison alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 
 		this.ivtPermutations = new ArrayList<>();
@@ -54,7 +54,7 @@ public class LabreucheModel {
 		this.labreucheOutput = null;
 	}
 
-	public LabreucheModel(AlternativesComparison alternativesComparaison, double epsilon) {
+	public LabreucheComputer(AlternativesComparison alternativesComparaison, double epsilon) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 		this.epsilon = requireNonNull(epsilon);
 
@@ -95,12 +95,8 @@ public class LabreucheModel {
 	 *         and y.
 	 */
 	private List<List<Criterion>> algo(List<List<Criterion>> c, List<List<Criterion>> b, int k) {
-		StringBuilder bld = new StringBuilder();
 
-		if (LOGGER.isDebugEnabled()) {
-			bld.append("\n CALLING ALGO( " + Utils.showSet(c) + " , " + Utils.showSet(b) + " , " + k + " )");
-			LOGGER.debug(bld.toString());
-		}
+		LOGGER.debug("CALLING ALGO( {} , {} , {} )", c, b, k);
 
 		List<List<Criterion>> cCopy = new ArrayList<>(c);
 		List<List<Criterion>> bCopy;
@@ -117,12 +113,8 @@ public class LabreucheModel {
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
 
-			if (LOGGER.isDebugEnabled()) {
-				bld = new StringBuilder();
-				bld.append(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
-						+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
-				LOGGER.debug(bld.toString());
-			}
+			LOGGER.debug(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
+					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
 
 			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(cCopy);
@@ -145,12 +137,9 @@ public class LabreucheModel {
 				cCopy.add(currentPerm);
 
 				if (sum < vXminusVY) {
-					if (LOGGER.isDebugEnabled()) {
-						bld = new StringBuilder();
-						bld.append("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy)
-								+ " " + (i + 1));
-						LOGGER.debug(bld.toString());
-					}
+
+					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
+							+ (i + 1));
 
 					if (b == null) {
 						cPrime = algo(cCopy, null, i + 1);
@@ -158,19 +147,11 @@ public class LabreucheModel {
 						cPrime = algo(cCopy, bCopy, i + 1);
 					}
 
-					if (LOGGER.isDebugEnabled()) {
-						bld = new StringBuilder();
-						bld.append("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
-								+ (i + 1));
-						LOGGER.debug(bld.toString());
-					}
+					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
+							+ (i + 1));
 				}
 
-				if (LOGGER.isDebugEnabled()) {
-					bld = new StringBuilder();
-					bld.append(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
-					LOGGER.debug(bld.toString());
-				}
+				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
 
 				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
@@ -178,11 +159,7 @@ public class LabreucheModel {
 					bCopy = new ArrayList<>(cPrime);
 				}
 
-				if (LOGGER.isDebugEnabled()) {
-					bld = new StringBuilder();
-					bld.append(Utils.showSet(cCopy) + " incluDiscri " + Utils.showSet(bCopy));
-					LOGGER.debug(bld.toString());
-				}
+				LOGGER.debug(Utils.showSet(cCopy) + " incluDiscri " + Utils.showSet(bCopy));
 
 				if (!LabreucheTools.includeDiscri(cCopy, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
@@ -520,7 +497,7 @@ public class LabreucheModel {
 		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :");
 
-		if(print) {
+		if (print) {
 			LOGGER.info(bld.toString());
 		}
 	}

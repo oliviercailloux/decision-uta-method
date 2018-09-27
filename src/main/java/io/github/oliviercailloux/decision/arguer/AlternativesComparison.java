@@ -1,12 +1,11 @@
 package io.github.oliviercailloux.decision.arguer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkArgument;
-
-
 import static java.util.Objects.requireNonNull;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -35,8 +34,8 @@ public class AlternativesComparison {
 	private Model model;
 
 	/**
-	 * weights must be not empty.
-	 * x must be better than y.
+	 * weights must be not empty. x must be better than y.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param weights
@@ -53,8 +52,9 @@ public class AlternativesComparison {
 
 		LOGGER.info("Checking is X better than Y");
 		(this).isXbetterY();
-		
-		//checkArgument(score(this.x,this.y,this.model) > score(this.y,this.x,this.model));
+
+		// checkArgument(score(this.x,this.y,this.model) >
+		// score(this.y,this.x,this.model));
 
 		LOGGER.info("Weights vector normalized");
 		(this).weightsSumInOne();
@@ -62,16 +62,20 @@ public class AlternativesComparison {
 
 	@SuppressWarnings("unused")
 	private double score(Alternative a, Alternative b, Model modelType) {
-		
-		switch(modelType) {
-		
-		case LABREUCHE :
+
+		switch (modelType) {
+
+		case LABREUCHE:
 			return LabreucheTools.score(a, weights);
 
-		case NUNES :
-			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO((this)));
+		case NUNES:
+			Set<Alternative> alts = new LinkedHashSet<>();
+			alts.add(x);
+			alts.add(y);
 
-		default :
+			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO(alts, weights));
+
+		default:
 			throw new IllegalArgumentException("Model type undifined");
 		}
 	}
@@ -169,27 +173,29 @@ public class AlternativesComparison {
 	}
 
 	private void isXbetterY() {
-		double scoreX; 
+		double scoreX;
 		double scoreY;
-		
-		
-		switch(model) {
-		
-		case LABREUCHE :
+
+		/*switch (model) {
+
+		case LABREUCHE:
 			scoreX = LabreucheTools.score(x, weights);
 			scoreY = LabreucheTools.score(y, weights);
 			break;
-			
-		case NUNES :
-			Table<Alternative,Alternative,Double> tradeoffs = NunesTools.computeTO(this);
+
+		case NUNES:
+			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(getAlternatives(), weights);
 			scoreX = NunesTools.score(x, y, getCriteria(), weights, tradeoffs);
 			scoreY = NunesTools.score(y, x, getCriteria(), weights, tradeoffs);
 			break;
-			
-		default :
+
+		default:
 			throw new IllegalStateException();
-		}
+		}*/
 		
+		scoreX = LabreucheTools.score(x, weights);
+		scoreY = LabreucheTools.score(y, weights);
+
 		if (scoreY > scoreX) {
 			LOGGER.info("Y better than X => switch in AlternativesComparison");
 			Alternative tmp = this.x;
@@ -197,9 +203,17 @@ public class AlternativesComparison {
 			this.y = tmp;
 		}
 	}
-	
+
 	public Model getModel() {
 		return this.model;
+	}
+
+	public Set<Alternative> getAlternatives() {
+		Set<Alternative> alternatives = new LinkedHashSet<>();
+		alternatives.add(x);
+		alternatives.add(y);
+
+		return alternatives;
 	}
 
 }

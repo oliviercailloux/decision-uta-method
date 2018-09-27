@@ -1,11 +1,13 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.Table;
@@ -29,16 +31,16 @@ public class ArgumentGenerator {
 	public ArgumentGenerator(Set<Alternative> alternatives, Map<Criterion, Double> weights) {
 		this.alternatives = alternatives;
 		this.weights = weights;
-		//this.model = model;
+		// this.model = model;
 		this.problemGenerator = new ProblemGenerator(new ArrayList<>(weights.keySet()), new ArrayList<>(alternatives));
 	}
 
-	public ArgumentGenerator(int alternativesNumber, int criteriaNumber, String model) {
+	public ArgumentGenerator(int alternativesNumber, int criteriaNumber) {
 		this.problemGenerator = new ProblemGenerator();
 		this.alternatives = new LinkedHashSet<>();
 		this.weights = new LinkedHashMap<>();
-		//this.model = model;
-		
+		// this.model = model;
+
 		generateWeightVector(criteriaNumber);
 		generateAlternatives(alternativesNumber);
 	}
@@ -76,10 +78,10 @@ public class ArgumentGenerator {
 		Set<Alternative> bests = new LinkedHashSet<>();
 		double bestCurrentScore = 0.0;
 		double score;
-		
-		switch(model) {
-		
-		case LABREUCHE :
+
+		switch (model) {
+
+		case LABREUCHE:
 			for (Alternative alt : alternatives) {
 				score = LabreucheTools.score(alt, weights);
 				if (score > bestCurrentScore) {
@@ -87,31 +89,48 @@ public class ArgumentGenerator {
 					bestCurrentScore = score;
 					bests.add(alt);
 				}
-			
+
 				if (score == bestCurrentScore) {
 					bests.add(alt);
 				}
 			}
 
 			return bests;
-		
-		case NUNES :
-			Map<Double,Alternative> scoreboard = new LinkedHashMap<>();
-			Table<Alternative,Alternative,Double> tradeoffs = NunesTools.computeTO(alternatives);
-			double score2;
-			
-			
-			for(Alternative a : alternatives) {
-				score2 = 0.0;
-				for(Alternative b : alternatives) {
-					if(!a.equals(b)) {
-						score2 += NunesTools.score(a, b, weights.keySet(), weights, tradesoffs);
+
+		case NUNES:
+			Map<Alternative, Integer> scoreboard = new LinkedHashMap<>();
+			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(alternatives, weights);
+			double scoreA;
+			double scoreB;
+			int scoreTMP;
+
+			for (Alternative a : alternatives) {
+				scoreTMP = 0;
+				for (Alternative b : alternatives) {
+					if (!a.equals(b)) {
+						scoreA = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
+						scoreB = NunesTools.score(b, a, weights.keySet(), weights, tradeoffs);
+						if (scoreA < scoreB) {
+							scoreTMP++;
+						}
 					}
 				}
+				scoreboard.put(a, scoreTMP);
 			}
-			
-			
-		default :
+
+			List<Integer> listScoreSorted = new ArrayList<>(scoreboard.values());
+			Collections.sort(listScoreSorted);
+			int bestScore = listScoreSorted.get(0);
+
+			for (Entry<Alternative, Integer> entry : scoreboard.entrySet()) {
+				if (entry.getValue() == bestScore) {
+					bests.add(entry.getKey());
+				}
+			}
+
+			return bests;
+
+		default:
 			throw new IllegalStateException();
 		}
 	}
@@ -130,7 +149,7 @@ public class ArgumentGenerator {
 	public LabreucheOutput compare(Alternative x, Alternative y) {
 		AlternativesComparison altComp = new AlternativesComparison(x, y, weights);
 
-		LabreucheModel lm = new LabreucheModel(altComp);
+		LabreucheComputer lm = new LabreucheComputer(altComp);
 
 		return lm.getExplanation();
 	}

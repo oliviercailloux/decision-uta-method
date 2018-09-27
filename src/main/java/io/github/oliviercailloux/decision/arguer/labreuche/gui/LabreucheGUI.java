@@ -27,7 +27,7 @@ import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.ArgumentGenerator;
 import io.github.oliviercailloux.decision.arguer.labreuche.Examples;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheArguer;
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -44,10 +44,10 @@ public class LabreucheGUI {
 	private JEditorPane explanationPane;
 	private JTextPane anchorPane;
 
-	private LabreucheModel lm = null;
+	private LabreucheComputer lm = null;
 	private ArgumentGenerator ag = null;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
 	/**
 	 * Launch the application.
@@ -245,7 +245,7 @@ public class LabreucheGUI {
 					JOptionPane.showMessageDialog(null, "The number of criteria must be higher than zero");
 				}
 
-				ag = new ArgumentGenerator(alternatives, criteria,"labreuche");
+				ag = new ArgumentGenerator(alternatives, criteria);
 
 				StringBuilder display = new StringBuilder("    Criteria    <-   Weight : \n");
 
@@ -311,7 +311,7 @@ public class LabreucheGUI {
 
 				AlternativesComparison altComp = new AlternativesComparison(best, second, ag.getWeights());
 
-				lm = new LabreucheModel(altComp);
+				lm = new LabreucheComputer(altComp);
 
 				windowInfo.pack();
 				windowInfo.setVisible(true);

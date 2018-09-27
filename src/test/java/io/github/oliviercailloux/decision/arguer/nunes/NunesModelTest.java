@@ -18,7 +18,7 @@ public class NunesModelTest {
 	public void testExampleCritical() {
 		LOGGER.info("Example Critical test");
 
-		NunesModel nm = Examples.getExampleCRITICAL();
+		NunesComputer nm = Examples.getExampleCRITICAL();
 
 		DominationOutput dom = nm.getDOMINATIONExplanation();
 		DominationOutput domExpected = Examples.getExampleCRITICALOutput();
@@ -31,7 +31,7 @@ public class NunesModelTest {
 	public void testExampleDomination() {
 		LOGGER.info("Example Domination test");
 
-		NunesModel nm = Examples.getExampleDOMINATION();
+		NunesComputer nm = Examples.getExampleDOMINATION();
 
 		assertTrue(nm.isApplicable(Pattern.DOMINATION));
 	}

@@ -14,7 +14,7 @@ import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
@@ -23,19 +23,24 @@ import io.github.oliviercailloux.decision.arguer.nunes.output.TradeOffOutput;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class NunesModel {
+public class NunesComputer {
 
 	private Set<Constraint> constraints;
 	private AlternativesComparison alternativesComparison;
 	private Table<Alternative, Alternative, Double> tradoffs;
 	private NunesOutput nunesOutput;
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public NunesModel(AlternativesComparison alternativesComparison, Set<Constraint> constraints) {
+	public NunesComputer(AlternativesComparison alternativesComparison, Set<Constraint> constraints) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
 		this.nunesOutput = null;
-		this.tradoffs = NunesTools.computeTO(alternativesComparison);
+
+		Set<Alternative> alts = new LinkedHashSet<>();
+		alts.add(alternativesComparison.getX());
+		alts.add(alternativesComparison.getY());
+
+		this.tradoffs = NunesTools.computeTO(alts, alternativesComparison.getWeight());
 	}
 
 	public Set<Constraint> getConstraints() {
@@ -204,7 +209,7 @@ public class NunesModel {
 		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
 				+ alternativesComparison.getY().getName() + " :");
 
-		if(print) {
+		if (print) {
 			LOGGER.info(bld.toString());
 		}
 	}

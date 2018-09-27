@@ -25,7 +25,7 @@ public class LabreucheModelTest {
 	public void testExampleAll() {
 		LOGGER.info("Example All test");
 
-		LabreucheModel lm = Examples.getExampleAll();
+		LabreucheComputer lm = Examples.getExampleAll();
 
 		assertTrue(lm.isApplicable(Anchor.ALL));
 	}
@@ -34,7 +34,7 @@ public class LabreucheModelTest {
 	public void testExampl5() {
 		LOGGER.info("Example 5 test");
 
-		LabreucheModel lm = Examples.getExample5();
+		LabreucheComputer lm = Examples.getExample5();
 
 		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample5Output();
@@ -47,7 +47,7 @@ public class LabreucheModelTest {
 	public void testExampl6() {
 		LOGGER.info("Example 6 test");
 
-		LabreucheModel lm = Examples.getExample6();
+		LabreucheComputer lm = Examples.getExample6();
 
 		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample6Output();
@@ -60,7 +60,7 @@ public class LabreucheModelTest {
 	public void testExample13() {
 		LOGGER.info("Example 13 test");
 
-		LabreucheModel lm = Examples.getExample13();
+		LabreucheComputer lm = Examples.getExample13();
 
 		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample13Output();
@@ -73,7 +73,7 @@ public class LabreucheModelTest {
 	public void testExampl14() {
 		LOGGER.info("Example 14 test");
 
-		LabreucheModel lm = Examples.getExample14();
+		LabreucheComputer lm = Examples.getExample14();
 
 		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample14Output();
@@ -86,7 +86,7 @@ public class LabreucheModelTest {
 	public void testExample18() {
 		LOGGER.info("Example 18 test");
 
-		LabreucheModel lm = Examples.getExample18();
+		LabreucheComputer lm = Examples.getExample18();
 
 		RMGAVGOutput rmgavg = lm.getRMGAVGExplanation();
 
@@ -98,7 +98,7 @@ public class LabreucheModelTest {
 	public void testExample17() {
 		LOGGER.info("Example 17 test");
 
-		LabreucheModel lm = Examples.getExample17();
+		LabreucheComputer lm = Examples.getExample17();
 
 		RMGCOMPOutput rmgcomp = lm.getRMGCOMPExplanation();
 
@@ -110,7 +110,7 @@ public class LabreucheModelTest {
 	public void testExample9() {
 		LOGGER.info("Example 9 test");
 
-		LabreucheModel lm = Examples.getExample9();
+		LabreucheComputer lm = Examples.getExample9();
 
 		IVTOutput ivt = lm.getIVTExplanation();
 		IVTOutput ivtExpected = Examples.getExample9Output();
@@ -123,7 +123,7 @@ public class LabreucheModelTest {
 	public void testExample15() {
 		LOGGER.info("Example 15 test");
 
-		LabreucheModel lm = Examples.getExample15();
+		LabreucheComputer lm = Examples.getExample15();
 
 		List<List<Criterion>> permutationExpected = Examples.getExample15Permutation();
 
@@ -135,7 +135,7 @@ public class LabreucheModelTest {
 	public void testExample16Permutation() {
 		LOGGER.info("Example 16 test");
 
-		LabreucheModel lm = Examples.getExample16();
+		LabreucheComputer lm = Examples.getExample16();
 
 		List<List<Criterion>> permutationExpected = Examples.getExample16Permutation();
 
@@ -147,7 +147,7 @@ public class LabreucheModelTest {
 	public void testExample10Permutation() {
 		LOGGER.info("Example 10 test");
 
-		LabreucheModel lm = Examples.getExample10();
+		LabreucheComputer lm = Examples.getExample10();
 
 		List<List<Criterion>> permutationExpected = Examples.getExample10Permutation();
 
