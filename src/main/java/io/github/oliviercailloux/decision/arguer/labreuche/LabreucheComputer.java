@@ -113,8 +113,7 @@ public class LabreucheComputer {
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
 
-			LOGGER.debug(k + " " + i + " Current permutation : " + Utils.showCriteria(currentPerm) + " current c = "
-					+ Utils.showSet(c) + " cap = " + LabreucheTools.isCapEmpty(c, currentPerm));
+			LOGGER.debug("{} {} Current permutation : {} current c = {} cap = {} ",k, i, currentPerm, c, LabreucheTools.isCapEmpty(c, currentPerm));
 
 			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(cCopy);
@@ -138,8 +137,7 @@ public class LabreucheComputer {
 
 				if (sum < vXminusVY) {
 
-					LOGGER.debug("START BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
-							+ (i + 1));
+					LOGGER.debug("START BRANCHING : i = {} c = {}  b = {}",(i + 1), cCopy, bCopy);
 
 					if (b == null) {
 						cPrime = algo(cCopy, null, i + 1);
@@ -147,11 +145,10 @@ public class LabreucheComputer {
 						cPrime = algo(cCopy, bCopy, i + 1);
 					}
 
-					LOGGER.debug("END BRANCHING : c = " + Utils.showSet(cCopy) + " b = " + Utils.showSet(bCopy) + " "
-							+ (i + 1));
+					LOGGER.debug("END BRANCHING : i = {} c = {} b = {}",(i + 1), cCopy, bCopy);
 				}
 
-				LOGGER.debug(Utils.showSet(cPrime) + " inclu_discri " + Utils.showSet(bCopy));
+				LOGGER.debug( "{} inclu_discri {}",Utils.showSet(cPrime), Utils.showSet(bCopy));
 
 				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
@@ -159,18 +156,18 @@ public class LabreucheComputer {
 					bCopy = new ArrayList<>(cPrime);
 				}
 
-				LOGGER.debug(Utils.showSet(cCopy) + " incluDiscri " + Utils.showSet(bCopy));
+				LOGGER.debug("{} incluDiscri {}",cCopy, bCopy);
 
 				if (!LabreucheTools.includeDiscri(cCopy, bCopy, alternativesComparison.getWeight(),
 						alternativesComparison.getDelta())) {
-					LOGGER.debug("RETURN B \n");
+					LOGGER.debug("RETURN B!");
 					return bCopy;
 				}
 			}
 			cCopy = new ArrayList<>(c);
 		}
 
-		LOGGER.debug("RETURN INVALID \n");
+		LOGGER.debug("RETURN INVALID");
 
 		return null;
 	}
@@ -291,12 +288,7 @@ public class LabreucheComputer {
 		double dEU;
 		List<Criterion> pi = new ArrayList<>();
 
-		if (LOGGER.isDebugEnabled()) {
-			bld.append(
-					"Delta " + alternativesComparison.getX().getName() + " > " + alternativesComparison.getY().getName()
-							+ " : " + Utils.showVector(alternativesComparison.getDelta().values()) + "\n");
-			LOGGER.debug(bld.toString());
-		}
+		LOGGER.debug("Delta {} > {} : {}", alternativesComparison.getX().getName(), alternativesComparison.getY().getName(), alternativesComparison.getDelta().values());
 
 		do {
 			pi.clear();
@@ -323,18 +315,14 @@ public class LabreucheComputer {
 			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(),
 					alternativesComparison.getDelta());
 
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("\n setCIVT : ");
-				bld = new StringBuilder();
-				for (List<Criterion> l : setCIVT) {
-					bld.append((Utils.showCriteria(l) + " "
-							+ LabreucheTools.dEU(l, alternativesComparison.getWeight(),
-									alternativesComparison.getDelta())
-							+ " " + Utils.showCriteria(LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),
-									alternativesComparison.getDelta()))));
-				}
-				LOGGER.debug(bld.toString());
+		
+			LOGGER.debug("setCIVT : ");
+				
+			for (List<Criterion> l : setCIVT) {
+				LOGGER.debug("pi = {}  dEU = {}  minPI = {}", l, LabreucheTools.dEU(l, alternativesComparison.getWeight(),alternativesComparison.getDelta())
+						, LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),alternativesComparison.getDelta()));
 			}
+				
 
 			bigC = algo(bigA, null, 0);
 			size++;
@@ -352,11 +340,7 @@ public class LabreucheComputer {
 		MutableGraph<Criterion> cpls = GraphBuilder.directed().build();
 		ImmutableGraph<Criterion> rS;
 
-		if (LOGGER.isDebugEnabled()) {
-			bld = new StringBuilder();
-			bld.append("Minimal permutation : " + Utils.showSet(ivtPermutations) + "\n");
-			LOGGER.debug(bld.toString());
-		}
+		LOGGER.debug("Minimals permutations : {}", ivtPermutations);
 
 		for (List<Criterion> l : ivtPermutations) {
 
@@ -462,54 +446,5 @@ public class LabreucheComputer {
 
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
-	}
-
-	public void showProblem(boolean print) {
-
-		StringBuilder bld = new StringBuilder();
-
-		bld.append("****************************************************************" + "\n"
-				+ "*                                                              *" + "\n"
-				+ "*         Recommender system based on Labreuche Model          *" + "\n"
-				+ "*                                                              *" + "\n"
-				+ "****************************************************************" + "\n");
-
-		bld.append("\n    Criteria    <-   Weight : \n");
-
-		for (Criterion c : alternativesComparison.getWeight().keySet())
-			bld.append("\n" + "	" + c.getName() + "  <-  w_" + c.getId() + " = "
-					+ alternativesComparison.getWeight().get(c));
-
-		bld.append("\n \n Alternatives : ");
-
-		bld.append("\n" + "	" + alternativesComparison.getX().getName() + " " + " : "
-				+ Utils.showVector(alternativesComparison.getX().getEvaluations().values()));
-
-		bld.append("\n" + "	" + alternativesComparison.getY().getName() + " " + " : "
-				+ Utils.showVector(alternativesComparison.getY().getEvaluations().values()));
-
-		bld.append("\n" + "			Alternatives ranked");
-		bld.append("\n" + alternativesComparison.getX().getName() + " = "
-				+ LabreucheTools.score(alternativesComparison.getX(), alternativesComparison.getWeight()));
-		bld.append("\n" + alternativesComparison.getY().getName() + " = "
-				+ LabreucheTools.score(alternativesComparison.getY(), alternativesComparison.getWeight()));
-
-		bld.append("Explanation why " + alternativesComparison.getX().getName() + " is better than "
-				+ alternativesComparison.getY().getName() + " :");
-
-		if (print) {
-			LOGGER.info(bld.toString());
-		}
-	}
-
-	public void solvesProblem() {
-		showProblem(true);
-
-		LabreucheOutput lo = getExplanation();
-
-		LabreucheArguer arg = new LabreucheArguer();
-		String explanation = arg.argue(lo);
-
-		LOGGER.info(explanation);
 	}
 }

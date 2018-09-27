@@ -22,7 +22,7 @@ public class Utils {
 			Double cScaled = BigDecimal.valueOf(c).setScale(3, RoundingMode.HALF_UP).doubleValue();
 			bld.append(cScaled + " ");
 		}
-		bld.append(" )");
+		bld.append(")");
 
 		return bld.toString();
 	}
@@ -36,7 +36,7 @@ public class Utils {
 			bld.append(c.getName() + " ");
 		}
 
-		bld.append(" }");
+		bld.append("}");
 
 		return bld.toString();
 	}
@@ -54,7 +54,7 @@ public class Utils {
 			bld.append(showCriteria(l) + " ");
 		}
 
-		bld.append(" }");
+		bld.append("}");
 
 		return bld.toString();
 	}
