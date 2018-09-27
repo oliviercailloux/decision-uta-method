@@ -79,23 +79,23 @@ public class ProblemGenerator {
 
 	@Override
 	public String toString() {
-		StringBuilder bld = new StringBuilder();
-		bld.append("Criteria : \n");
+		String result = "";
+		result += "Criteria : \n";
 
 		for (int i = 0; i < criteria.size(); i++) {
-			bld.append(criteria.get(i).getName() + " --> " + criteria.get(i).getScale() + " \n");
+			result += criteria.get(i).getName() + " --> " + criteria.get(i).getScale() + " \n";
 		}
 
-		bld.append("\nAlternatives : \n");
+		result += "\nAlternatives : \n";
 		for (Alternative alternative : alternatives) {
-			bld.append(alternative.getName() + " --> ");
+			result += alternative.getName() + " --> ";
 			for (int i = 0; i < criteria.size(); i++) {
-				bld.append(alternative.getEvaluations().get(criteria.get(i)) + " ");
+				result += alternative.getEvaluations().get(criteria.get(i)) + " ";
 			}
-			bld.append("\n");
+			result += "\n";
 		}
 
-		return bld.toString();
+		return result;
 	}
 
 }

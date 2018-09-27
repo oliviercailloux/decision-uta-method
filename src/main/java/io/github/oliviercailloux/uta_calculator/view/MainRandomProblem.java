@@ -2,9 +2,6 @@ package io.github.oliviercailloux.uta_calculator.view;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
@@ -14,7 +11,6 @@ import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
 public class MainRandomProblem {
 
 	Scanner clavier = new Scanner(System.in);
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainRandomProblem.class);
 
 	public static void main(String[] args) {
 		MainRandomProblem main = new MainRandomProblem();
@@ -27,31 +23,32 @@ public class MainRandomProblem {
 
 		ProblemGenerator p1 = main.generateRandom(numbersCriteria, minValueCriterion, maxValueCriterion, cuts,
 				numbersAlternative);
-		LOGGER.info("Problem");
-		LOGGER.info(p1.toString());
+		System.out.println("Problem");
+		System.out.println(p1);
 
 		UTASTAR utastar = new UTASTAR(p1.getCriteria(), p1.getAlternatives());
-		LOGGER.info("Start of UTASTAR Algorithm");
+		System.out.println("Start of UTASTAR Algorithm");
 		ValueFunction vf = utastar.findValueFunction();
-		LOGGER.info("End of UTASTAR Algorithm");
-		LOGGER.info("");
-		LOGGER.info("Displaying Value Function");
+		System.out.println("End of UTASTAR Algorithm");
+		System.out.println();
+		System.out.println("Displaying Value Function");
 		for (PartialValueFunction pvf : vf.getPartialValueFunctions()) {
-			LOGGER.info(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
+			System.out.println(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
 		}
 
-		LOGGER.info("");
-		LOGGER.info("Displaying the value of the alternatives from the function valueFunction.getValue(alternative) :");
+		System.out.println();
+		System.out.println(
+				"Displaying the value of the alternatives from the function valueFunction.getValue(alternative) :");
 		for (Alternative alternative : p1.getAlternatives()) {
 			System.out.println(alternative.getName() + " : " + vf.getValue(alternative));
 		}
 	}
 
 	private double askUserDouble(String question) {
-		LOGGER.info(question);
+		System.out.print(question);
 		while (!clavier.hasNextDouble()) {
-			LOGGER.debug("Error : please insert a double");
-			LOGGER.info(question);
+			System.err.println("Error : please insert a double");
+			System.out.print(question);
 			clavier.next();
 		}
 		return clavier.nextDouble();
@@ -60,8 +57,8 @@ public class MainRandomProblem {
 	private int askUserInteger(String question) {
 		System.out.print(question);
 		while (!clavier.hasNextInt()) {
-			LOGGER.debug("Error : please insert an integer");
-			LOGGER.info(question);
+			System.err.println("Error : please insert an integer");
+			System.out.print(question);
 			clavier.next();
 		}
 		return clavier.nextInt();

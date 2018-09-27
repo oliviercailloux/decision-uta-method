@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
@@ -27,7 +24,6 @@ public class MainBuyingNewCar {
 	private ValueFunction vf;
 	private ProblemGenerator problem;
 	public UTASTAR utastar;
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainBuyingNewCar.class);
 
 	public MainBuyingNewCar() {
 		problem = generateBuyingNewCar();
@@ -40,32 +36,32 @@ public class MainBuyingNewCar {
 		MainBuyingNewCar main = new MainBuyingNewCar();
 
 		if (main.utastar.isPrint()) {
-			LOGGER.info("Information about the problem");
-			LOGGER.info(main.problem.toString());
+			System.out.println("Information about the problem");
+			System.out.println(main.problem);
 
-			LOGGER.info("Displaying Partial Value Function");
+			System.out.println("Displaying Partial Value Function");
 			for (PartialValueFunction pvf : main.vf.getPartialValueFunctions()) {
-				LOGGER.info(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
+				System.out.println(pvf.getCriterion().getName() + " : {" + pvf.getIntervals() + "}");
 			}
-			LOGGER.info("");
+			System.out.println();
 		}
 
-		LOGGER.info("Value of each alternative :");
+		System.out.println("Value of each alternative :");
 		Map<Alternative, Double> alternativeValues = main.getAlternativeValues(main.vf, main.problem.getAlternatives());
 		for (Entry<Alternative, Double> alternativeValue : alternativeValues.entrySet()) {
-			LOGGER.info(alternativeValue.getKey().getName() + " : " + alternativeValue.getValue());
+			System.out.println(alternativeValue.getKey().getName() + " : " + alternativeValue.getValue());
 		}
 
-		LOGGER.info("");
-		StringBuilder orderStr = new StringBuilder();
+		System.out.println();
+		String orderStr = "";
 		Map<Alternative, Double> alternativesOrdered = sortByValue(alternativeValues);
 		for (Entry<Alternative, Double> alternativeValue : alternativesOrdered.entrySet()) {
-			if (orderStr.length() > 0) {
-				orderStr.append(" > ");
+			if (!orderStr.isEmpty()) {
+				orderStr += " > ";
 			}
-			orderStr.append(alternativeValue.getKey().getName());
+			orderStr += alternativeValue.getKey().getName();
 		}
-		LOGGER.info(orderStr.toString());
+		System.out.println(orderStr);
 
 	}
 
@@ -158,7 +154,8 @@ public class MainBuyingNewCar {
 		Alternative p308 = new Alternative(4, "Peugeot 308 Berline", evaluation);
 		alternatives.add(p308);
 
-		return new ProblemGenerator(criteria, alternatives);
+		ProblemGenerator pb = new ProblemGenerator(criteria, alternatives);
+		return pb;
 	}
 
 }
