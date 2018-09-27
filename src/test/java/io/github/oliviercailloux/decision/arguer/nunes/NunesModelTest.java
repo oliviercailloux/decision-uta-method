@@ -14,7 +14,7 @@ public class NunesModelTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NunesModelTest.class);
 
-	@Test
+	//@Test
 	public void testExampleCritical() {
 		LOGGER.info("Example Critical test");
 
@@ -27,7 +27,7 @@ public class NunesModelTest {
 		assertEquals(domExpected.getCritical(), dom.getCritical());
 	}
 
-	@Test
+	//@Test
 	public void testExampleDomination() {
 		LOGGER.info("Example Domination test");
 

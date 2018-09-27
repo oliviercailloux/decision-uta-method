@@ -49,15 +49,15 @@ public class Alternative {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
 
 		stringHelper.addValue(id);
-		
-		if(!name.equals("c"+id)) {
+
+		if (!name.equals("c" + id)) {
 			stringHelper.addValue(name);
 		}
-		
-		if(!evaluations.isEmpty()) {
+
+		if (!evaluations.isEmpty()) {
 			stringHelper.addValue(evaluations);
 		}
-		
+
 		return stringHelper.toString();
 	}
 

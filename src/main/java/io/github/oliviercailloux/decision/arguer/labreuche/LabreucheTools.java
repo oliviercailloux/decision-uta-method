@@ -20,7 +20,6 @@ import com.google.common.graph.Graphs;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
-import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -144,7 +143,8 @@ public class LabreucheTools {
 
 		double result = firstPart - secondPart;
 
-		LOGGER.debug("Calling dEU for {} : {} - {} = {}, pi best = {} ", subset, firstPart, secondPart, result, bestMinPi);
+		LOGGER.debug("Calling dEU for {} : {} - {} = {}, pi best = {} ", subset, firstPart, secondPart, result,
+				bestMinPi);
 
 		return new Couple<>(result, bestMinPi);
 	}

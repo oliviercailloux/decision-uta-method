@@ -73,17 +73,17 @@ public class Criterion {
 	@Override
 	public String toString() {
 		ToStringHelper stringHelper = MoreObjects.toStringHelper(this);
-		
+
 		stringHelper.addValue(id);
-		
-		if(!name.equals("c"+id)) {
+
+		if (!name.equals("c" + id)) {
 			stringHelper.addValue(name);
 		}
-		
-		if(!scale.isEmpty()) {
+
+		if (!scale.isEmpty()) {
 			stringHelper.addValue(scale);
 		}
-		
+
 		return stringHelper.toString();
 	}
 

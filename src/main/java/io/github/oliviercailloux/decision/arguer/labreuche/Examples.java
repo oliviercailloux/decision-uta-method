@@ -21,6 +21,10 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class Examples {
 
+	/**
+	 * In the example X and Y are invert from the paper of Labreuche (2011).
+	 */
+
 	private Examples() {
 		throw new IllegalStateException("Examples Class");
 	}
@@ -28,55 +32,55 @@ public class Examples {
 	public static LabreucheComputer getExampleAll() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.20, 0.60, 0.60, 0.50));
-		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
+		builder.setY(ImmutableList.of(0.20, 0.60, 0.60, 0.50));
+		builder.setX(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample5() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.42, 0.66, 0.66, 0.57));
-		builder.setY(ImmutableList.of(0.54, 0.04, 0.89, 0.76));
+		builder.setY(ImmutableList.of(0.42, 0.66, 0.66, 0.57));
+		builder.setX(ImmutableList.of(0.54, 0.04, 0.89, 0.76));
 		builder.setW(ImmutableList.of(0.41, 0.06, 0.24, 0.29));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample6() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.95, 0.67, 0.64, 0.27, 0.39));
-		builder.setY(ImmutableList.of(0.30, 0.37, 0.41, 0.94, 0.49));
+		builder.setY(ImmutableList.of(0.95, 0.67, 0.64, 0.27, 0.39));
+		builder.setX(ImmutableList.of(0.30, 0.37, 0.41, 0.94, 0.49));
 		builder.setW(ImmutableList.of(0.18, 0.11, 0.12, 0.24, 0.35));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample9() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.89, 0.03, 0.07, 0.32, 0.38));
-		builder.setY(ImmutableList.of(0.36, 0.76, 0.60, 0.25, 0.75));
+		builder.setY(ImmutableList.of(0.89, 0.03, 0.07, 0.32, 0.38));
+		builder.setX(ImmutableList.of(0.36, 0.76, 0.60, 0.25, 0.75));
 		builder.setW(ImmutableList.of(0.06, 0.11, 0.21, 0.29, 0.33));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample10() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.61, 0.28, 0.08, 0.02, 0.81, 0.15, 0.16, 0.38, 0.24, 0.75));
-		builder.setY(ImmutableList.of(0.45, 0.64, 0.86, 0.76, 0.87, 0.54, 0.17, 0.04, 0.55, 0.05));
+		builder.setY(ImmutableList.of(0.61, 0.28, 0.08, 0.02, 0.81, 0.15, 0.16, 0.38, 0.24, 0.75));
+		builder.setX(ImmutableList.of(0.45, 0.64, 0.86, 0.76, 0.87, 0.54, 0.17, 0.04, 0.55, 0.05));
 		builder.setW(ImmutableList.of(0.13, 0.04, 0.12, 0.10, 0.07, 0.19, 0.15, 0.03, 0.01, 0.16));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
@@ -87,7 +91,7 @@ public class Examples {
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.06, 0.11, 0.19, 0.11, 0.31, 0.08, 0.14));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
@@ -98,51 +102,51 @@ public class Examples {
 		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.14, 0.05, 0.17, 0.23, 0.17, 0.11, 0.13));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample15() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
-		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
+		builder.setY(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
+		builder.setX(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.11, 0.14, 0.13, 0.02, 0.27, 0.25, 0.08));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample16() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
-		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
+		builder.setY(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
+		builder.setX(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.24, 0.20, 0.25, 0.06, 0.02, 0.19, 0.04));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample17() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
-		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
+		builder.setY(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
+		builder.setX(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.16, 0.14, 0.15, 0.10, 0.16, 0.15, 0.14));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
 	public static LabreucheComputer getExample18() {
 		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		builder.setX(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
-		builder.setY(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
+		builder.setY(ImmutableList.of(0.50, 0.06, 0.03, 0.95, 0.87, 0.20, 0.95));
+		builder.setX(ImmutableList.of(0.99, 0.35, 0.31, 0.51, 0.62, 0.57, 0.52));
 		builder.setW(ImmutableList.of(0.12, 0.16, 0.15, 0.16, 0.15, 0.14, 0.12));
 
-		final AlternativesComparison altsComp = builder.build();
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
 		return new LabreucheComputer(altsComp);
 	}
 
@@ -185,9 +189,7 @@ public class Examples {
 		graphShouldBe.putEdge(c1, c3);
 		graphShouldBe.putEdge(c1, c5);
 
-		double epsilon = 0.2 / lm.getAlternativesComparison().getWeight().keySet().size();
-
-		return new IVTOutput(lm.getAlternativesComparison(), ImmutableGraph.copyOf(graphShouldBe), epsilon);
+		return new IVTOutput(lm.getAlternativesComparison(), ImmutableGraph.copyOf(graphShouldBe));
 	}
 
 	public static List<List<Criterion>> getExample10Permutation() {
@@ -277,9 +279,7 @@ public class Examples {
 	public static RMGCOMPOutput getExample17Output() {
 		LabreucheComputer lm = getExample17();
 
-		double epsilon = 0.2 / lm.getAlternativesComparison().getWeight().keySet().size();
-
-		return new RMGCOMPOutput(lm.getAlternativesComparison(), epsilon);
+		return new RMGCOMPOutput(lm.getAlternativesComparison());
 	}
 
 	public static RMGAVGOutput getExample18Output() {

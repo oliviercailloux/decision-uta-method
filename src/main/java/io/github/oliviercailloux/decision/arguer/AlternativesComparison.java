@@ -23,7 +23,8 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 /**
  * Immutable.
  *
- * @param M the kind of preference model used in this comparison.
+ * @param M
+ *            the kind of preference model used in this comparison.
  */
 public class AlternativesComparison<M extends Comparator<Alternative>> {
 
@@ -36,17 +37,20 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 	 * <code>x</code> must be strictly better than <code>y</code> according to the
 	 * given preference model.
 	 *
-	 * @param x               not <code>null</code>, must be in the domain of the
-	 *                        preference model.
-	 * @param y               not <code>null</code>, must be in the domain of the
-	 *                        preference model, must be evaluated on the same
-	 *                        criteria than x, must be evaluated on some criteria.
-	 * @param preferenceModel must be immutable (no defensive copy is done).
+	 * @param x
+	 *            not <code>null</code>, must be in the domain of the preference
+	 *            model.
+	 * @param y
+	 *            not <code>null</code>, must be in the domain of the preference
+	 *            model, must be evaluated on the same criteria than x, must be
+	 *            evaluated on some criteria.
+	 * @param preferenceModel
+	 *            must be immutable (no defensive copy is done).
 	 */
 	public AlternativesComparison(Alternative x, Alternative y, M preferenceModel) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
-		requireNonNull(preferenceModel);
+		this.preferenceModel= requireNonNull(preferenceModel);
 		checkArgument(x.getEvaluations().keySet().equals(y.getEvaluations().keySet()));
 		checkArgument(x.getEvaluations().keySet().size() >= 1);
 
@@ -100,13 +104,12 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
 	}
 
-	@SuppressWarnings("unused")
 	private double score(Alternative a, Alternative b, Model modelType) {
 
 		switch (modelType) {
 
 		case LABREUCHE:
-			return LabreucheTools.score(a, weights);
+			return LabreucheTools.score(a, preferenceModel);
 
 		case NUNES:
 			Set<Alternative> alts = new LinkedHashSet<>();

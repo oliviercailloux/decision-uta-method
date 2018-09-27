@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.graph.GraphBuilder;
@@ -16,6 +17,8 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
@@ -24,7 +27,14 @@ class IVTOutputTest {
 
 	@Test
 	void testSmaller() {
-		AlternativesComparison altsComp = newAlternativesComparison();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
+
+		builder.setY(ImmutableList.of(0.20, 0.60));
+		builder.setX(ImmutableList.of(0.54, 0.67));
+		builder.setW(ImmutableList.of(0.54, 0.67));
+
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
+		
 		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();
@@ -32,9 +42,9 @@ class IVTOutputTest {
 		MutableGraph<Criterion> graph = GraphBuilder.directed().build();
 		graph.putEdge(c1, c2);
 
-		IVTOutput output = new IVTOutput(altsComp, ImmutableGraph.copyOf(graph), 0.1);
+		IVTOutput output = new IVTOutput(altsComp, ImmutableGraph.copyOf(graph));
 
-		assertTrue(output.isJustSmaller(0.7, 0.75));
+		assertTrue(output.isJustSmaller(0.74, 0.75));
 		assertFalse(output.isJustSmaller(0.4, 0.75));
 		assertFalse(output.isJustSmaller(0.55, 0.5));
 		assertFalse(output.isJustSmaller(0.9, 0.1));
@@ -45,7 +55,7 @@ class IVTOutputTest {
 		assertFalse(output.isMuchSmaller(0.9, 0.2));
 	}
 
-	public AlternativesComparison newAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> newAlternativesComparison() {
 		ProblemGenerator gen = new ProblemGenerator();
 		gen.generateCriteria(2, 0, 10, 2);
 		gen.generateAlternatives(2);
@@ -54,7 +64,8 @@ class IVTOutputTest {
 		Alternative y = alternatives.get(1);
 		List<Criterion> criteria = gen.getCriteria();
 		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
-		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights);
+		LabreucheModel lm = new LabreucheModel(weights);
+		AlternativesComparison<LabreucheModel> altsComp = new AlternativesComparison<>(x, y, lm);
 		return altsComp;
 	}
 

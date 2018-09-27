@@ -42,11 +42,14 @@ public class LabreucheModel implements Comparator<Alternative> {
 	private final Comparator<Alternative> comparingScores;
 
 	/**
-	 * @param weights       not <code>null</code>, may be empty.
-	 * @param epsilon       a finite non-negative value.
-	 * @param epsilonW      a finite non-negative value.
-	 * @param epsilonWPrime a finite non-negative value greater than or equal to
-	 *                      epsilonW.
+	 * @param weights
+	 *            not <code>null</code>, may be empty.
+	 * @param epsilon
+	 *            a finite non-negative value.
+	 * @param epsilonW
+	 *            a finite non-negative value.
+	 * @param epsilonWPrime
+	 *            a finite non-negative value greater than or equal to epsilonW.
 	 */
 	public LabreucheModel(Map<Criterion, Double> weights, double epsilon, double epsilonW, double epsilonWPrime) {
 		requireNonNull(weights);
@@ -60,7 +63,8 @@ public class LabreucheModel implements Comparator<Alternative> {
 	}
 
 	/**
-	 * @param weights not <code>null</code>, may be empty.
+	 * @param weights
+	 *            not <code>null</code>, may be empty.
 	 */
 	public LabreucheModel(Map<Criterion, Double> weights) {
 		this(weights, getEpsilonDefaultValue(weights), EPSILON_W_DEFAULT_VALUE, EPSILON_W_PRIME_DEFAULT_VALUE);

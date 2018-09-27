@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
+import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class LabreucheComputer {
@@ -38,26 +40,15 @@ public class LabreucheComputer {
 	 *            equal null iff it is not initialized.
 	 */
 
-	private AlternativesComparison alternativesComparison;
-	private double epsilon;
+	private AlternativesComparison<LabreucheModel> alternativesComparison;
 	private List<List<Criterion>> ivtPermutations;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public LabreucheComputer(AlternativesComparison alternativesComparaison) {
+	public LabreucheComputer(AlternativesComparison<LabreucheModel> alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
-
 		this.ivtPermutations = new ArrayList<>();
-		this.setCIVT = new ArrayList<>();
-		this.epsilon = 0.2 / this.alternativesComparison.getWeight().keySet().size();
-		this.labreucheOutput = null;
-	}
-
-	public LabreucheComputer(AlternativesComparison alternativesComparaison, double epsilon) {
-		this.alternativesComparison = requireNonNull(alternativesComparaison);
-		this.epsilon = requireNonNull(epsilon);
-
 		this.setCIVT = new ArrayList<>();
 		this.labreucheOutput = null;
 	}
@@ -70,11 +61,7 @@ public class LabreucheComputer {
 		return this.setCIVT;
 	}
 
-	public Double getEpsilon() {
-		return this.epsilon;
-	}
-
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 
@@ -113,7 +100,8 @@ public class LabreucheComputer {
 		for (int i = k; i < setCIVT.size(); i++) {
 			currentPerm = setCIVT.get(i);
 
-			LOGGER.debug("{} {} Current permutation : {} current c = {} cap = {} ",k, i, currentPerm, c, LabreucheTools.isCapEmpty(c, currentPerm));
+			LOGGER.debug("{} {} Current permutation : {} current c = {} cap = {} ", k, i, currentPerm, c,
+					LabreucheTools.isCapEmpty(c, currentPerm));
 
 			if (LabreucheTools.isCapEmpty(c, currentPerm)) {
 				cPrime = new ArrayList<>(cCopy);
@@ -124,20 +112,21 @@ public class LabreucheComputer {
 				if (!cPrime.isEmpty()) {
 					for (List<Criterion> perm : cPrime) {
 						sum += LabreucheTools
-								.dEU(perm, alternativesComparison.getWeight(), alternativesComparison.getDelta())
+								.dEU(perm, alternativesComparison.getPreferenceModel().getWeights(), getDelta())
 								.getLeft();
 					}
 				}
 
 				double vXminusVY = LabreucheTools.score(alternativesComparison.getX(),
-						alternativesComparison.getWeight())
-						- LabreucheTools.score(alternativesComparison.getY(), alternativesComparison.getWeight());
+						alternativesComparison.getPreferenceModel().getWeights())
+						- LabreucheTools.score(alternativesComparison.getY(),
+								alternativesComparison.getPreferenceModel().getWeights());
 
 				cCopy.add(currentPerm);
 
 				if (sum < vXminusVY) {
 
-					LOGGER.debug("START BRANCHING : i = {} c = {}  b = {}",(i + 1), cCopy, bCopy);
+					LOGGER.debug("START BRANCHING : i = {} c = {}  b = {}", (i + 1), cCopy, bCopy);
 
 					if (b == null) {
 						cPrime = algo(cCopy, null, i + 1);
@@ -145,21 +134,21 @@ public class LabreucheComputer {
 						cPrime = algo(cCopy, bCopy, i + 1);
 					}
 
-					LOGGER.debug("END BRANCHING : i = {} c = {} b = {}",(i + 1), cCopy, bCopy);
+					LOGGER.debug("END BRANCHING : i = {} c = {} b = {}", (i + 1), cCopy, bCopy);
 				}
 
-				LOGGER.debug( "{} inclu_discri {}",Utils.showSet(cPrime), Utils.showSet(bCopy));
+				LOGGER.debug("{} inclu_discri {}", Utils.showSet(cPrime), Utils.showSet(bCopy));
 
-				if (LabreucheTools.includeDiscri(cPrime, bCopy, alternativesComparison.getWeight(),
-						alternativesComparison.getDelta())) {
+				if (LabreucheTools.includeDiscri(cPrime, bCopy,
+						alternativesComparison.getPreferenceModel().getWeights(), getDelta())) {
 					LOGGER.debug("UPDATE B!");
 					bCopy = new ArrayList<>(cPrime);
 				}
 
-				LOGGER.debug("{} incluDiscri {}",cCopy, bCopy);
+				LOGGER.debug("{} incluDiscri {}", cCopy, bCopy);
 
-				if (!LabreucheTools.includeDiscri(cCopy, bCopy, alternativesComparison.getWeight(),
-						alternativesComparison.getDelta())) {
+				if (!LabreucheTools.includeDiscri(cCopy, bCopy,
+						alternativesComparison.getPreferenceModel().getWeights(), getDelta())) {
 					LOGGER.debug("RETURN B!");
 					return bCopy;
 				}
@@ -170,6 +159,14 @@ public class LabreucheComputer {
 		LOGGER.debug("RETURN INVALID");
 
 		return null;
+	}
+
+	private Map<Criterion, Double> getDelta() {
+		Alternative x = alternativesComparison.getX();
+		Alternative y = alternativesComparison.getY();
+		LabreucheModel lm = alternativesComparison.getPreferenceModel();
+		
+		return lm.getDelta(x,y);
 	}
 
 	/*
@@ -219,7 +216,7 @@ public class LabreucheComputer {
 	private boolean tryALL() {
 		Preconditions.checkState(labreucheOutput == null);
 
-		for (Double v : alternativesComparison.getDelta().values()) {
+		for (Double v : getDelta().values()) {
 			if (v < 0.0) {
 				LOGGER.info("ALL false");
 				return false;
@@ -235,9 +232,8 @@ public class LabreucheComputer {
 	private boolean tryNOA() {
 		Preconditions.checkState(labreucheOutput == null);
 
-		if (LabreucheTools.score(alternativesComparison.getX(),
-				alternativesComparison.getWeightReference()) >= LabreucheTools.score(alternativesComparison.getY(),
-						alternativesComparison.getWeightReference())) {
+		if (LabreucheTools.score(alternativesComparison.getX(), getWeightReference()) >= LabreucheTools
+				.score(alternativesComparison.getY(), getWeightReference())) {
 			LOGGER.info("NOA false");
 			return false;
 		}
@@ -245,21 +241,23 @@ public class LabreucheComputer {
 		Map<Double, Criterion> temp = new HashMap<>();
 		Set<Criterion> setC = new LinkedHashSet<>();
 
-		for (Map.Entry<Criterion, Double> w_i : alternativesComparison.getWeight().entrySet()) {
-			temp.put((w_i.getValue() - 1.0 / alternativesComparison.getCriteria().size())
-					* alternativesComparison.getDelta().get(w_i.getKey()), w_i.getKey());
+		for (Map.Entry<Criterion, Double> w_i : alternativesComparison.getPreferenceModel().getWeights().entrySet()) {
+			temp.put(
+					(w_i.getValue() - 1.0 / alternativesComparison.getCriteria().size()) * getDelta().get(w_i.getKey()),
+					w_i.getKey());
 		}
 
 		ArrayList<Double> keys = new ArrayList<>(temp.keySet());
 		Collections.sort(keys);
 
-		Map<Criterion, Double> wcomposed = Maps.newHashMap(alternativesComparison.getWeightReference());
+		Map<Criterion, Double> wcomposed = Maps.newHashMap(getWeightReference());
 		int p = keys.size() - 1;
 		double scoreX;
 		double scoreY;
 
 		do {
-			wcomposed.put(temp.get(keys.get(p)), alternativesComparison.getWeight().get((temp.get(keys.get(p)))));
+			wcomposed.put(temp.get(keys.get(p)),
+					alternativesComparison.getPreferenceModel().getWeights().get((temp.get(keys.get(p)))));
 			setC.add(temp.get(keys.get(p)));
 
 			scoreX = LabreucheTools.score(alternativesComparison.getX(), wcomposed);
@@ -275,10 +273,19 @@ public class LabreucheComputer {
 
 	}
 
+	private Map<Criterion, Double> getWeightReference() {
+		Map<Criterion, Double> vectorRef = new LinkedHashMap<>();
+		Set<Criterion> criteria = alternativesComparison.getCriteria();
+
+		for (Criterion c : criteria) {
+			vectorRef.put(c, 1.0 / criteria.size());
+		}
+
+		return vectorRef;
+	}
+
 	private boolean tryIVT() {
 		Preconditions.checkState(labreucheOutput == null);
-
-		StringBuilder bld = new StringBuilder();
 
 		int size = 2;
 		List<List<Criterion>> subsets = new ArrayList<>();
@@ -288,7 +295,8 @@ public class LabreucheComputer {
 		double dEU;
 		List<Criterion> pi = new ArrayList<>();
 
-		LOGGER.debug("Delta {} > {} : {}", alternativesComparison.getX().getName(), alternativesComparison.getY().getName(), alternativesComparison.getDelta().values());
+		LOGGER.debug("Delta {} > {} : {}", alternativesComparison.getX().getName(),
+				alternativesComparison.getY().getName(), getDelta().values());
 
 		do {
 			pi.clear();
@@ -300,8 +308,8 @@ public class LabreucheComputer {
 			subsets = LabreucheTools.allSubset(new ArrayList<>(alternativesComparison.getCriteria()));
 
 			for (List<Criterion> subset : subsets) {
-				Couple<Double, List<Criterion>> res = LabreucheTools.dEU(subset, alternativesComparison.getWeight(),
-						alternativesComparison.getDelta());
+				Couple<Double, List<Criterion>> res = LabreucheTools.dEU(subset,
+						alternativesComparison.getPreferenceModel().getWeights(), getDelta());
 				dEU = res.getLeft().doubleValue();
 				pi = res.getRight();
 
@@ -312,17 +320,17 @@ public class LabreucheComputer {
 				pi.clear();
 			}
 
-			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getWeight(),
-					alternativesComparison.getDelta());
+			setCIVT = LabreucheTools.sortLexi(setCIVT, alternativesComparison.getPreferenceModel().getWeights(),
+					getDelta());
 
-		
 			LOGGER.debug("setCIVT : ");
-				
+
 			for (List<Criterion> l : setCIVT) {
-				LOGGER.debug("pi = {}  dEU = {}  minPI = {}", l, LabreucheTools.dEU(l, alternativesComparison.getWeight(),alternativesComparison.getDelta())
-						, LabreucheTools.minimalPi(l, alternativesComparison.getWeight(),alternativesComparison.getDelta()));
+				LOGGER.debug("pi = {}  dEU = {}  minPI = {}", l,
+						LabreucheTools.dEU(l, alternativesComparison.getPreferenceModel().getWeights(), getDelta()),
+						LabreucheTools.minimalPi(l, alternativesComparison.getPreferenceModel().getWeights(),
+								getDelta()));
 			}
-				
 
 			bigC = algo(bigA, null, 0);
 			size++;
@@ -344,7 +352,7 @@ public class LabreucheComputer {
 
 		for (List<Criterion> l : ivtPermutations) {
 
-			rS = LabreucheTools.couplesOfG(l, alternativesComparison.getWeight(), alternativesComparison.getDelta());
+			rS = LabreucheTools.couplesOfG(l, alternativesComparison.getPreferenceModel().getWeights(), getDelta());
 
 			for (EndpointPair<Criterion> cp : rS.edges()) {
 				cpls.putEdge(cp.nodeU(), cp.nodeV());
@@ -356,7 +364,7 @@ public class LabreucheComputer {
 		// R* determined
 
 		LOGGER.info("IVT true");
-		labreucheOutput = new IVTOutput(alternativesComparison, rStar, epsilon);
+		labreucheOutput = new IVTOutput(alternativesComparison, rStar);
 
 		return true;
 	}
@@ -366,7 +374,7 @@ public class LabreucheComputer {
 
 		double maxW = getMaxW();
 
-		if (maxW <= epsilon) {
+		if (maxW <= alternativesComparison.getPreferenceModel().getEpsilon()) {
 			LOGGER.info("RMGAVG true");
 
 			labreucheOutput = new RMGAVGOutput(alternativesComparison);
@@ -382,7 +390,7 @@ public class LabreucheComputer {
 	private double getMaxW() {
 		double maxW = Double.MIN_VALUE;
 
-		for (Double v : alternativesComparison.getWeight().values()) {
+		for (Double v : alternativesComparison.getPreferenceModel().getWeights().values()) {
 			double value = Math.abs(v - (1.0 / alternativesComparison.getCriteria().size()));
 
 			if (value > maxW) {
@@ -397,10 +405,10 @@ public class LabreucheComputer {
 
 		double maxW = getMaxW();
 
-		if (maxW > epsilon) {
+		if (maxW > alternativesComparison.getPreferenceModel().getEpsilon()) {
 			LOGGER.info("RMGCOMP true");
 
-			labreucheOutput = new RMGCOMPOutput(alternativesComparison, epsilon);
+			labreucheOutput = new RMGCOMPOutput(alternativesComparison);
 
 			return true;
 		}
@@ -447,4 +455,5 @@ public class LabreucheComputer {
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
 	}
+
 }

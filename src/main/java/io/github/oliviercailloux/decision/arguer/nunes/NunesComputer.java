@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
 
-import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;

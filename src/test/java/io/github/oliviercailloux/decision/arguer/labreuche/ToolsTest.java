@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ public class ToolsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	void testIncludeDiscri() {
-		AlternativesComparison altsComp = newAlternativesComparison();
+		AlternativesComparison<LabreucheModel> altsComp = newAlternativesComparison();
 
 		List<List<Criterion>> setA = new ArrayList<>();
 		List<List<Criterion>> setB = null;
@@ -33,18 +34,28 @@ public class ToolsTest {
 
 		setA.add(toList(altsComp.getCriteria()));
 
-		assertTrue(LabreucheTools.includeDiscri(setA, setB, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(LabreucheTools.includeDiscri(setB, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(LabreucheTools.includeDiscri(setB, setB, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(LabreucheTools.includeDiscri(setA, setB, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
+		assertFalse(LabreucheTools.includeDiscri(setB, setA, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
+		assertFalse(LabreucheTools.includeDiscri(setB, setB, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
 
-		assertTrue(LabreucheTools.includeDiscri(emptySet, setA, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(LabreucheTools.includeDiscri(setA, emptySet, altsComp.getWeight(), altsComp.getDelta()));
-		assertFalse(LabreucheTools.includeDiscri(emptySet, emptySet, altsComp.getWeight(), altsComp.getDelta()));
+		assertTrue(LabreucheTools.includeDiscri(emptySet, setA, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
+		assertFalse(LabreucheTools.includeDiscri(setA, emptySet, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
+		assertFalse(LabreucheTools.includeDiscri(emptySet, emptySet, altsComp.getPreferenceModel().getWeights(),
+				getDelta(altsComp)));
+	}
+
+	private Map<Criterion, Double> getDelta(AlternativesComparison<LabreucheModel> altsComp) {
+		return altsComp.getPreferenceModel().getDelta(altsComp.getX(), altsComp.getY());
 	}
 
 	@Test
 	void testIsCapEmpty() {
-		AlternativesComparison alts = newAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alts = newAlternativesComparison();
 
 		Iterator<Criterion> critIt = alts.getCriteria().iterator();
 
@@ -85,7 +96,7 @@ public class ToolsTest {
 		return l;
 	}
 
-	public AlternativesComparison newAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> newAlternativesComparison() {
 		ProblemGenerator gen = new ProblemGenerator();
 		gen.generateCriteria(6, 0, 10, 2);
 		gen.generateAlternatives(2);
@@ -94,7 +105,8 @@ public class ToolsTest {
 		Alternative y = alternatives.get(1);
 		List<Criterion> criteria = gen.getCriteria();
 		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
-		AlternativesComparison altsComp = new AlternativesComparison(x, y, weights);
+		LabreucheModel model = new LabreucheModel(weights);
+		AlternativesComparison<LabreucheModel> altsComp = new AlternativesComparison<>(x, y, model);
 		return altsComp;
 	}
 

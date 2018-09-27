@@ -13,6 +13,7 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**
@@ -20,9 +21,8 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  */
 public class IVTOutput implements LabreucheOutput {
 
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<LabreucheModel> alternativesComparison;
 	private ImmutableGraph<Criterion> rStar;
-	private double epsilon;
 	private ImmutableSet<Criterion> kNRW;
 	private ImmutableSet<Criterion> kNW;
 	private ImmutableSet<Criterion> kPRS;
@@ -35,13 +35,10 @@ public class IVTOutput implements LabreucheOutput {
 	 * @param epsilon
 	 *            > 0.
 	 */
-	public IVTOutput(AlternativesComparison alternativesComparison, Graph<Criterion> rStar, double epsilon) {
+	public IVTOutput(AlternativesComparison<LabreucheModel> alternativesComparison, Graph<Criterion> rStar) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.rStar = ImmutableGraph.copyOf(requireNonNull(rStar));
 		checkArgument(!rStar.edges().isEmpty());
-		this.epsilon = requireNonNull(epsilon);
-		checkArgument(Double.isFinite(epsilon));
-		checkArgument(epsilon > 0);
 		this.kNRW = null;
 		this.kNW = null;
 		this.kPRS = null;
@@ -55,7 +52,7 @@ public class IVTOutput implements LabreucheOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 
@@ -115,13 +112,15 @@ public class IVTOutput implements LabreucheOutput {
 		Builder<Criterion> buildkNRW = ImmutableSet.builder();
 		MutableGraph<Criterion> buildkPN = GraphBuilder.directed().build();
 
-		ImmutableMap<Criterion, Double> w = alternativesComparison.getWeight();
+		ImmutableMap<Criterion, Double> w = alternativesComparison.getPreferenceModel().getWeights();
 
 		for (EndpointPair<Criterion> e : rStar.edges()) {
 			Criterion i = e.nodeU();
 			Criterion j = e.nodeV();
-			double deltaI = alternativesComparison.getDelta().get(i);
-			double deltaJ = alternativesComparison.getDelta().get(j);
+			double deltaI = alternativesComparison.getPreferenceModel()
+					.getDelta(alternativesComparison.getX(), alternativesComparison.getY()).get(i);
+			double deltaJ = alternativesComparison.getPreferenceModel()
+					.getDelta(alternativesComparison.getX(), alternativesComparison.getY()).get(j);
 			double wI = w.get(i);
 			double wJ = w.get(j);
 			int n = w.keySet().size();
@@ -172,11 +171,11 @@ public class IVTOutput implements LabreucheOutput {
 	}
 
 	boolean isJustSmaller(double w1, double w2) {
-		return w1 < w2 && w2 - w1 < epsilon;
+		return w1 < w2 && w2 - w1 < alternativesComparison.getPreferenceModel().getEpsilon();
 	}
 
 	boolean isMuchSmaller(double w1, double w2) {
-		return w2 - w1 > epsilon;
+		return w2 - w1 > alternativesComparison.getPreferenceModel().getEpsilon();
 	}
 
 }

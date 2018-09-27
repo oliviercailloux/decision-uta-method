@@ -147,11 +147,13 @@ public class ArgumentGenerator {
 	}
 
 	public LabreucheOutput compare(Alternative x, Alternative y) {
-		AlternativesComparison altComp = new AlternativesComparison(x, y, weights);
+		LabreucheModel lm = new LabreucheModel(getWeights());
 
-		LabreucheComputer lm = new LabreucheComputer(altComp);
+		AlternativesComparison<LabreucheModel> altComp = new AlternativesComparison<>(x, y, lm);
 
-		return lm.getExplanation();
+		LabreucheComputer lc = new LabreucheComputer(altComp);
+
+		return lc.getExplanation();
 	}
 
 }

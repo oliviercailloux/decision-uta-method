@@ -44,7 +44,7 @@ public class LabreucheArguer {
 	private String argueALL(ALLOutput output) {
 
 		StringBuilder bld = new StringBuilder();
-		AlternativesComparison alcoALL = output.getAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alcoALL = output.getAlternativesComparison();
 
 		bld.append(alcoALL.getX().getName() + " is preferred to " + alcoALL.getY().getName() + " since "
 				+ alcoALL.getX().getName() + " is better then " + alcoALL.getY().getName() + " on ALL criteria.");
@@ -55,7 +55,7 @@ public class LabreucheArguer {
 	private String argueNOA(NOAOutput output) {
 
 		StringBuilder bld = new StringBuilder();
-		AlternativesComparison alcoNOA = output.getAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alcoNOA = output.getAlternativesComparison();
 		Set<Criterion> cOnPA = output.getPositiveNoaCriteria();
 		Set<Criterion> cOnNA = output.getNegativeNoaCriteria();
 
@@ -70,7 +70,8 @@ public class LabreucheArguer {
 
 		for (Criterion c : alcoNOA.getCriteria()) {
 			if (!output.getNoaCriteria().contains(c)) {
-				addSentence += alcoNOA.getDelta().get(c) * alcoNOA.getWeight().get(c);
+				addSentence += alcoNOA.getPreferenceModel().getDelta(alcoNOA.getX(), alcoNOA.getY()).get(c)
+						* alcoNOA.getPreferenceModel().getWeights().get(c);
 			}
 		}
 
@@ -85,7 +86,7 @@ public class LabreucheArguer {
 	private String argueIVT(IVTOutput output) {
 
 		StringBuilder bld = new StringBuilder();
-		AlternativesComparison alcoIVT = output.getAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alcoIVT = output.getAlternativesComparison();
 		ImmutableSet<Criterion> kNRW = output.getNegativeRelativelyWeak();
 		ImmutableSet<Criterion> kNW = output.getNegativeWeak();
 		ImmutableSet<Criterion> kPRS = output.getPositiveRelativelyStrong();
@@ -120,7 +121,7 @@ public class LabreucheArguer {
 	private String argueRMGAVG(RMGAVGOutput output) {
 
 		StringBuilder bld = new StringBuilder();
-		AlternativesComparison alcoRMGAVG = output.getAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alcoRMGAVG = output.getAlternativesComparison();
 
 		bld.append(alcoRMGAVG.getX().getName() + " is preferred to " + alcoRMGAVG.getY().getName() + " since "
 				+ alcoRMGAVG.getX().getName() + " is on average better than " + alcoRMGAVG.getY().getName()
@@ -132,9 +133,9 @@ public class LabreucheArguer {
 	private String argueRMGCOMP(RMGCOMPOutput output) {
 
 		StringBuilder bld = new StringBuilder();
-		AlternativesComparison alcoRMGCOMP = output.getAlternativesComparison();
+		AlternativesComparison<LabreucheModel> alcoRMGCOMP = output.getAlternativesComparison();
 		double maxW = output.getMaxW();
-		double eps = output.getEpsilon();
+		double eps = output.getAlternativesComparison().getPreferenceModel().getEpsilon();
 
 		if (maxW > eps && maxW <= eps * 2) {
 			bld.append(alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()

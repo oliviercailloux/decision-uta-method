@@ -17,9 +17,9 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class LabreucheModelTest {
+public class LabreucheComputerTest {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheModelTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputerTest.class);
 
 	@Test
 	public void testExampleAll() {

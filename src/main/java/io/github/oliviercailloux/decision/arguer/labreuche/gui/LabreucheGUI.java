@@ -28,6 +28,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.ArgumentGenerator;
 import io.github.oliviercailloux.decision.arguer.labreuche.Examples;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -44,7 +45,7 @@ public class LabreucheGUI {
 	private JEditorPane explanationPane;
 	private JTextPane anchorPane;
 
-	private LabreucheComputer lm = null;
+	private LabreucheComputer lc = null;
 	private ArgumentGenerator ag = null;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
@@ -179,18 +180,18 @@ public class LabreucheGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (lm != null) {
+				if (lc != null) {
 					LabreucheArguer largue = new LabreucheArguer();
 					String message = "";
 					try {
-						message = largue.argue(lm.getExplanation());
+						message = largue.argue(lc.getExplanation());
 					} catch (IllegalStateException e5) {
 						JOptionPane.showMessageDialog(null, " Message Error :" + e5.getMessage());
 					}
 					String old = explanationPane.getText();
 
-					anchorPane.setText(lm.getLabreucheOutput().getAnchor().toString());
-					bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+					anchorPane.setText(lc.getLabreucheOutput().getAnchor().toString());
+					bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 					explanationPane.setText(old + "\n" + message);
 				}
 			}
@@ -309,9 +310,10 @@ public class LabreucheGUI {
 					}
 				}
 
-				AlternativesComparison altComp = new AlternativesComparison(best, second, ag.getWeights());
+				LabreucheModel lm = new LabreucheModel(ag.getWeights());
+				AlternativesComparison<LabreucheModel> altComp = new AlternativesComparison<>(best, second, lm);
 
-				lm = new LabreucheComputer(altComp);
+				lc = new LabreucheComputer(altComp);
 
 				windowInfo.pack();
 				windowInfo.setVisible(true);
@@ -333,7 +335,7 @@ public class LabreucheGUI {
 				LabreucheArguer largue = new LabreucheArguer();
 				String message = "";
 				try {
-					message = largue.argue(lm.getRMGCOMPExplanation());
+					message = largue.argue(lc.getRMGCOMPExplanation());
 				} catch (IllegalStateException e3) {
 					JOptionPane.showMessageDialog(null, "The anchor RMGCOMP is not applicable on this example"
 							+ "\n Message Error :" + e3.getMessage());
@@ -341,7 +343,7 @@ public class LabreucheGUI {
 				String old = explanationPane.getText();
 
 				anchorPane.setText(Anchor.RMGCOMP.toString());
-				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 				explanationPane.setText(old + "\n" + message);
 			}
 		});
@@ -357,7 +359,7 @@ public class LabreucheGUI {
 				LabreucheArguer largue = new LabreucheArguer();
 				String message = "";
 				try {
-					message = largue.argue(lm.getRMGAVGExplanation());
+					message = largue.argue(lc.getRMGAVGExplanation());
 				} catch (IllegalStateException e2) {
 					JOptionPane.showMessageDialog(null, "The anchor RMGAVG is not applicable on this example"
 							+ "\n Message Error :" + e2.getMessage());
@@ -365,7 +367,7 @@ public class LabreucheGUI {
 				String old = explanationPane.getText();
 
 				anchorPane.setText(Anchor.RMGAVG.toString());
-				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 				explanationPane.setText(old + "\n" + message);
 			}
 		});
@@ -381,7 +383,7 @@ public class LabreucheGUI {
 				LabreucheArguer largue = new LabreucheArguer();
 				String message = "";
 				try {
-					message = largue.argue(lm.getIVTExplanation());
+					message = largue.argue(lc.getIVTExplanation());
 				} catch (IllegalStateException e1) {
 					JOptionPane.showMessageDialog(null, "The anchor IVT is not applicable on this example"
 							+ "\n Message Error :" + e1.getMessage());
@@ -389,7 +391,7 @@ public class LabreucheGUI {
 				String old = explanationPane.getText();
 
 				anchorPane.setText(Anchor.IVT.toString());
-				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 				explanationPane.setText(old + "\n" + message);
 			}
 		});
@@ -405,7 +407,7 @@ public class LabreucheGUI {
 				LabreucheArguer largue = new LabreucheArguer();
 				String message = "";
 				try {
-					message = largue.argue(lm.getNOAExplanation());
+					message = largue.argue(lc.getNOAExplanation());
 				} catch (IllegalStateException e) {
 					JOptionPane.showMessageDialog(null,
 							"The anchor NOA is not applicable on this example" + "\n Message Error :" + e.getMessage());
@@ -413,7 +415,7 @@ public class LabreucheGUI {
 				String old = explanationPane.getText();
 
 				anchorPane.setText(Anchor.NOA.toString());
-				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 				explanationPane.setText(old + "\n" + message);
 			}
 		});
@@ -429,7 +431,7 @@ public class LabreucheGUI {
 				LabreucheArguer largue = new LabreucheArguer();
 				String message = "";
 				try {
-					message = largue.argue(lm.getALLExplanation());
+					message = largue.argue(lc.getALLExplanation());
 				} catch (IllegalStateException e) {
 					JOptionPane.showMessageDialog(null,
 							"The anchor ALL is not applicable on this example" + "\n Message Error :" + e.getMessage());
@@ -437,7 +439,7 @@ public class LabreucheGUI {
 				String old = explanationPane.getText();
 
 				anchorPane.setText(Anchor.ALL.toString());
-				bestAlternativePane.setText(lm.getAlternativesComparison().getX().getName());
+				bestAlternativePane.setText(lc.getAlternativesComparison().getX().getName());
 				explanationPane.setText(old + "\n" + message);
 			}
 		});
@@ -463,63 +465,63 @@ public class LabreucheGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				lm = null;
+				lc = null;
 				StringBuilder display = new StringBuilder();
 
 				switch (comboBox.getSelectedItem().toString()) {
 
 				case "example1":
-					lm = Examples.getExampleAll();
+					lc = Examples.getExampleAll();
 					display.append("				Example 1");
 					break;
 
 				case "example5":
-					lm = Examples.getExample5();
+					lc = Examples.getExample5();
 					display.append("				Example 5");
 					break;
 
 				case "example6":
-					lm = Examples.getExample6();
+					lc = Examples.getExample6();
 					display.append("				Example 6");
 					break;
 
 				case "example9":
-					lm = Examples.getExample9();
+					lc = Examples.getExample9();
 					display.append("				Example 9");
 					break;
 
 				case "example10":
-					lm = Examples.getExample10();
+					lc = Examples.getExample10();
 					display.append("				Example 10");
 					break;
 
 				case "example13":
-					lm = Examples.getExample13();
+					lc = Examples.getExample13();
 					display.append("				Example 13");
 					break;
 
 				case "example14":
-					lm = Examples.getExample14();
+					lc = Examples.getExample14();
 					display.append("				Example 14");
 					break;
 
 				case "example15":
-					lm = Examples.getExample15();
+					lc = Examples.getExample15();
 					display.append("				Example 15");
 					break;
 
 				case "example16":
-					lm = Examples.getExample16();
+					lc = Examples.getExample16();
 					display.append("				Example 16");
 					break;
 
 				case "example17":
-					lm = Examples.getExample17();
+					lc = Examples.getExample17();
 					display.append("				Example 17");
 					break;
 
 				case "example18":
-					lm = Examples.getExample18();
+					lc = Examples.getExample18();
 					display.append("				Example 18");
 					break;
 
@@ -527,27 +529,27 @@ public class LabreucheGUI {
 					LOGGER.info("ERROR example");
 				}
 
-				if (lm == null) {
+				if (lc == null) {
 					JOptionPane.showMessageDialog(null, "error loading problem");
 					return;
 				}
 
 				display.append("\n Criteria         <-   Weights  : \n");
 
-				for (Criterion c : lm.getAlternativesComparison().getWeight().keySet())
+				for (Criterion c : lc.getAlternativesComparison().getPreferenceModel().getWeights().keySet())
 					display.append("\n" + c.getName() + "  <-  w_" + c.getId() + " = "
-							+ lm.getAlternativesComparison().getWeight().get(c));
+							+ lc.getAlternativesComparison().getPreferenceModel().getWeights().get(c));
 
 				display.append("\n \n Alternatives : ");
 
-				display.append("\n" + "	" + lm.getAlternativesComparison().getX().getName() + " " + " : "
-						+ Utils.showVector(lm.getAlternativesComparison().getX().getEvaluations().values()));
+				display.append("\n" + "	" + lc.getAlternativesComparison().getX().getName() + " " + " : "
+						+ Utils.showVector(lc.getAlternativesComparison().getX().getEvaluations().values()));
 
-				display.append("\n" + "	" + lm.getAlternativesComparison().getY().getName() + " " + " : "
-						+ Utils.showVector(lm.getAlternativesComparison().getY().getEvaluations().values()));
+				display.append("\n" + "	" + lc.getAlternativesComparison().getY().getName() + " " + " : "
+						+ Utils.showVector(lc.getAlternativesComparison().getY().getEvaluations().values()));
 
-				explanationPane.setText("Explanation why " + lm.getAlternativesComparison().getX().getName()
-						+ " is better than " + lm.getAlternativesComparison().getY().getName() + " : ");
+				explanationPane.setText("Explanation why " + lc.getAlternativesComparison().getX().getName()
+						+ " is better than " + lc.getAlternativesComparison().getY().getName() + " : ");
 
 				JFrame windowInfo = new JFrame();
 				windowInfo.setTitle("Problem Informations");

@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**
@@ -17,14 +18,14 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  */
 public class NOAOutput implements LabreucheOutput {
 
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<LabreucheModel> alternativesComparison;
 	private ImmutableSet<Criterion> noaCriteria;
 
 	/**
 	 * @param noaCriteria
 	 *            may not be empty.
 	 */
-	public NOAOutput(AlternativesComparison alternativesComparison, Set<Criterion> noaCriteria) {
+	public NOAOutput(AlternativesComparison<LabreucheModel> alternativesComparison, Set<Criterion> noaCriteria) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.noaCriteria = ImmutableSet.copyOf(requireNonNull(noaCriteria));
 		checkArgument(!noaCriteria.isEmpty());
@@ -36,7 +37,7 @@ public class NOAOutput implements LabreucheOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 

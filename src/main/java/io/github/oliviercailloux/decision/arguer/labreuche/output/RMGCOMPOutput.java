@@ -1,22 +1,19 @@
 package io.github.oliviercailloux.decision.arguer.labreuche.output;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class RMGCOMPOutput implements LabreucheOutput {
 
-	private AlternativesComparison alternativesComparison;
-	private double epsilon;
+	private AlternativesComparison<LabreucheModel> alternativesComparison;
 
-	public RMGCOMPOutput(AlternativesComparison alternativesComparison, double epsilon) {
+	public RMGCOMPOutput(AlternativesComparison<LabreucheModel> alternativesComparison) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
-		this.epsilon = requireNonNull(epsilon);
-		checkArgument(Double.isFinite(epsilon));
 	}
 
 	@Override
@@ -25,12 +22,8 @@ public class RMGCOMPOutput implements LabreucheOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<LabreucheModel> getAlternativesComparison() {
 		return this.alternativesComparison;
-	}
-
-	public double getEpsilon() {
-		return this.epsilon;
 	}
 
 	/**
@@ -40,7 +33,7 @@ public class RMGCOMPOutput implements LabreucheOutput {
 		double maxW = Double.MIN_VALUE;
 		double n = alternativesComparison.getCriteria().size();
 
-		for (Map.Entry<Criterion, Double> entry : alternativesComparison.getWeight().entrySet()) {
+		for (Map.Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel().getWeights().entrySet()) {
 			double v = Math.abs(entry.getValue() - (1.0 / n));
 
 			if (v > maxW) {
