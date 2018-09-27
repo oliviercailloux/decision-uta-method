@@ -245,7 +245,7 @@ public class LabreucheGUI {
 					JOptionPane.showMessageDialog(null, "The number of criteria must be higher than zero");
 				}
 
-				ag = new ArgumentGenerator(alternatives, criteria);
+				ag = new ArgumentGenerator(alternatives, criteria,"labreuche");
 
 				StringBuilder display = new StringBuilder("    Criteria    <-   Weight : \n");
 

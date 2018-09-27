@@ -1,6 +1,9 @@
 package io.github.oliviercailloux.decision.arguer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
+
+
 import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
@@ -13,13 +16,14 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheTools;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 /**
- *
  * Immutable.
  */
 public class AlternativesComparison {
@@ -28,10 +32,11 @@ public class AlternativesComparison {
 	private ImmutableMap<Criterion, Double> weights;
 	private Alternative x;
 	private Alternative y;
+	private Model model;
 
 	/**
-	 * The parameters must be such that x and y do not have the same evaluation.
-	 *
+	 * weights must be not empty.
+	 * x must be better than y.
 	 * @param x
 	 * @param y
 	 * @param weights
@@ -48,9 +53,27 @@ public class AlternativesComparison {
 
 		LOGGER.info("Checking is X better than Y");
 		(this).isXbetterY();
+		
+		//checkArgument(score(this.x,this.y,this.model) > score(this.y,this.x,this.model));
 
 		LOGGER.info("Weights vector normalized");
 		(this).weightsSumInOne();
+	}
+
+	@SuppressWarnings("unused")
+	private double score(Alternative a, Alternative b, Model modelType) {
+		
+		switch(modelType) {
+		
+		case LABREUCHE :
+			return LabreucheTools.score(a, weights);
+
+		case NUNES :
+			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO((this)));
+
+		default :
+			throw new IllegalArgumentException("Model type undifined");
+		}
 	}
 
 	private void weightsSumInOne() {
@@ -146,15 +169,37 @@ public class AlternativesComparison {
 	}
 
 	private void isXbetterY() {
-		double scoreX = LabreucheTools.score(x, weights);
-		double scoreY = LabreucheTools.score(y, weights);
-
+		double scoreX; 
+		double scoreY;
+		
+		
+		switch(model) {
+		
+		case LABREUCHE :
+			scoreX = LabreucheTools.score(x, weights);
+			scoreY = LabreucheTools.score(y, weights);
+			break;
+			
+		case NUNES :
+			Table<Alternative,Alternative,Double> tradeoffs = NunesTools.computeTO(this);
+			scoreX = NunesTools.score(x, y, getCriteria(), weights, tradeoffs);
+			scoreY = NunesTools.score(y, x, getCriteria(), weights, tradeoffs);
+			break;
+			
+		default :
+			throw new IllegalStateException();
+		}
+		
 		if (scoreY > scoreX) {
 			LOGGER.info("Y better than X => switch in AlternativesComparison");
 			Alternative tmp = this.x;
 			this.x = this.y;
 			this.y = tmp;
 		}
+	}
+	
+	public Model getModel() {
+		return this.model;
 	}
 
 }
