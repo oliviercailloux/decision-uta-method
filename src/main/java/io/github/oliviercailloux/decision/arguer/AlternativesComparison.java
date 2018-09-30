@@ -104,23 +104,4 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
 	}
 
-	private double score(Alternative a, Alternative b, Model modelType) {
-
-		switch (modelType) {
-
-		case LABREUCHE:
-			return LabreucheTools.score(a, preferenceModel);
-
-		case NUNES:
-			Set<Alternative> alts = new LinkedHashSet<>();
-			alts.add(x);
-			alts.add(y);
-
-			return NunesTools.score(a, b, this.getCriteria(), weights, NunesTools.computeTO(alts, weights));
-
-		default:
-			throw new IllegalArgumentException("Model type undifined");
-		}
-	}
-
 }

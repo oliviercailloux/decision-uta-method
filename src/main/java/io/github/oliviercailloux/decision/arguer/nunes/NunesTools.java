@@ -46,15 +46,21 @@ public class NunesTools {
 
 		return 0.0;
 	}
-
+	
+	/**
+	 * @param x
+	 * @return Standard deviation of the costs performances (1 - x_i) of the
+	 * alternative x.
+	 */
 	public static double standardDeviation(Alternative x) {
 		Set<Double> dv = new LinkedHashSet<>();
-		double mean = 0.0;
 
 		for (Criterion c : x.getEvaluations().keySet()) {
 			dv.add(1 - x.getEvaluations().get(c));
 		}
 
+		double mean = 0.0; 
+		
 		for (Double v : dv)
 			mean += v;
 
@@ -62,10 +68,11 @@ public class NunesTools {
 
 		double sum = 0.0;
 
-		for (Double v : dv)
+		for (Double v : dv) {
 			sum += Math.pow(v - mean, 2);
-
-		return Math.sqrt((1.0 / (dv.size() - 1)) * sum);
+		}
+		
+		return Math.sqrt((sum / (dv.size() - 1)));
 	}
 
 	public static double toContrast(Alternative x, Alternative y, Table<Alternative, Alternative, Double> tradoffs) {

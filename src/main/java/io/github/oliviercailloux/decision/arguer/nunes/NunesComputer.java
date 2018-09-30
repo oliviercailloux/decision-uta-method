@@ -25,12 +25,12 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class NunesComputer {
 
 	private Set<Constraint> constraints;
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<NunesModel> alternativesComparison;
 	private Table<Alternative, Alternative, Double> tradoffs;
 	private NunesOutput nunesOutput;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public NunesComputer(AlternativesComparison alternativesComparison, Set<Constraint> constraints) {
+	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
 		this.nunesOutput = null;
@@ -39,7 +39,7 @@ public class NunesComputer {
 		alts.add(alternativesComparison.getX());
 		alts.add(alternativesComparison.getY());
 
-		this.tradoffs = NunesTools.computeTO(alts, alternativesComparison.getWeight());
+		this.tradoffs = NunesTools.computeTO(alts, alternativesComparison.getPreferenceModel().getWeights());
 	}
 
 	public Set<Constraint> getConstraints() {
@@ -50,7 +50,7 @@ public class NunesComputer {
 		return this.tradoffs;
 	}
 
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<NunesModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 
@@ -127,7 +127,7 @@ public class NunesComputer {
 		int count = 0;
 		Criterion critical = null;
 
-		for (Entry<Criterion, Double> entry : alternativesComparison.getDelta().entrySet()) {
+		for (Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel().getDelta(alternativesComparison.getX(),alternativesComparison.getY()).entrySet()) {
 			if (entry.getValue() > 0.0) {
 				count++;
 				critical = entry.getKey();

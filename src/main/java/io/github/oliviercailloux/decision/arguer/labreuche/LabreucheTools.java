@@ -33,15 +33,15 @@ public class LabreucheTools {
 
 	/**
 	 * @param x
-	 * @param w
+	 * @param preferenceModel
 	 * @return the score of the alternative x.
 	 */
-	public static double score(Alternative x, Map<Criterion, Double> w) {
+	public static double score(Alternative x, Map<Criterion,Double> weights) {
 		double score = 0.0;
 
 		// Sum w_i * x_i
-		for (Entry<Criterion, Double> c : w.entrySet()) {
-			score += w.get(c.getKey()) * x.getEvaluations().get(c.getKey());
+		for (Entry<Criterion, Double> c : weights.entrySet()) {
+			score += weights.get(c.getKey()) * x.getEvaluations().get(c.getKey());
 		}
 
 		return score;

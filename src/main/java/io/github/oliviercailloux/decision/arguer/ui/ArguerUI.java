@@ -15,6 +15,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.nunes.Constraint;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesArguer;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesComputer;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
@@ -26,12 +27,17 @@ public class ArguerUI {
 		// Used to print problem and its resolution
 	}
 
-	public void showNunesArgument(AlternativesComparison<LabreucheModel> altsComp, Set<Constraint> constraints) {
+	public void showNunesArgument(AlternativesComparison<NunesModel> altsComp, Set<Constraint> constraints) {
 		showHeader("Nunes");
-		showCriteriaWeights(altsComp);
-		showAlternatives(altsComp);
-		showAlternativesRanked(altsComp, false);
-		showStartExplanation(altsComp);
+		
+		LabreucheModel lmTMP = new LabreucheModel(altsComp.getPreferenceModel().getWeights());
+		AlternativesComparison<LabreucheModel> laltcompTMP = new AlternativesComparison<>(altsComp.getX(), altsComp.getY(), lmTMP);
+		
+		showCriteriaWeights(laltcompTMP);
+		showConstraints(constraints);
+		showAlternatives(laltcompTMP);
+		showAlternativesRanked(laltcompTMP, false);
+		showStartExplanation(laltcompTMP);
 
 		NunesComputer nc = new NunesComputer(altsComp, constraints);
 		NunesOutput no = nc.getExplanation();

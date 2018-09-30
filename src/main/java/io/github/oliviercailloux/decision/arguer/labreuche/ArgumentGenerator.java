@@ -26,12 +26,12 @@ public class ArgumentGenerator {
 	private Set<Alternative> alternatives;
 	private Map<Criterion, Double> weights;
 	private ProblemGenerator problemGenerator;
-	private Model model;
+	private LabreucheModel model;
 
-	public ArgumentGenerator(Set<Alternative> alternatives, Map<Criterion, Double> weights) {
+	public ArgumentGenerator(Set<Alternative> alternatives, LabreucheModel model) {
 		this.alternatives = alternatives;
-		this.weights = weights;
-		// this.model = model;
+		this.weights = model.getWeights();
+		this.model = model;
 		this.problemGenerator = new ProblemGenerator(new ArrayList<>(weights.keySet()), new ArrayList<>(alternatives));
 	}
 
@@ -39,7 +39,6 @@ public class ArgumentGenerator {
 		this.problemGenerator = new ProblemGenerator();
 		this.alternatives = new LinkedHashSet<>();
 		this.weights = new LinkedHashMap<>();
-		// this.model = model;
 
 		generateWeightVector(criteriaNumber);
 		generateAlternatives(alternativesNumber);
@@ -79,11 +78,10 @@ public class ArgumentGenerator {
 		double bestCurrentScore = 0.0;
 		double score;
 
-		switch (model) {
-
-		case LABREUCHE:
+		if(model != null) {
+			
 			for (Alternative alt : alternatives) {
-				score = LabreucheTools.score(alt, weights);
+				score = LabreucheTools.score(alt, model.getWeights());
 				if (score > bestCurrentScore) {
 					bests.clear();
 					bestCurrentScore = score;
@@ -96,8 +94,10 @@ public class ArgumentGenerator {
 			}
 
 			return bests;
+		}
 
-		case NUNES:
+		if(model != null) {
+			
 			Map<Alternative, Integer> scoreboard = new LinkedHashMap<>();
 			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(alternatives, weights);
 			double scoreA;
@@ -130,9 +130,9 @@ public class ArgumentGenerator {
 
 			return bests;
 
-		default:
-			throw new IllegalStateException();
 		}
+		
+		throw new IllegalStateException();
 	}
 
 	public Alternative findUniqueBest() {

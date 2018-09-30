@@ -11,11 +11,13 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
@@ -25,14 +27,20 @@ public class ToolsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	void testIncludeDiscri() {
-		AlternativesComparison<LabreucheModel> altsComp = newAlternativesComparison();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
+		builder.setY(ImmutableList.of(0.20, 0.60));
+		builder.setX(ImmutableList.of(0.54, 0.67));
+		builder.setW(ImmutableList.of(0.54, 0.67));
+
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
+		
 		List<List<Criterion>> setA = new ArrayList<>();
-		List<List<Criterion>> setB = null;
+		setA.add(toList(altsComp.getCriteria()));
 
+		List<List<Criterion>> setB = null;
 		List<List<Criterion>> emptySet = new ArrayList<>();
 
-		setA.add(toList(altsComp.getCriteria()));
 
 		assertTrue(LabreucheTools.includeDiscri(setA, setB, altsComp.getPreferenceModel().getWeights(),
 				getDelta(altsComp)));
@@ -55,9 +63,15 @@ public class ToolsTest {
 
 	@Test
 	void testIsCapEmpty() {
-		AlternativesComparison<LabreucheModel> alts = newAlternativesComparison();
+		final AlternativesComparisonLabreucheBuilder builder = new AlternativesComparisonLabreucheBuilder();
 
-		Iterator<Criterion> critIt = alts.getCriteria().iterator();
+		builder.setY(ImmutableList.of(0.20, 0.60, 0.20, 0.60, 0.20, 0.60));
+		builder.setX(ImmutableList.of(0.54, 0.67, 0.54, 0.67, 0.54, 0.67));
+		builder.setW(ImmutableList.of(0.54, 0.67, 0.54, 0.67, 0.54, 0.67));
+
+		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
+		
+		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();
@@ -95,28 +109,4 @@ public class ToolsTest {
 
 		return l;
 	}
-
-	public AlternativesComparison<LabreucheModel> newAlternativesComparison() {
-		ProblemGenerator gen = new ProblemGenerator();
-		gen.generateCriteria(6, 0, 10, 2);
-		gen.generateAlternatives(2);
-		List<Alternative> alternatives = gen.getAlternatives();
-		Alternative x = alternatives.get(0);
-		Alternative y = alternatives.get(1);
-		List<Criterion> criteria = gen.getCriteria();
-		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
-		LabreucheModel model = new LabreucheModel(weights);
-		AlternativesComparison<LabreucheModel> altsComp = new AlternativesComparison<>(x, y, model);
-		return altsComp;
-	}
-
-	public ImmutableMap<Criterion, Double> genEqualWeights(Collection<Criterion> criteria) {
-		Builder<Criterion, Double> builder = ImmutableMap.builder();
-		double weight = 1.0 / criteria.size();
-		for (Criterion criterion : criteria) {
-			builder.put(criterion, weight);
-		}
-		return builder.build();
-	}
-
 }
