@@ -13,7 +13,6 @@ import java.util.Set;
 import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.decision.arguer.Model;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
@@ -26,12 +25,10 @@ public class ArgumentGenerator {
 	private Set<Alternative> alternatives;
 	private Map<Criterion, Double> weights;
 	private ProblemGenerator problemGenerator;
-	private LabreucheModel model;
 
 	public ArgumentGenerator(Set<Alternative> alternatives, LabreucheModel model) {
 		this.alternatives = alternatives;
 		this.weights = model.getWeights();
-		this.model = model;
 		this.problemGenerator = new ProblemGenerator(new ArrayList<>(weights.keySet()), new ArrayList<>(alternatives));
 	}
 
@@ -77,12 +74,10 @@ public class ArgumentGenerator {
 		Set<Alternative> bests = new LinkedHashSet<>();
 		double bestCurrentScore = 0.0;
 		double score;
-
-		if(model != null) {
 			
-			for (Alternative alt : alternatives) {
-				score = LabreucheTools.score(alt, model.getWeights());
-				if (score > bestCurrentScore) {
+		for (Alternative alt : alternatives) {
+			score = LabreucheTools.score(alt, getWeights());
+			if (score > bestCurrentScore) {
 					bests.clear();
 					bestCurrentScore = score;
 					bests.add(alt);
@@ -91,48 +86,9 @@ public class ArgumentGenerator {
 				if (score == bestCurrentScore) {
 					bests.add(alt);
 				}
-			}
-
-			return bests;
 		}
 
-		if(model != null) {
-			
-			Map<Alternative, Integer> scoreboard = new LinkedHashMap<>();
-			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(alternatives, weights);
-			double scoreA;
-			double scoreB;
-			int scoreTMP;
-
-			for (Alternative a : alternatives) {
-				scoreTMP = 0;
-				for (Alternative b : alternatives) {
-					if (!a.equals(b)) {
-						scoreA = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
-						scoreB = NunesTools.score(b, a, weights.keySet(), weights, tradeoffs);
-						if (scoreA < scoreB) {
-							scoreTMP++;
-						}
-					}
-				}
-				scoreboard.put(a, scoreTMP);
-			}
-
-			List<Integer> listScoreSorted = new ArrayList<>(scoreboard.values());
-			Collections.sort(listScoreSorted);
-			int bestScore = listScoreSorted.get(0);
-
-			for (Entry<Alternative, Integer> entry : scoreboard.entrySet()) {
-				if (entry.getValue() == bestScore) {
-					bests.add(entry.getKey());
-				}
-			}
-
-			return bests;
-
-		}
-		
-		throw new IllegalStateException();
+		return bests;
 	}
 
 	public Alternative findUniqueBest() {

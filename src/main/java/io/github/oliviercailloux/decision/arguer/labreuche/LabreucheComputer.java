@@ -165,8 +165,8 @@ public class LabreucheComputer {
 		Alternative x = alternativesComparison.getX();
 		Alternative y = alternativesComparison.getY();
 		LabreucheModel lm = alternativesComparison.getPreferenceModel();
-		
-		return lm.getDelta(x,y);
+
+		return lm.getDelta(x, y);
 	}
 
 	/*
@@ -218,12 +218,12 @@ public class LabreucheComputer {
 
 		for (Double v : getDelta().values()) {
 			if (v < 0.0) {
-				LOGGER.info("ALL false");
+				LOGGER.debug("ALL false");
 				return false;
 			}
 		}
 
-		LOGGER.info("ALL true");
+		LOGGER.debug("ALL true");
 		labreucheOutput = new ALLOutput(alternativesComparison);
 
 		return true;
@@ -234,7 +234,7 @@ public class LabreucheComputer {
 
 		if (LabreucheTools.score(alternativesComparison.getX(), getWeightReference()) >= LabreucheTools
 				.score(alternativesComparison.getY(), getWeightReference())) {
-			LOGGER.info("NOA false");
+			LOGGER.debug("NOA false");
 			return false;
 		}
 
@@ -266,7 +266,7 @@ public class LabreucheComputer {
 			p--;
 		} while (scoreX < scoreY);
 
-		LOGGER.info("NOA true");
+		LOGGER.debug("NOA true");
 		labreucheOutput = new NOAOutput(alternativesComparison, setC);
 
 		return true;
@@ -340,6 +340,7 @@ public class LabreucheComputer {
 		ivtPermutations = bigC;
 
 		if (ivtPermutations == null) {
+			LOGGER.debug("IVT false");
 			return false;
 		}
 
@@ -363,7 +364,7 @@ public class LabreucheComputer {
 
 		// R* determined
 
-		LOGGER.info("IVT true");
+		LOGGER.debug("IVT true");
 		labreucheOutput = new IVTOutput(alternativesComparison, rStar);
 
 		return true;
@@ -375,14 +376,14 @@ public class LabreucheComputer {
 		double maxW = getMaxW();
 
 		if (maxW <= alternativesComparison.getPreferenceModel().getEpsilon()) {
-			LOGGER.info("RMGAVG true");
+			LOGGER.debug("RMGAVG true");
 
 			labreucheOutput = new RMGAVGOutput(alternativesComparison);
 
 			return true;
 		}
 
-		LOGGER.info("RMGAVG false");
+		LOGGER.debug("RMGAVG false");
 
 		return false;
 	}
@@ -406,14 +407,14 @@ public class LabreucheComputer {
 		double maxW = getMaxW();
 
 		if (maxW > alternativesComparison.getPreferenceModel().getEpsilon()) {
-			LOGGER.info("RMGCOMP true");
+			LOGGER.debug("RMGCOMP true");
 
 			labreucheOutput = new RMGCOMPOutput(alternativesComparison);
 
 			return true;
 		}
 
-		LOGGER.info("RMGCOMP false");
+		LOGGER.debug("RMGCOMP false");
 
 		return false;
 	}

@@ -54,7 +54,7 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 		checkArgument(x.getEvaluations().keySet().equals(y.getEvaluations().keySet()));
 		checkArgument(x.getEvaluations().keySet().size() >= 1);
 
-		LOGGER.info("Checking is X better than Y");
+		LOGGER.debug("Checking is X better than Y");
 		checkArgument(preferenceModel.compare(x, y) > 0);
 	}
 

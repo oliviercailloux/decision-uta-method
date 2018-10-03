@@ -48,7 +48,7 @@ public class LabreucheGUI {
 	private LabreucheComputer lc = null;
 	private ArgumentGenerator ag = null;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheGUI.class);
 
 	/**
 	 * Launch the application.

@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
+import com.google.common.math.Stats;
 
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
@@ -59,20 +60,7 @@ public class NunesTools {
 			dv.add(1 - x.getEvaluations().get(c));
 		}
 
-		double mean = 0.0; 
-		
-		for (Double v : dv)
-			mean += v;
-
-		mean *= 1.0 / x.getEvaluations().keySet().size();
-
-		double sum = 0.0;
-
-		for (Double v : dv) {
-			sum += Math.pow(v - mean, 2);
-		}
-		
-		return Math.sqrt((sum / (dv.size() - 1)));
+		return Stats.of(dv).populationStandardDeviation();
 	}
 
 	public static double toContrast(Alternative x, Alternative y, Table<Alternative, Alternative, Double> tradoffs) {
