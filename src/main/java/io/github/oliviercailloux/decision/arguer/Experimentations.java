@@ -31,116 +31,133 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class Experimentations {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Experimentations.class);
-	
+	private static int nbAlt = 50;
+	private static int nbCrit = 3;
+	private static int maxSim = 1000;
 		
 	public static void main(String [] args) {
-		
-		int nbAlt = 20;
-		int nbCrit = 3;
-		int maxSim = 10000;
 	    
-	    Map<Integer,List<Integer>> globalStatLabreucheAnchor = new LinkedHashMap<>();
-	    //Map<Integer,List<Integer>> globalStatNunesPattern= new LinkedHashMap<>();
-	    Map<Integer,List<Integer>> globalStatSameResult = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsLabreucheAnchor = new LinkedHashMap<>();	    
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsALL = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsNOA = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsIVT = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsRMGAVG = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsRMGCOMP = new LinkedHashMap<>();
 	    
-	    Map<Integer,List<Integer>> globalStatALL = new LinkedHashMap<>();
-	    Map<Integer,List<Integer>> globalStatNOA = new LinkedHashMap<>();
-	    Map<Integer,List<Integer>> globalStatIVT = new LinkedHashMap<>();
-	    Map<Integer,List<Integer>> globalStatRMGAVG = new LinkedHashMap<>();
-	    Map<Integer,List<Integer>> globalStatRMGCOMP = new LinkedHashMap<>();
+	    Map<Integer,Map<Integer,List<Integer>>> generalStatsSameResult = new LinkedHashMap<>();
+	    
+	    //Map<Integer,Map<Integer,List<Integer>>> generalStatNunesPattern
 		
-		for(int i = 2; i <= nbAlt; i++) {
-			List<Integer> statsLabreucheAnchor = new ArrayList<>();
-			//List<Integer> statsNunesPattern = new ArrayList<>();
-			List<Integer> statsSameResult = new ArrayList<>();
-			    
-			List<Integer> statsALL = new ArrayList<>();
-			List<Integer> statsNOA = new ArrayList<>();
-			List<Integer> statsIVT = new ArrayList<>();
-			List<Integer> statsRMGAVG = new ArrayList<>();
-			List<Integer> statsRMGCOMP = new ArrayList<>();
-			    
-			for(int j = 0; j < maxSim; j++) {
-				ArgumentGenerator ag = new ArgumentGenerator(i, nbCrit);
-				Alternative bestL;
-				Alternative bestN;
+	    for(int c = 3; c <= nbCrit; c+=2) {
+	    	
+	    	Map<Integer,List<Integer>> globalStatLabreucheAnchor = new LinkedHashMap<>();
+		    Map<Integer,List<Integer>> globalStatALL = new LinkedHashMap<>();
+		    Map<Integer,List<Integer>> globalStatNOA = new LinkedHashMap<>();
+		    Map<Integer,List<Integer>> globalStatIVT = new LinkedHashMap<>();
+		    Map<Integer,List<Integer>> globalStatRMGAVG = new LinkedHashMap<>();
+		    Map<Integer,List<Integer>> globalStatRMGCOMP = new LinkedHashMap<>();
+		    
+		    Map<Integer,List<Integer>> globalStatSameResult = new LinkedHashMap<>();
+		    
+		    //Map<Integer,List<Integer>> globalStatNunesPattern= new LinkedHashMap<>();
+	    	
+			for(int i = 2; i <= nbAlt; i+=2) {
 				
-				try {
-					bestL = ag.findUniqueBest();
-
-				} catch (IllegalArgumentException e3) {
-					StringBuilder bld = new StringBuilder();
-					bld.append(" BUG : " + e3.getMessage());
-					LOGGER.debug(bld.toString());
-
-					Iterator<Alternative> itr = ag.findBest().iterator();
-
-					bestL = itr.next();
-				}
-				
-				try {
-					bestN = uniqueBestNunes(ag.getAlternatives(),ag.getWeights());
-				} catch (IllegalArgumentException e3) {
-					StringBuilder bld = new StringBuilder();
-					bld.append(" BUG : " + e3.getMessage());
-					LOGGER.debug(bld.toString());
-
-					Iterator<Alternative> itr = bestsNunes(ag.getAlternatives(), ag.getWeights()).iterator();
+				List<Integer> statsLabreucheAnchor = new ArrayList<>();
+				//List<Integer> statsNunesPattern = new ArrayList<>();
+				List<Integer> statsSameResult = new ArrayList<>();
+				    
+				List<Integer> statsALL = new ArrayList<>();
+				List<Integer> statsNOA = new ArrayList<>();
+				List<Integer> statsIVT = new ArrayList<>();
+				List<Integer> statsRMGAVG = new ArrayList<>();
+				List<Integer> statsRMGCOMP = new ArrayList<>();
+				    
+				for(int j = 0; j < maxSim; j++) {
+					ArgumentGenerator ag = new ArgumentGenerator(i, nbCrit);
+					Alternative bestL;
+					Alternative bestN;
 					
-					bestN = itr.next();
+					try {
+						bestL = ag.findUniqueBest();
+	
+					} catch (IllegalArgumentException e3) {
+						StringBuilder bld = new StringBuilder();
+						bld.append(" BUG : " + e3.getMessage());
+						LOGGER.debug(bld.toString());
+	
+						Iterator<Alternative> itr = ag.findBest().iterator();
+	
+						bestL = itr.next();
+					}
+					
+					try {
+						bestN = uniqueBestNunes(ag.getAlternatives(),ag.getWeights());
+					} catch (IllegalArgumentException e3) {
+						StringBuilder bld = new StringBuilder();
+						bld.append(" BUG : " + e3.getMessage());
+						LOGGER.debug(bld.toString());
+	
+						Iterator<Alternative> itr = bestsNunes(ag.getAlternatives(), ag.getWeights()).iterator();
+						
+						bestN = itr.next();
+					}
+					
+					updateSame(statsSameResult, bestL, bestN);
+					
+					if(!bestL.equals(bestN)) {
+						LabreucheOutput lbo = ag.compare(bestL, bestN);
+						addStatLabreuche(statsLabreucheAnchor, lbo);
+						update(statsALL, lbo, Anchor.ALL);
+						update(statsNOA, lbo, Anchor.NOA);
+						update(statsIVT, lbo, Anchor.IVT);
+						update(statsRMGAVG, lbo, Anchor.RMGAVG);
+						update(statsRMGCOMP, lbo, Anchor.RMGCOMP);
+					}
 				}
+	
+				globalStatLabreucheAnchor.put(i, statsLabreucheAnchor);
+				globalStatSameResult.put(i, statsSameResult);
+				//globalStatNunesPattern.put(i, statsNunesPattern);
+				globalStatALL.put(i, statsALL);
+				globalStatNOA.put(i, statsNOA);
+				globalStatIVT.put(i, statsIVT);
+				globalStatRMGAVG.put(i, statsRMGAVG);
+				globalStatRMGCOMP.put(i, statsRMGCOMP);
 				
-				updateSame(statsSameResult, bestL, bestN);
-				
-				if(!bestL.equals(bestN)) {
-					LabreucheOutput lbo = ag.compare(bestL, bestN);
-					addStatLabreuche(statsLabreucheAnchor, lbo);
-					update(statsALL, lbo, Anchor.ALL);
-					update(statsNOA, lbo, Anchor.NOA);
-					update(statsIVT, lbo, Anchor.IVT);
-					update(statsRMGAVG, lbo, Anchor.RMGAVG);
-					update(statsRMGCOMP, lbo, Anchor.RMGCOMP);
-				}
-				
+				System.out.println("end i " + i);
 			}
-
-			globalStatLabreucheAnchor.put(i, statsLabreucheAnchor);
-			globalStatSameResult.put(i, statsSameResult);
-			//globalStatNunesPattern.put(i, statsNunesPattern);
-			globalStatALL.put(i, statsALL);
-			globalStatNOA.put(i, statsNOA);
-			globalStatIVT.put(i, statsIVT);
-			globalStatRMGAVG.put(i, statsRMGAVG);
-			globalStatRMGCOMP.put(i, statsRMGCOMP);
 			
-			System.out.println(".");
-		}
+			generalStatsLabreucheAnchor.put(c, globalStatLabreucheAnchor);
+			generalStatsSameResult.put(c, globalStatSameResult);
+			//generalStatsNunesPattern.put(c,globalStatNunesPattern);
+			generalStatsALL.put(c, globalStatALL);
+			generalStatsNOA.put(c, globalStatNOA);
+			generalStatsIVT.put(c, globalStatIVT);
+			generalStatsRMGAVG.put(c, globalStatRMGAVG);
+			generalStatsRMGCOMP.put(c, globalStatRMGCOMP);
+			
+			System.out.println("end c " + c);
+	    }
 		
 		StringBuilder result = new StringBuilder();
-		result.append("Number of alternatives                    : " + "	");
-																
-		for(int i = 2; i <= nbAlt; i++) {							
-			result.append(i + "	");
-		}
 		
-		result.append("\n");
-		
-		result.append(showPourcents("Pourcentage of sames alternatives find    : ", globalStatSameResult));
-		result.append(showVariances("Variance of anchor distribution           : ", globalStatLabreucheAnchor));
-		result.append(showDeviations("Standard deviation of anchor distribution : ", globalStatLabreucheAnchor));
-		result.append(showPourcents("Pourcentage of anchor ALL used            : ", globalStatALL));
-		result.append(showPourcents("Pourcentage of anchor NOA used            : ", globalStatNOA));
-		result.append(showPourcents("Pourcentage of anchor IVT used            : ", globalStatIVT));
-		result.append(showPourcents("Pourcentage of anchor RMGAVG used         : ", globalStatRMGAVG));
-		result.append(showPourcents("Pourcentage of anchor RMGCOMP used        : ", globalStatRMGCOMP));
+		result.append(showGlobal("Pourcentage of sames alternatives find    : ", generalStatsSameResult, 0));
+		result.append(showGlobal("Variance of anchor distribution           : ", generalStatsLabreucheAnchor,2));
+		result.append(showGlobal("Standard deviation of anchor distribution : ", generalStatsLabreucheAnchor,1));
+		result.append(showGlobal("Pourcentage of anchor ALL used            : ", generalStatsALL,0));
+		result.append(showGlobal("Pourcentage of anchor NOA used            : ", generalStatsNOA,0));
+		result.append(showGlobal("Pourcentage of anchor IVT used            : ", generalStatsIVT,0));
+		result.append(showGlobal("Pourcentage of anchor RMGAVG used         : ", generalStatsRMGAVG,0));
+		result.append(showGlobal("Pourcentage of anchor RMGCOMP used        : ", generalStatsRMGCOMP,0));
 	
 		System.out.println(result.toString());
 	}
 	
-	private static Object showDeviations(String message, Map<Integer, List<Integer>> map) {
+	private static String showDeviations(Map<Integer, List<Integer>> map) {
 		StringBuilder result = new StringBuilder();
 
-		result.append(message + "	");
+		//result.append(message + "	");
 		
 		for(Entry<Integer, List<Integer>> entry : map.entrySet()) {
 			if(!entry.getValue().isEmpty())
@@ -155,10 +172,10 @@ public class Experimentations {
 		return result.toString();
 	}
 
-	private static Object showVariances(String message, Map<Integer, List<Integer>> map) {
+	private static String showVariances(Map<Integer, List<Integer>> map) {
 		StringBuilder result = new StringBuilder();
 
-		result.append(message + "	");
+		//result.append(message + "	");
 		
 		for(Entry<Integer, List<Integer>> entry : map.entrySet()) {
 			if(!entry.getValue().isEmpty())
@@ -173,17 +190,56 @@ public class Experimentations {
 		return result.toString();
 	}
 
-	private static String showPourcents(String message, Map<Integer, List<Integer>> map) {
+	private static String showPourcents(Map<Integer, List<Integer>> map) {
 		StringBuilder result = new StringBuilder();
-
-		result.append(message + "	");
 		
 		for(Entry<Integer, List<Integer>> entry : map.entrySet()) {
 			if(!entry.getValue().isEmpty())
 				result.append(new DecimalFormat("##.##").format(Stats.meanOf(entry.getValue()) * 100)+"%"+ "	");
 			else
 				result.append(0 + "%" +"	");
+		}
+		
+		result.append("\n");
+		
+		return result.toString();
+	}
+		
+	private static String showGlobal(String message, Map<Integer,Map<Integer,List<Integer>>> map, int flag) {
+		
+		StringBuilder result = new StringBuilder();
 
+		result.append(message + "\n");
+		result.append("numbers alternatives  : ");
+		
+		for(int i = 2; i <= nbAlt; i+=2) {							
+			result.append(i + "	");
+		}
+		
+		result.append("\n");
+				
+		switch(flag) {
+		
+		case 0:
+			for(Entry<Integer, Map<Integer,List<Integer>>> entry : map.entrySet()) {
+				result.append("numbers critaria : " + entry.getKey() + "	" + showPourcents(entry.getValue()));
+			}
+			break;
+			
+		case 1:
+			for(Entry<Integer, Map<Integer,List<Integer>>> entry : map.entrySet()) {
+				result.append("numbers critaria : " + entry.getKey() + "	" + showDeviations(entry.getValue()));
+			}
+			break;
+			
+		case 2:
+			for(Entry<Integer, Map<Integer,List<Integer>>> entry : map.entrySet()) {
+				result.append("numbers critaria : " + entry.getKey() + "	" + showVariances(entry.getValue()));
+			}
+			break;
+			
+		default:
+			throw new IllegalArgumentException();
 		}
 		
 		result.append("\n");

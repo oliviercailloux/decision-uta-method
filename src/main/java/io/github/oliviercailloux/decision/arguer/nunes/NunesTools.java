@@ -16,6 +16,8 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
 public class NunesTools {
 
+	/* * methods for decision function d(x,y) * */
+	
 	public static double score(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
 			Table<Alternative, Alternative, Double> tradoffs) {
 		return cost(x, y, criteria, weight) + (0.25 * extAversion(x, y)) + (0.15 * toContrast(x, y, tradoffs));
@@ -112,18 +114,14 @@ public class NunesTools {
 		return tradoffs;
 	}
 
+	
 	/* Cutoff methods */
 
 	public boolean isSatisfied(Alternative alt, Constraint c) {
-		if (c.isFlagMin()) {
-			if (alt.getEvaluations().get(c.getCriterion()) > c.getTreshold())
-				return false;
-		} else {
-			if (alt.getEvaluations().get(c.getCriterion()) < c.getTreshold())
-				return false;
-		}
-
-		return true;
+		if (c.isFlagMin())
+			return alt.getEvaluations().get(c.getCriterion()) > c.getTreshold();
+		else
+			return alt.getEvaluations().get(c.getCriterion()) < c.getTreshold();
 	}
 
 	public boolean lpv(Alternative alt, Constraint c) {
