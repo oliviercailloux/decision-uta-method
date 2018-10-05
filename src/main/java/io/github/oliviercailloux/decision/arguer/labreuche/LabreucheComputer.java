@@ -375,7 +375,7 @@ public class LabreucheComputer {
 
 		double maxW = getMaxW();
 
-		if (maxW <= alternativesComparison.getPreferenceModel().getEpsilon()) {
+		if (maxW <= alternativesComparison.getPreferenceModel().getEpsilonW()) {
 			LOGGER.debug("RMGAVG true");
 
 			labreucheOutput = new RMGAVGOutput(alternativesComparison);
@@ -406,7 +406,7 @@ public class LabreucheComputer {
 
 		double maxW = getMaxW();
 
-		if (maxW > alternativesComparison.getPreferenceModel().getEpsilon()) {
+		if (maxW > alternativesComparison.getPreferenceModel().getEpsilonW()) {
 			LOGGER.debug("RMGCOMP true");
 
 			labreucheOutput = new RMGCOMPOutput(alternativesComparison);

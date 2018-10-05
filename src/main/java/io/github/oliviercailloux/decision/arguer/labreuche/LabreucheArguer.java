@@ -135,9 +135,10 @@ public class LabreucheArguer {
 		StringBuilder bld = new StringBuilder();
 		AlternativesComparison<LabreucheModel> alcoRMGCOMP = output.getAlternativesComparison();
 		double maxW = output.getMaxW();
-		double eps = output.getAlternativesComparison().getPreferenceModel().getEpsilon();
-
-		if (maxW > eps && maxW <= eps * 2) {
+		double epsilonPrime = output.getAlternativesComparison().getPreferenceModel().getEpsilonWPrime();
+		double epsilon = output.getAlternativesComparison().getPreferenceModel().getEpsilonW();
+		
+		if (maxW > epsilon && maxW <= epsilonPrime) {
 			bld.append(alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "
 					+ alcoRMGCOMP.getY().getName() + " on \n" + Utils.showCriteria(alcoRMGCOMP.getPositiveCriteria())
