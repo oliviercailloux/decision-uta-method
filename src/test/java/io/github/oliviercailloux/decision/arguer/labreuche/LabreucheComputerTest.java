@@ -77,9 +77,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 18 test");
 
 		LabreucheComputer lm = Examples.getExample18();
-		RMGAVGOutput avgExpected = Examples.getExample18Output();
+		RMGCOMPOutput avgExpected = Examples.getExample18Output();
 		
-		assertEquals(avgExpected, lm.getRMGAVGExplanation());
+		assertEquals(avgExpected, lm.getRMGCOMPExplanation());
 	}
 
 	@Test

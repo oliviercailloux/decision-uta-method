@@ -19,12 +19,12 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
+/**
+ * In the examples X and Y are invert from the paper of Labreuche (2011).
+ */
 public class Examples {
 
-	/**
-	 * In the example X and Y are invert from the paper of Labreuche (2011).
-	 */
-
+	
 	private Examples() {
 		throw new IllegalStateException("Examples Class");
 	}
@@ -282,10 +282,15 @@ public class Examples {
 		return new RMGCOMPOutput(lm.getAlternativesComparison());
 	}
 
-	public static RMGAVGOutput getExample18Output() {
+	/***
+	 * The example 18 return an RMGCOMPOutput because
+	 * v = 1/7 - 0.12 =~ 0.22 and epsilon_w = 0,15/7 =~ 0,021
+	 * there is a mistake in Labreuche paper (2011)
+	 **/
+	public static RMGCOMPOutput getExample18Output() {
 		LabreucheComputer lm = getExample18();
 
-		return new RMGAVGOutput(lm.getAlternativesComparison());
+		return new RMGCOMPOutput(lm.getAlternativesComparison());
 	}
 
 }
