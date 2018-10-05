@@ -22,9 +22,6 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  *
  */
 public class LabreucheModel implements Comparator<Alternative> {
-	public static final double EPSILON_W_DEFAULT_VALUE = 0.1d;
-
-	public static final double EPSILON_W_PRIME_DEFAULT_VALUE = 0.2d;
 
 	public static double getEpsilonDefaultValue(Map<Criterion, Double> weights) {
 		requireNonNull(weights);
