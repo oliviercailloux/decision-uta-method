@@ -6,9 +6,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -117,5 +119,34 @@ public class LabreucheModel implements Comparator<Alternative> {
 		return weights.keySet().stream()
 				.collect(toImmutableMap((c) -> c, (c) -> x.getEvaluations().get(c) - y.getEvaluations().get(c)));
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 
+		if (obj == null)
+			return false;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		LabreucheModel other = (LabreucheModel) obj;
+
+		if (other.getEpsilon() != epsilon)
+			return false;
+		
+		if(other.getEpsilonW() != epsilonW)
+			return false;
+		
+		if(other.getEpsilonWPrime() != epsilonWPrime)
+			return false;
+		
+		return other.getWeights().equals(weights);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(weights,epsilon,epsilonW,epsilonWPrime);
+	}
 }

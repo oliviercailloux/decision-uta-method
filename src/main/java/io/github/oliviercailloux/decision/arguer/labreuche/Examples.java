@@ -181,7 +181,7 @@ public class Examples {
 		LabreucheComputer lm = getExample9();
 
 		Criterion c1 = new Criterion(1, "c1", new ArrayList<Double>());
-		Criterion c3 = new Criterion(3, "c5", new ArrayList<Double>());
+		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
 		Criterion c5 = new Criterion(5, "c5", new ArrayList<Double>());
 
 		MutableGraph<Criterion> graphShouldBe = GraphBuilder.directed().build();
@@ -227,7 +227,7 @@ public class Examples {
 	}
 
 	public static NOAOutput getExample14Output() {
-		LabreucheComputer lm = getExample13();
+		LabreucheComputer lm = getExample14();
 
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
 		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));

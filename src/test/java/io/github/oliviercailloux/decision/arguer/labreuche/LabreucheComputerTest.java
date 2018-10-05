@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
@@ -26,8 +27,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example All test");
 
 		LabreucheComputer lm = Examples.getExampleAll();
+		ALLOutput allExpected = Examples.getExampleAllOutput();
 
-		assertTrue(lm.isApplicable(Anchor.ALL));
+		assertEquals(allExpected, lm.getALLExplanation());
 	}
 
 	@Test
@@ -35,12 +37,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 5 test");
 
 		LabreucheComputer lm = Examples.getExample5();
-
-		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample5Output();
 
-		assertTrue(lm.isApplicable(Anchor.NOA));
-		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
+		assertEquals(noaExpected, lm.getNOAExplanation());
 	}
 
 	@Test
@@ -48,12 +47,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 6 test");
 
 		LabreucheComputer lm = Examples.getExample6();
-
-		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample6Output();
 
-		assertTrue(lm.isApplicable(Anchor.NOA));
-		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
+		assertEquals(noaExpected, lm.getNOAExplanation());
 	}
 
 	@Test
@@ -61,12 +57,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 13 test");
 
 		LabreucheComputer lm = Examples.getExample13();
-
-		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample13Output();
 
-		assertTrue(lm.isApplicable(Anchor.NOA));
-		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
+		assertEquals(noaExpected, lm.getNOAExplanation());
 	}
 
 	@Test
@@ -74,12 +67,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 14 test");
 
 		LabreucheComputer lm = Examples.getExample14();
-
-		NOAOutput noa = lm.getNOAExplanation();
 		NOAOutput noaExpected = Examples.getExample14Output();
 
-		assertTrue(lm.isApplicable(Anchor.NOA));
-		assertEquals(noaExpected.getNoaCriteria(), noa.getNoaCriteria());
+		assertEquals(noaExpected, lm.getNOAExplanation());
 	}
 
 	@Test
@@ -87,11 +77,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 18 test");
 
 		LabreucheComputer lm = Examples.getExample18();
-
-		RMGAVGOutput rmgavg = lm.getRMGAVGExplanation();
-
-		assertTrue(lm.isApplicable(Anchor.RMGAVG));
-		assertNotNull(rmgavg);
+		RMGAVGOutput avgExpected = Examples.getExample18Output();
+		
+		assertEquals(avgExpected, lm.getRMGAVGExplanation());
 	}
 
 	@Test
@@ -99,11 +87,9 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 17 test");
 
 		LabreucheComputer lm = Examples.getExample17();
+		RMGCOMPOutput compExpected = Examples.getExample17Output();
 
-		RMGCOMPOutput rmgcomp = lm.getRMGCOMPExplanation();
-
-		assertTrue(lm.isApplicable(Anchor.RMGCOMP));
-		assertNotNull(rmgcomp);
+		assertEquals(compExpected, lm.getRMGCOMPExplanation());
 	}
 
 	@Test
@@ -111,16 +97,13 @@ public class LabreucheComputerTest {
 		LOGGER.info("Example 9 test");
 
 		LabreucheComputer lm = Examples.getExample9();
-
-		IVTOutput ivt = lm.getIVTExplanation();
 		IVTOutput ivtExpected = Examples.getExample9Output();
 
-		assertTrue(lm.isApplicable(Anchor.IVT));
-		assertEquals(ivtExpected.getRStar(), ivt.getRStar());
+		assertEquals(ivtExpected, lm.getIVTExplanation());
 	}
 
 	@Test
-	public void testExample15() {
+	public void testExample15Permutation() {
 		LOGGER.info("Example 15 test");
 
 		LabreucheComputer lm = Examples.getExample15();
@@ -143,7 +126,7 @@ public class LabreucheComputerTest {
 		assertEquals(permutationExpected, lm.getIVTPermutations());
 	}
 
-	// @Test
+	//@Test
 	public void testExample10Permutation() {
 		LOGGER.info("Example 10 test");
 
