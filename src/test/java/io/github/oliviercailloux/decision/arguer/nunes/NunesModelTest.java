@@ -3,7 +3,6 @@ package io.github.oliviercailloux.decision.arguer.nunes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ public class NunesModelTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NunesModelTest.class);
 
-	//@Test
+	// @Test
 	public void testExampleCritical() {
 		LOGGER.info("Example Critical test");
 
@@ -27,7 +26,7 @@ public class NunesModelTest {
 		assertEquals(domExpected.getCritical(), dom.getCritical());
 	}
 
-	//@Test
+	// @Test
 	public void testExampleDomination() {
 		LOGGER.info("Example Domination test");
 

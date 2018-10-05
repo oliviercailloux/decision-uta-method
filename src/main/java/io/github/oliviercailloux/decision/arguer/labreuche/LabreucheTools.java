@@ -36,7 +36,7 @@ public class LabreucheTools {
 	 * @param preferenceModel
 	 * @return the score of the alternative x.
 	 */
-	public static double score(Alternative x, Map<Criterion,Double> weights) {
+	public static double score(Alternative x, Map<Criterion, Double> weights) {
 		double score = 0.0;
 
 		// Sum w_i * x_i

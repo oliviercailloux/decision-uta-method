@@ -17,7 +17,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
 public class NunesTools {
 
 	/* * methods for decision function d(x,y) * */
-	
+
 	public static double score(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
 			Table<Alternative, Alternative, Double> tradoffs) {
 		return cost(x, y, criteria, weight) + (0.25 * extAversion(x, y)) + (0.15 * toContrast(x, y, tradoffs));
@@ -49,11 +49,11 @@ public class NunesTools {
 
 		return 0.0;
 	}
-	
+
 	/**
 	 * @param x
 	 * @return Standard deviation of the costs performances (1 - x_i) of the
-	 * alternative x.
+	 *         alternative x.
 	 */
 	public static double standardDeviation(Alternative x) {
 		Set<Double> dv = new LinkedHashSet<>();
@@ -114,14 +114,13 @@ public class NunesTools {
 		return tradoffs;
 	}
 
-	
 	/* Cutoff methods */
 
 	public boolean isSatisfied(Alternative alt, Constraint c) {
 		if (c.isFlagMin()) {
 			return alt.getEvaluations().get(c.getCriterion()) > c.getTreshold();
 		}
-		
+
 		return alt.getEvaluations().get(c.getCriterion()) < c.getTreshold();
 	}
 

@@ -1,20 +1,15 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
-import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
@@ -74,18 +69,18 @@ public class ArgumentGenerator {
 		Set<Alternative> bests = new LinkedHashSet<>();
 		double bestCurrentScore = 0.0;
 		double score;
-			
+
 		for (Alternative alt : alternatives) {
 			score = LabreucheTools.score(alt, getWeights());
 			if (score > bestCurrentScore) {
-					bests.clear();
-					bestCurrentScore = score;
-					bests.add(alt);
-				}
+				bests.clear();
+				bestCurrentScore = score;
+				bests.add(alt);
+			}
 
-				if (score == bestCurrentScore) {
-					bests.add(alt);
-				}
+			if (score == bestCurrentScore) {
+				bests.add(alt);
+			}
 		}
 
 		return bests;

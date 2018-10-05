@@ -29,10 +29,11 @@ public class NunesComputer {
 	private Table<Alternative, Alternative, Double> tradoffs;
 	private NunesOutput nunesOutput;
 	private Set<Alternative> alternatives;
-	private Set<Alternative> alternativesRejected; 
+	private Set<Alternative> alternativesRejected;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints, Set<Alternative> alternatives) {
+	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints,
+			Set<Alternative> alternatives) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
 		this.alternatives = requireNonNull(alternatives);
@@ -42,14 +43,14 @@ public class NunesComputer {
 		this.tradoffs = NunesTools.computeTO(alternatives, alternativesComparison.getPreferenceModel().getWeights());
 	}
 
-	public Set<Alternative> getAlternativesRejected(){
+	public Set<Alternative> getAlternativesRejected() {
 		return this.alternativesRejected;
 	}
-	
-	public Set<Alternative> getAlternatives(){
+
+	public Set<Alternative> getAlternatives() {
 		return this.alternatives;
 	}
-	
+
 	public Set<Constraint> getConstraints() {
 		return this.constraints;
 	}
@@ -135,7 +136,8 @@ public class NunesComputer {
 		int count = 0;
 		Criterion critical = null;
 
-		for (Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel().getDelta(alternativesComparison.getX(),alternativesComparison.getY()).entrySet()) {
+		for (Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel()
+				.getDelta(alternativesComparison.getX(), alternativesComparison.getY()).entrySet()) {
 			if (entry.getValue() > 0.0) {
 				count++;
 				critical = entry.getKey();
@@ -161,8 +163,7 @@ public class NunesComputer {
 	}
 
 	private boolean tryMINREQP() {
-		
-		
+
 		return false;
 	}
 

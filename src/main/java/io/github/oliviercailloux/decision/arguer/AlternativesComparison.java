@@ -4,9 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -15,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheTools;
-import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
@@ -50,7 +47,7 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 	public AlternativesComparison(Alternative x, Alternative y, M preferenceModel) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
-		this.preferenceModel= requireNonNull(preferenceModel);
+		this.preferenceModel = requireNonNull(preferenceModel);
 		checkArgument(x.getEvaluations().keySet().equals(y.getEvaluations().keySet()));
 		checkArgument(x.getEvaluations().keySet().size() >= 1);
 
@@ -102,6 +99,33 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 		Stream<Criterion> criteriaFilteredStream = allCriteriaStream.filter(predicate);
 
 		return criteriaFilteredStream.collect(ImmutableSet.toImmutableSet());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (obj == null)
+			return false;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		AlternativesComparison<?> other = (AlternativesComparison<?>) obj;
+
+		if (!other.getX().equals(x))
+			return false;
+
+		if (!other.getY().equals(y))
+			return false;
+
+		return other.getPreferenceModel().equals(preferenceModel);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash();
 	}
 
 }

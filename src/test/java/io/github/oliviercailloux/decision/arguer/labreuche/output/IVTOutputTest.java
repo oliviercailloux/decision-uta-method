@@ -34,7 +34,7 @@ class IVTOutputTest {
 		builder.setW(ImmutableList.of(0.54, 0.67));
 
 		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
-		
+
 		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 		Criterion c1 = critIt.next();
 		Criterion c2 = critIt.next();

@@ -3,6 +3,7 @@ package io.github.oliviercailloux.decision.arguer.labreuche.output;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -57,5 +58,31 @@ public class NOAOutput implements LabreucheOutput {
 	 */
 	public Set<Criterion> getPositiveNoaCriteria() {
 		return ImmutableSet.copyOf(Sets.intersection(noaCriteria, alternativesComparison.getPositiveCriteria()));
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (obj == null)
+			return false;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		NOAOutput other = (NOAOutput) obj;
+
+		assert other.getAnchor() == getAnchor();
+
+		if (!other.getAlternativesComparison().equals(alternativesComparison))
+			return false;
+
+		return other.getNoaCriteria().equals(noaCriteria);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(alternativesComparison, getAnchor(), noaCriteria);
 	}
 }

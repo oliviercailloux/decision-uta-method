@@ -24,14 +24,14 @@ public class Examples {
 		builder.setX(ImmutableList.of(0.54, 0.67, 0.89, 0.90));
 		builder.setY(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
-		
+
 		final AlternativesComparison altsComp = builder.build();
-		
+
 		Set<Alternative> set = new LinkedHashSet<>();
 		set.add(altsComp.getX());
 		set.add(altsComp.getY());
-		
-		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>(),set);
+
+		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>(), set);
 	}
 
 	public static NunesComputer getExampleDOMINATION() {
@@ -42,12 +42,12 @@ public class Examples {
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.89, 0.76));
 
 		final AlternativesComparison altsComp = builder.build();
-		
+
 		Set<Alternative> set = new LinkedHashSet<>();
 		set.add(altsComp.getX());
 		set.add(altsComp.getY());
-		
-		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>(),set);
+
+		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>(), set);
 	}
 
 	public static DominationOutput getExampleCRITICALOutput() {

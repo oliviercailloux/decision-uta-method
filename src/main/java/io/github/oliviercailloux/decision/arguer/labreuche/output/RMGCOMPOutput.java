@@ -3,6 +3,7 @@ package io.github.oliviercailloux.decision.arguer.labreuche.output;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
+import java.util.Objects;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
@@ -42,5 +43,27 @@ public class RMGCOMPOutput implements LabreucheOutput {
 		}
 
 		return maxW;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (obj == null)
+			return false;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		RMGCOMPOutput other = (RMGCOMPOutput) obj;
+
+		assert other.getAnchor() == getAnchor();
+		return other.getAlternativesComparison().equals(alternativesComparison);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(alternativesComparison, getAnchor());
 	}
 }

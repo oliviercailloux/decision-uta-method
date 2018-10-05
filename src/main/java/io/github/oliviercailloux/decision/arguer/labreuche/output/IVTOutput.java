@@ -3,6 +3,8 @@ package io.github.oliviercailloux.decision.arguer.labreuche.output;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
@@ -176,6 +178,32 @@ public class IVTOutput implements LabreucheOutput {
 
 	boolean isMuchSmaller(double w1, double w2) {
 		return w2 - w1 > alternativesComparison.getPreferenceModel().getEpsilon();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (obj == null)
+			return false;
+
+		if (getClass() != obj.getClass())
+			return false;
+
+		IVTOutput other = (IVTOutput) obj;
+
+		assert other.getAnchor() == getAnchor();
+
+		if (!other.getAlternativesComparison().equals(alternativesComparison))
+			return false;
+
+		return other.getRStar().equals(rStar);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(alternativesComparison, getAnchor(), rStar);
 	}
 
 }

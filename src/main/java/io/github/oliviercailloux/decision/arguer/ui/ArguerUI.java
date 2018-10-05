@@ -1,5 +1,6 @@
 package io.github.oliviercailloux.decision.arguer.ui;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -29,17 +30,22 @@ public class ArguerUI {
 
 	public void showNunesArgument(AlternativesComparison<NunesModel> altsComp, Set<Constraint> constraints) {
 		showHeader("Nunes");
-		
+
 		LabreucheModel lmTMP = new LabreucheModel(altsComp.getPreferenceModel().getWeights());
-		AlternativesComparison<LabreucheModel> laltcompTMP = new AlternativesComparison<>(altsComp.getX(), altsComp.getY(), lmTMP);
-		
+		AlternativesComparison<LabreucheModel> laltcompTMP = new AlternativesComparison<>(altsComp.getX(),
+				altsComp.getY(), lmTMP);
+
 		showCriteriaWeights(laltcompTMP);
 		showConstraints(constraints);
 		showAlternatives(laltcompTMP);
 		showAlternativesRanked(laltcompTMP, false);
 		showStartExplanation(laltcompTMP);
 
-		NunesComputer nc = new NunesComputer(altsComp, constraints);
+		Set<Alternative> set = new LinkedHashSet<>();
+		set.add(altsComp.getX());
+		set.add(altsComp.getY());
+
+		NunesComputer nc = new NunesComputer(altsComp, constraints, set);
 		NunesOutput no = nc.getExplanation();
 		NunesArguer arg = new NunesArguer();
 

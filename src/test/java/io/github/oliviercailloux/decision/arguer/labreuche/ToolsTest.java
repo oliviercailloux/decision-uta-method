@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +11,11 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
 
 public class ToolsTest {
 
@@ -34,13 +29,12 @@ public class ToolsTest {
 		builder.setW(ImmutableList.of(0.54, 0.67));
 
 		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
-		
+
 		List<List<Criterion>> setA = new ArrayList<>();
 		setA.add(toList(altsComp.getCriteria()));
 
 		List<List<Criterion>> setB = null;
 		List<List<Criterion>> emptySet = new ArrayList<>();
-
 
 		assertTrue(LabreucheTools.includeDiscri(setA, setB, altsComp.getPreferenceModel().getWeights(),
 				getDelta(altsComp)));
@@ -70,7 +64,7 @@ public class ToolsTest {
 		builder.setW(ImmutableList.of(0.54, 0.67, 0.54, 0.67, 0.54, 0.67));
 
 		final AlternativesComparison<LabreucheModel> altsComp = builder.build();
-		
+
 		Iterator<Criterion> critIt = altsComp.getCriteria().iterator();
 
 		Criterion c1 = critIt.next();

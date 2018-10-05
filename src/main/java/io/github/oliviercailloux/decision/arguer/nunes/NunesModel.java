@@ -12,11 +12,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.Couple;
 import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.Criterion;
 
-public class NunesModel implements Comparator<Alternative>{
+public class NunesModel implements Comparator<Alternative> {
 
 	private ImmutableMap<Criterion, Double> weights;
 	private Set<Constraint> constraints;
@@ -26,7 +25,7 @@ public class NunesModel implements Comparator<Alternative>{
 	 * @param weights
 	 *            not <code>null</code>, may be empty.
 	 * @param constraints
-	 * 			  not <code>null</code>, may be empty.
+	 *            not <code>null</code>, may be empty.
 	 */
 	public NunesModel(Map<Criterion, Double> weights, Set<Constraint> constraints) {
 		requireNonNull(weights);
@@ -34,12 +33,11 @@ public class NunesModel implements Comparator<Alternative>{
 		this.constraints = constraints;
 		this.comparingScores = Comparator.comparingDouble(null);
 	}
-	
-	public Set<Constraint> getConstraints(){
+
+	public Set<Constraint> getConstraints() {
 		return this.constraints;
 	}
-	
-	
+
 	public double getScore(Alternative a, Alternative b, Table<Alternative, Alternative, Double> tradeoffs) {
 		checkArgument(a.getEvaluations().keySet().equals(weights.keySet()));
 		return NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
@@ -51,7 +49,7 @@ public class NunesModel implements Comparator<Alternative>{
 	public ImmutableMap<Criterion, Double> getWeights() {
 		return this.weights;
 	}
-	
+
 	/**
 	 * @return a map containing, for each criterion, the difference in evaluation on
 	 *         that criterion: evaluation of x minus evaluation of y.
@@ -60,7 +58,8 @@ public class NunesModel implements Comparator<Alternative>{
 		checkArgument(x.getEvaluations().keySet().equals(weights.keySet()));
 		checkArgument(y.getEvaluations().keySet().equals(weights.keySet()));
 
-		return weights.keySet().stream().collect(toImmutableMap((c) -> c, (c) -> x.getEvaluations().get(c) - y.getEvaluations().get(c)));
+		return weights.keySet().stream()
+				.collect(toImmutableMap((c) -> c, (c) -> x.getEvaluations().get(c) - y.getEvaluations().get(c)));
 	}
 
 	@Override
@@ -68,11 +67,11 @@ public class NunesModel implements Comparator<Alternative>{
 		Set<Alternative> set = new LinkedHashSet<>();
 		set.add(a);
 		set.add(b);
-		Table<Alternative,Alternative,Double> tradeoffs = NunesTools.computeTO(set, weights);
-		
+		Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(set, weights);
+
 		double scoreA = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
 		double scoreB = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
-		
+
 		return comparingScores.compare(scoreB, scoreA);
 	}
 
