@@ -33,6 +33,22 @@ public class LabreucheModel implements Comparator<Alternative> {
 		}
 		return 0.2 / weights.size();
 	}
+	
+	public static double getEpsilonWDefaultValue(Map<Criterion, Double> weights) {
+		requireNonNull(weights);
+		if (weights.isEmpty()) {
+			return 0;
+		}
+		return 0.15 / weights.size();
+	} 
+	
+	public static double getEpsilonWPrimeDefaultValue(Map<Criterion, Double> weights) {
+		requireNonNull(weights);
+		if (weights.isEmpty()) {
+			return 0;
+		}
+		return 0.3 / weights.size();
+	} 
 
 	private ImmutableMap<Criterion, Double> weights;
 	private double epsilon;
@@ -67,7 +83,7 @@ public class LabreucheModel implements Comparator<Alternative> {
 	 *            not <code>null</code>, may be empty.
 	 */
 	public LabreucheModel(Map<Criterion, Double> weights) {
-		this(weights, getEpsilonDefaultValue(weights), EPSILON_W_DEFAULT_VALUE, EPSILON_W_PRIME_DEFAULT_VALUE);
+		this(weights, getEpsilonDefaultValue(weights), getEpsilonWDefaultValue(weights), getEpsilonWPrimeDefaultValue(weights));
 	}
 
 	/**
