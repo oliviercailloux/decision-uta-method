@@ -118,10 +118,11 @@ public class NunesTools {
 	/* Cutoff methods */
 
 	public boolean isSatisfied(Alternative alt, Constraint c) {
-		if (c.isFlagMin())
+		if (c.isFlagMin()) {
 			return alt.getEvaluations().get(c.getCriterion()) > c.getTreshold();
-		else
-			return alt.getEvaluations().get(c.getCriterion()) < c.getTreshold();
+		}
+		
+		return alt.getEvaluations().get(c.getCriterion()) < c.getTreshold();
 	}
 
 	public boolean lpv(Alternative alt, Constraint c) {

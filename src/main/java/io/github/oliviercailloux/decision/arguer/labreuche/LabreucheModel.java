@@ -34,9 +34,7 @@ public class LabreucheModel implements Comparator<Alternative> {
 
 	private ImmutableMap<Criterion, Double> weights;
 	private double epsilon;
-
 	private double epsilonW;
-
 	private double epsilonWPrime;
 
 	private final Comparator<Alternative> comparingScores;

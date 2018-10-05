@@ -28,20 +28,28 @@ public class NunesComputer {
 	private AlternativesComparison<NunesModel> alternativesComparison;
 	private Table<Alternative, Alternative, Double> tradoffs;
 	private NunesOutput nunesOutput;
+	private Set<Alternative> alternatives;
+	private Set<Alternative> alternativesRejected; 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
-	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints) {
+	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints, Set<Alternative> alternatives) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
+		this.alternatives = requireNonNull(alternatives);
 		this.nunesOutput = null;
+		this.alternativesRejected = new LinkedHashSet<>();
 
-		Set<Alternative> alts = new LinkedHashSet<>();
-		alts.add(alternativesComparison.getX());
-		alts.add(alternativesComparison.getY());
-
-		this.tradoffs = NunesTools.computeTO(alts, alternativesComparison.getPreferenceModel().getWeights());
+		this.tradoffs = NunesTools.computeTO(alternatives, alternativesComparison.getPreferenceModel().getWeights());
 	}
 
+	public Set<Alternative> getAlternativesRejected(){
+		return this.alternativesRejected;
+	}
+	
+	public Set<Alternative> getAlternatives(){
+		return this.alternatives;
+	}
+	
 	public Set<Constraint> getConstraints() {
 		return this.constraints;
 	}
@@ -153,7 +161,8 @@ public class NunesComputer {
 	}
 
 	private boolean tryMINREQP() {
-		// TODO
+		
+		
 		return false;
 	}
 
