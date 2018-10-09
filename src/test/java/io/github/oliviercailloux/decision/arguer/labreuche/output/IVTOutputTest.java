@@ -19,9 +19,9 @@ import com.google.common.graph.MutableGraph;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
-import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
+import io.github.oliviercailloux.decision.model.ProblemGenerator;
 
 class IVTOutputTest {
 
@@ -57,11 +57,11 @@ class IVTOutputTest {
 
 	public AlternativesComparison<LabreucheModel> newAlternativesComparison() {
 		ProblemGenerator gen = new ProblemGenerator();
-		gen.generateCriteria(2, 0, 10, 2);
+		gen.generateCriteria(2);
 		gen.generateAlternatives(2);
-		List<Alternative> alternatives = gen.getAlternatives();
-		Alternative x = alternatives.get(0);
-		Alternative y = alternatives.get(1);
+		List<EvaluatedAlternative> alternatives = gen.getAlternatives();
+		EvaluatedAlternative x = alternatives.get(0);
+		EvaluatedAlternative y = alternatives.get(1);
 		List<Criterion> criteria = gen.getCriteria();
 		ImmutableMap<Criterion, Double> weights = genEqualWeights(criteria);
 		LabreucheModel lm = new LabreucheModel(weights);

@@ -2,13 +2,14 @@ package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.nunes.Constraint;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 
 public class CutOffOutput implements NunesOutput {
 
 	private Constraint constraint;
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<NunesModel> alternativesComparison;
 
-	public CutOffOutput(AlternativesComparison alternativesComparison, Constraint c) {
+	public CutOffOutput(AlternativesComparison<NunesModel> alternativesComparison, Constraint c) {
 		this.constraint = c;
 		this.alternativesComparison = alternativesComparison;
 	}
@@ -19,7 +20,7 @@ public class CutOffOutput implements NunesOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<NunesModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 

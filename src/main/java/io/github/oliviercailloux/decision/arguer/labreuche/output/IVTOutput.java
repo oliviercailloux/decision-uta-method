@@ -16,7 +16,7 @@ import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 /**
  * Immutable.

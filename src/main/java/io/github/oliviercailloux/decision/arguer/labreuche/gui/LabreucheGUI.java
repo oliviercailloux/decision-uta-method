@@ -30,8 +30,8 @@ import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheArguer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class LabreucheGUI {
 
@@ -255,7 +255,7 @@ public class LabreucheGUI {
 
 				display.append("\n \n    Alternatives : ");
 
-				for (Alternative a : ag.getAlternatives()) {
+				for (EvaluatedAlternative a : ag.getAlternatives()) {
 					display.append(
 							"\n" + "	" + a.getName() + " " + " : " + Utils.showVector(a.getEvaluations().values()));
 				}
@@ -273,8 +273,8 @@ public class LabreucheGUI {
 
 				p.add(text);
 
-				Alternative best = null;
-				Alternative second = null;
+				EvaluatedAlternative best = null;
+				EvaluatedAlternative second = null;
 
 				try {
 					best = ag.findUniqueBest();
@@ -284,14 +284,14 @@ public class LabreucheGUI {
 					bld.append(" BUG : " + e3.getMessage());
 					LOGGER.debug(bld.toString());
 
-					Iterator<Alternative> itr = ag.findBest().iterator();
+					Iterator<EvaluatedAlternative> itr = ag.findBest().iterator();
 
 					best = itr.next();
 					second = itr.next();
 				}
 
 				if (second == null) {
-					Set<Alternative> copy = new HashSet<>(ag.getAlternatives());
+					Set<EvaluatedAlternative> copy = new HashSet<>(ag.getAlternatives());
 					copy.remove(best);
 
 					ag.setAlternatives(copy);
@@ -304,7 +304,7 @@ public class LabreucheGUI {
 						bld.append(" BUG : " + e4.getMessage());
 						LOGGER.debug(bld.toString());
 
-						Iterator<Alternative> itr = ag.findBest().iterator();
+						Iterator<EvaluatedAlternative> itr = ag.findBest().iterator();
 
 						second = itr.next();
 					}

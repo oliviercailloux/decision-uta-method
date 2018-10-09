@@ -19,14 +19,14 @@ public class UTASTAR {
 	}
 
 	// Attibutes
-	private List<Criterion> criteria;
-	private List<Alternative> alternatives;// this list should be sorted by the preference of the DM
+	private List<CriterionWithScale> criteria;
+	private List<UTAAlternative> alternatives;// this list should be sorted by the preference of the DM
 	public static final double SIGMA = 0.05;
 	private boolean print;
-	private Map<Alternative, Map<String, Double>> alternativesMarginalValues;
+	private Map<UTAAlternative, Map<String, Double>> alternativesMarginalValues;
 
 	// Constructor
-	public UTASTAR(List<Criterion> criteria, List<Alternative> alternatives) {
+	public UTASTAR(List<CriterionWithScale> criteria, List<UTAAlternative> alternatives) {
 		this.criteria = criteria;
 		this.alternatives = alternatives;
 		alternativesMarginalValues = new HashMap<>();
@@ -34,11 +34,11 @@ public class UTASTAR {
 	}
 
 	// Getters
-	public List<Criterion> getCriteria() {
+	public List<CriterionWithScale> getCriteria() {
 		return criteria;
 	}
 
-	public List<Alternative> getAlternatives() {
+	public List<UTAAlternative> getAlternatives() {
 		return alternatives;
 	}
 
@@ -55,15 +55,15 @@ public class UTASTAR {
 
 		long start = System.currentTimeMillis();
 		String printStr = "Scale of criterias";
-		for (Criterion criterion : criteria) {
+		for (CriterionWithScale criterion : criteria) {
 			printStr += "\n" + "	" + criterion.getName() + " --> " + criterion.getScale();
 		}
 
 		printStr += "\n \n Expressing the global value of the alternatives in terms of variables wij";
-		for (Alternative alternative : alternatives) {
+		for (UTAAlternative alternative : alternatives) {
 			Map<String, Double> marginalValues = new HashMap<>();
 			for (int i = 0; i < criteria.size(); i++) {
-				Criterion criterion = criteria.get(i);
+				CriterionWithScale criterion = criteria.get(i);
 				for (Entry<String, Double> e : getPartialMarginalValue(criterion,
 						alternative.getEvaluations().get(criterion).intValue(), (i + 1)).entrySet()) {
 					String val = e.getKey();
@@ -87,7 +87,7 @@ public class UTASTAR {
 
 		double infinity = MPSolver.infinity();
 		Map<String, MPVariable> errors = new HashMap<>();
-		for (Alternative alternative : alternatives) {
+		for (UTAAlternative alternative : alternatives) {
 			errors.put("e" + alternative.getName() + "POS",
 					solver.makeNumVar(0.0, infinity, "e" + alternative.getName() + "POS"));
 			errors.put("e" + alternative.getName() + "NEG",
@@ -115,7 +115,7 @@ public class UTASTAR {
 		for (int i = 0; i < alternatives.size() - 1; i++) {
 
 			boolean equal = false;
-			Alternative a1 = alternatives.get(i);
+			UTAAlternative a1 = alternatives.get(i);
 			if (a1.getName().equals("METRO1")) {
 				equal = true;
 			}
@@ -126,7 +126,7 @@ public class UTASTAR {
 			} else {
 				constraint = solver.makeConstraint(SIGMA, infinity);
 			}
-			Alternative a2 = alternatives.get(i + 1);
+			UTAAlternative a2 = alternatives.get(i + 1);
 			for (Entry<String, Double> e1 : alternativesMarginalValues.get(a1).entrySet()) {
 				boolean found = false;
 				for (Entry<String, Double> e2 : alternativesMarginalValues.get(a2).entrySet()) {
@@ -217,7 +217,7 @@ public class UTASTAR {
 		return valueFunction;
 	}
 
-	public Map<String, Double> getPartialMarginalValue(Criterion criterion, int value, int criteriaId) {
+	public Map<String, Double> getPartialMarginalValue(CriterionWithScale criterion, int value, int criteriaId) {
 		List<Double> scale = criterion.getScale();
 		Collections.sort(scale);
 		Map<String, Double> result = new HashMap<>();

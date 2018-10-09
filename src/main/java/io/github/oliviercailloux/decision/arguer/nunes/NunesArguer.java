@@ -39,7 +39,7 @@ public class NunesArguer {
 
 	private String argueDomination(DominationOutput output) {
 
-		AlternativesComparison alcoDOM = output.getAlternativesComparison();
+		AlternativesComparison<NunesModel> alcoDOM = output.getAlternativesComparison();
 
 		if (output.getCritical() != null) {
 			return alcoDOM.getX().getName() + " is recommended because it got the best value on "
@@ -52,7 +52,7 @@ public class NunesArguer {
 
 	private String argueCutOff(CutOffOutput output) {
 
-		AlternativesComparison alcoCutoff = output.getAlternativesComparison();
+		AlternativesComparison<NunesModel> alcoCutoff = output.getAlternativesComparison();
 
 		return alcoCutoff.getX().getName() + " is rejected because she doesn't satisfied the constrain on the criteria "
 				+ output.getConstraint().getCriterion().getName();
@@ -60,14 +60,14 @@ public class NunesArguer {
 
 	private String argueDecisive(DecisiveOutput output) {
 
-		AlternativesComparison alco = output.getAlternativesComparison();
+		AlternativesComparison<NunesModel> alco = output.getAlternativesComparison();
 
 		return alco.getX() + "was chosen because of its " + Utils.showCriteria(alco.getCriteria());
 	}
 
 	private String argueTradeOff(TradeOffOutput output) {
 
-		AlternativesComparison alco = output.getAlternativesComparison();
+		AlternativesComparison<NunesModel> alco = output.getAlternativesComparison();
 
 		return "Even though " + alco.getY() + " rovides better pros than " + alco.getX() + " on "
 				+ Utils.showCriteria(alco.getPositiveCriteria()) + ", it has worse cons on "

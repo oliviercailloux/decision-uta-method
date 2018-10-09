@@ -1,12 +1,13 @@
 package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 
 public class TradeOffOutput implements NunesOutput {
 
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<NunesModel> alternativesComparison;
 
-	public TradeOffOutput(AlternativesComparison alternativesComparison) {
+	public TradeOffOutput(AlternativesComparison<NunesModel> alternativesComparison) {
 		this.alternativesComparison = alternativesComparison;
 	}
 
@@ -16,7 +17,7 @@ public class TradeOffOutput implements NunesOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<NunesModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 

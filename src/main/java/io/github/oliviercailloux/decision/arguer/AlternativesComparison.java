@@ -9,13 +9,10 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableSet;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 /**
  * Immutable.
@@ -23,12 +20,11 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  * @param M
  *            the kind of preference model used in this comparison.
  */
-public class AlternativesComparison<M extends Comparator<Alternative>> {
+public class AlternativesComparison<M extends Comparator<EvaluatedAlternative>> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AlternativesComparison.class);
 	private M preferenceModel;
-	private Alternative x;
-	private Alternative y;
+	private EvaluatedAlternative x;
+	private EvaluatedAlternative y;
 
 	/**
 	 * <code>x</code> must be strictly better than <code>y</code> according to the
@@ -44,22 +40,20 @@ public class AlternativesComparison<M extends Comparator<Alternative>> {
 	 * @param preferenceModel
 	 *            must be immutable (no defensive copy is done).
 	 */
-	public AlternativesComparison(Alternative x, Alternative y, M preferenceModel) {
+	public AlternativesComparison(EvaluatedAlternative x, EvaluatedAlternative y, M preferenceModel) {
 		this.x = requireNonNull(x);
 		this.y = requireNonNull(y);
 		this.preferenceModel = requireNonNull(preferenceModel);
 		checkArgument(x.getEvaluations().keySet().equals(y.getEvaluations().keySet()));
 		checkArgument(x.getEvaluations().keySet().size() >= 1);
-
-		LOGGER.debug("Checking is X better than Y");
 		checkArgument(preferenceModel.compare(x, y) > 0);
 	}
 
-	public Alternative getX() {
+	public EvaluatedAlternative getX() {
 		return this.x;
 	}
 
-	public Alternative getY() {
+	public EvaluatedAlternative getY() {
 		return this.y;
 	}
 

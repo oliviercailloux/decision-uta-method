@@ -26,7 +26,7 @@ public class ValueFunction {
 	}
 
 	// Methods
-	public PartialValueFunction getPartialValueFunction(Criterion criterion) {
+	public PartialValueFunction getPartialValueFunction(CriterionWithScale criterion) {
 		for (PartialValueFunction pvf : partialValueFunctions) {
 			if (pvf.getCriterion() == criterion) {
 				return pvf;
@@ -35,9 +35,9 @@ public class ValueFunction {
 		throw new IllegalArgumentException();
 	}
 
-	public double getValue(Alternative alternative) {
+	public double getValue(UTAAlternative alternative) {
 		double value = 0.0;
-		for (Map.Entry<Criterion, Double> entry : alternative.getEvaluations().entrySet()) {
+		for (Map.Entry<CriterionWithScale, Double> entry : alternative.getEvaluations().entrySet()) {
 			PartialValueFunction pvf = getPartialValueFunction(entry.getKey());
 			double newValue = pvf.getPartialValue(entry.getValue());
 			value += newValue;

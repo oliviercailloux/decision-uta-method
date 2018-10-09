@@ -8,11 +8,11 @@ import io.github.oliviercailloux.uta_calculator.utils.NumbersGenerator;
 public class ValueFunctionGenerator {
 
 	// Attributes
-	private List<Criterion> criteria;
+	private List<CriterionWithScale> criteria;
 	private List<PartialValueFunction> partialValueFunctions;
 
 	// Constructors
-	public ValueFunctionGenerator(List<Criterion> criteria) {
+	public ValueFunctionGenerator(List<CriterionWithScale> criteria) {
 		this.criteria = criteria;
 		partialValueFunctions = new ArrayList<>();
 	}
@@ -31,7 +31,7 @@ public class ValueFunctionGenerator {
 		NumbersGenerator generateNumbers = new NumbersGenerator();
 		List<Double> randomWeights = generateNumbers.generate(criteria.size(), 1.0);
 		int j = 0;
-		for (Criterion criterion : criteria) {
+		for (CriterionWithScale criterion : criteria) {
 			int numberCuts = criterion.getScale().size();
 			double criterionWeight = randomWeights.get(j);
 			List<Point> intervals = new ArrayList<>();

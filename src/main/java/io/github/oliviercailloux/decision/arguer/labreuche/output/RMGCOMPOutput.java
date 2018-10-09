@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class RMGCOMPOutput implements LabreucheOutput {
 

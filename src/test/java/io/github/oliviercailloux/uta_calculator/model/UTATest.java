@@ -14,8 +14,8 @@ public class UTATest {
 	public void utaLearningFromExamplesShouldReproduceThoseExample() {
 
 		MainBuyingNewCar buyingNewCarExercice = new MainBuyingNewCar();
-		List<Alternative> correctAlternatives = buyingNewCarExercice.getMainAlternatives();
-		List<Alternative> utaAlternatives = buyingNewCarExercice.getAlternativeSorted();
+		List<UTAAlternative> correctAlternatives = buyingNewCarExercice.getMainAlternatives();
+		List<UTAAlternative> utaAlternatives = buyingNewCarExercice.getAlternativeSorted();
 
 		// "Does the buying new car work fines ?"
 		assertEquals(correctAlternatives, utaAlternatives);

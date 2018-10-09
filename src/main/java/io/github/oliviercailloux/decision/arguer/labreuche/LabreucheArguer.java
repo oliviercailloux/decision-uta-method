@@ -14,7 +14,7 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class LabreucheArguer {
 
@@ -137,7 +137,7 @@ public class LabreucheArguer {
 		double maxW = output.getMaxW();
 		double epsilonPrime = output.getAlternativesComparison().getPreferenceModel().getEpsilonWPrime();
 		double epsilon = output.getAlternativesComparison().getPreferenceModel().getEpsilonW();
-		
+
 		if (maxW > epsilon && maxW <= epsilonPrime) {
 			bld.append(alcoRMGCOMP.getX().getName() + " is preferred to " + alcoRMGCOMP.getY().getName()
 					+ " since the intensity of the preference " + alcoRMGCOMP.getX().getName() + " over "

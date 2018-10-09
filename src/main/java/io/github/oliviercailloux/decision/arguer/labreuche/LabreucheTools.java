@@ -20,8 +20,8 @@ import com.google.common.graph.Graphs;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class LabreucheTools {
 
@@ -32,19 +32,32 @@ public class LabreucheTools {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheTools.class);
 
 	/**
-	 * @param x
+	 * @param evaluatedAlternative
 	 * @param preferenceModel
 	 * @return the score of the alternative x.
 	 */
-	public static double score(Alternative x, Map<Criterion, Double> weights) {
+	public static double score(EvaluatedAlternative evaluatedAlternative, Map<Criterion, Double> map) {
 		double score = 0.0;
 
 		// Sum w_i * x_i
-		for (Entry<Criterion, Double> c : weights.entrySet()) {
-			score += weights.get(c.getKey()) * x.getEvaluations().get(c.getKey());
+		for (Entry<Criterion, Double> c : map.entrySet()) {
+			score += map.get(c.getKey())
+					* valueFunction(c.getKey(), evaluatedAlternative.getEvaluations().get(c.getKey()));
 		}
 
 		return score;
+	}
+
+	/***
+	 * For now this is an identity function
+	 * 
+	 * @param alternativePerformance
+	 * @return the satisfaction degree on the criterion c of the alternative calling
+	 *         this method.
+	 */
+	public static double valueFunction(@SuppressWarnings("unused") Criterion criterion, double alternativePerformance) {
+
+		return alternativePerformance;
 	}
 
 	/* * * * * * * * * * * * Methods used by NOA anchor * * * * * * */
@@ -272,29 +285,29 @@ public class LabreucheTools {
 	/* * * * * * * * * * * * Methods used by IVT anchors * * * * * * * * */
 
 	/**
-	 * @param lists
-	 * @param l
+	 * @param c2
+	 * @param currentPerm
 	 * @return true if the intersection of lists and l is empty, and false otherwise
 	 */
-	static boolean isCapEmpty(List<List<Criterion>> lists, List<Criterion> l) {
-		if (lists.isEmpty()) {
+	static boolean isCapEmpty(List<List<Criterion>> c2, List<Criterion> currentPerm) {
+		if (c2.isEmpty()) {
 			return true;
 		}
 
-		if (l.isEmpty()) {
+		if (currentPerm.isEmpty()) {
 			return true;
 		}
 
 		List<Criterion> unionL = new ArrayList<>();
 
-		for (List<Criterion> list : lists) {
+		for (List<Criterion> list : c2) {
 			for (Criterion c : list) {
 				if (!unionL.contains(c))
 					unionL.add(c);
 			}
 		}
 
-		for (Criterion c : l) {
+		for (Criterion c : currentPerm) {
 			if (unionL.contains(c))
 				return false;
 		}

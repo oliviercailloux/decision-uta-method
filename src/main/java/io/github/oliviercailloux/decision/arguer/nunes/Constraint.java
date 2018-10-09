@@ -2,7 +2,7 @@ package io.github.oliviercailloux.decision.arguer.nunes;
 
 import java.util.Objects;
 
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class Constraint {
 

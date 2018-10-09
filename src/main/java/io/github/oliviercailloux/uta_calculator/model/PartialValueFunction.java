@@ -9,26 +9,26 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 public class PartialValueFunction {
 
 	// Attributes
-	private Criterion criterion;
+	private CriterionWithScale criterion;
 	private List<Point> intervals;
 
 	// Constructors
-	public PartialValueFunction(Criterion criterion) {
+	public PartialValueFunction(CriterionWithScale criterion) {
 		this.criterion = criterion;
 		intervals = new ArrayList<>();
 	}
 
-	public PartialValueFunction(Criterion criterion, List<Point> intervals) {
+	public PartialValueFunction(CriterionWithScale criterion, List<Point> intervals) {
 		this.criterion = criterion;
 		this.intervals = intervals;
 	}
 
 	// Getters and Setters
-	public Criterion getCriterion() {
+	public CriterionWithScale getCriterion() {
 		return criterion;
 	}
 
-	public void setCriterion(Criterion criterion) {
+	public void setCriterion(CriterionWithScale criterion) {
 		this.criterion = criterion;
 	}
 

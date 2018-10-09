@@ -1,7 +1,6 @@
 package io.github.oliviercailloux.decision.arguer.labreuche;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -14,9 +13,8 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
-import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class LabreucheComputerTest {
 
@@ -78,7 +76,7 @@ public class LabreucheComputerTest {
 
 		LabreucheComputer lm = Examples.getExample18();
 		RMGCOMPOutput avgExpected = Examples.getExample18Output();
-		
+
 		assertEquals(avgExpected, lm.getRMGCOMPExplanation());
 	}
 
@@ -126,7 +124,7 @@ public class LabreucheComputerTest {
 		assertEquals(permutationExpected, lm.getIVTPermutations());
 	}
 
-	//@Test
+	// @Test
 	public void testExample10Permutation() {
 		LOGGER.info("Example 10 test");
 

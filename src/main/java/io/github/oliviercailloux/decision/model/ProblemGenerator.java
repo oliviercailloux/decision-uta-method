@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.uta_calculator.model;
+package io.github.oliviercailloux.decision.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import io.github.oliviercailloux.uta_calculator.utils.ScaleGenerator;
-
 public class ProblemGenerator {
 
 	// Attributes
 	private Random random;
-	private List<CriterionWithScale> criteria;
-	private List<UTAAlternative> alternatives;
+	private List<Criterion> criteria;
+	private List<EvaluatedAlternative> alternatives;
 
 	// Constructors
-	public ProblemGenerator(List<CriterionWithScale> criteria, List<UTAAlternative> alternatives) {
+	public ProblemGenerator(List<Criterion> criteria, List<EvaluatedAlternative> alternatives) {
 		this.criteria = criteria;
 		this.alternatives = alternatives;
 		random = new Random();
@@ -37,29 +35,27 @@ public class ProblemGenerator {
 		this.random = random;
 	}
 
-	public List<CriterionWithScale> getCriteria() {
+	public List<Criterion> getCriteria() {
 		return criteria;
 	}
 
-	public void setCriteria(List<CriterionWithScale> criteria) {
+	public void setCriteria(List<Criterion> criteria) {
 		this.criteria = criteria;
 	}
 
-	public List<UTAAlternative> getAlternatives() {
+	public List<EvaluatedAlternative> getAlternatives() {
 		return alternatives;
 	}
 
-	public void setAlternatives(List<UTAAlternative> alternatives) {
+	public void setAlternatives(List<EvaluatedAlternative> alternatives) {
 		this.alternatives = alternatives;
 	}
 
 	// Methods
-	public void generateCriteria(int number, double minValue, double maxValue, int cuts) {
-		ScaleGenerator scaleGenerator = new ScaleGenerator();
+	public void generateCriteria(int number) {
 		for (int i = 0; i < number; i++) {
 			int id = i + 1;
-			CriterionWithScale criterion = new CriterionWithScale(id, "c" + id,
-					scaleGenerator.generate(minValue, maxValue, cuts));
+			Criterion criterion = new Criterion(id, "c" + id);
 			criteria.add(criterion);
 		}
 	}
@@ -67,13 +63,12 @@ public class ProblemGenerator {
 	public void generateAlternatives(int number) {
 		for (int i = 0; i < number; i++) {
 			int id = i + 1;
-			Map<CriterionWithScale, Double> evaluations = new HashMap<>();
-			for (CriterionWithScale criterion : criteria) {
-				double randomValue = criterion.getMinValue()
-						+ (criterion.getMaxValue() - criterion.getMinValue()) * random.nextDouble();
+			Map<Criterion, Double> evaluations = new HashMap<>();
+			for (Criterion criterion : criteria) {
+				double randomValue = random.nextDouble();
 				evaluations.put(criterion, randomValue);
 			}
-			UTAAlternative alternative = new UTAAlternative(id, "a" + id, evaluations);
+			EvaluatedAlternative alternative = new EvaluatedAlternative(id, "a" + id, evaluations);
 			alternatives.add(alternative);
 		}
 	}
@@ -84,11 +79,11 @@ public class ProblemGenerator {
 		result += "Criteria : \n";
 
 		for (int i = 0; i < criteria.size(); i++) {
-			result += criteria.get(i).getName() + " --> " + criteria.get(i).getScale() + " \n";
+			result += criteria.get(i).getName() + " \n";
 		}
 
 		result += "\nAlternatives : \n";
-		for (UTAAlternative alternative : alternatives) {
+		for (EvaluatedAlternative alternative : alternatives) {
 			result += alternative.getName() + " --> ";
 			for (int i = 0; i < criteria.size(); i++) {
 				result += alternative.getEvaluations().get(criteria.get(i)) + " ";

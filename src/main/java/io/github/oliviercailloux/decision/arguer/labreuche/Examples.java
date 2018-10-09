@@ -15,16 +15,14 @@ import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreuche
 import io.github.oliviercailloux.decision.arguer.labreuche.output.ALLOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.IVTOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
-import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 /**
  * In the examples X and Y are invert from the paper of Labreuche (2011).
  */
 public class Examples {
 
-	
 	private Examples() {
 		throw new IllegalStateException("Examples Class");
 	}
@@ -160,7 +158,7 @@ public class Examples {
 		LabreucheComputer lm = getExample5();
 
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
-		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));
+		resultShouldBe.add(new Criterion(2, "c2"));
 
 		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
@@ -169,10 +167,10 @@ public class Examples {
 		LabreucheComputer lm = getExample6();
 
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
-		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));
-		resultShouldBe.add(new Criterion(3, "c3", new ArrayList<Double>()));
-		resultShouldBe.add(new Criterion(4, "c4", new ArrayList<Double>()));
-		resultShouldBe.add(new Criterion(5, "c5", new ArrayList<Double>()));
+		resultShouldBe.add(new Criterion(2, "c2"));
+		resultShouldBe.add(new Criterion(3, "c3"));
+		resultShouldBe.add(new Criterion(4, "c4"));
+		resultShouldBe.add(new Criterion(5, "c5"));
 
 		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
@@ -180,9 +178,9 @@ public class Examples {
 	public static IVTOutput getExample9Output() {
 		LabreucheComputer lm = getExample9();
 
-		Criterion c1 = new Criterion(1, "c1", new ArrayList<Double>());
-		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
-		Criterion c5 = new Criterion(5, "c5", new ArrayList<Double>());
+		Criterion c1 = new Criterion(1, "c1");
+		Criterion c3 = new Criterion(3, "c3");
+		Criterion c5 = new Criterion(5, "c5");
 
 		MutableGraph<Criterion> graphShouldBe = GraphBuilder.directed().build();
 
@@ -199,11 +197,11 @@ public class Examples {
 		List<Criterion> perm1 = new ArrayList<>();
 		List<Criterion> perm2 = new ArrayList<>();
 
-		Criterion c6 = new Criterion(6, "c6", new ArrayList<Double>());
-		Criterion c8 = new Criterion(8, "c8", new ArrayList<Double>());
+		Criterion c6 = new Criterion(6, "c6");
+		Criterion c8 = new Criterion(8, "c8");
 
-		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
-		Criterion c9 = new Criterion(9, "c9", new ArrayList<Double>());
+		Criterion c3 = new Criterion(3, "c3");
+		Criterion c9 = new Criterion(9, "c9");
 
 		perm1.add(c6);
 		perm1.add(c8);
@@ -220,8 +218,8 @@ public class Examples {
 		LabreucheComputer lm = getExample13();
 
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
-		resultShouldBe.add(new Criterion(1, "c1", new ArrayList<Double>()));
-		resultShouldBe.add(new Criterion(5, "c5", new ArrayList<Double>()));
+		resultShouldBe.add(new Criterion(1, "c1"));
+		resultShouldBe.add(new Criterion(5, "c5"));
 
 		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
@@ -230,8 +228,8 @@ public class Examples {
 		LabreucheComputer lm = getExample14();
 
 		Builder<Criterion> resultShouldBe = new ImmutableSet.Builder<>();
-		resultShouldBe.add(new Criterion(2, "c2", new ArrayList<Double>()));
-		resultShouldBe.add(new Criterion(4, "c4", new ArrayList<Double>()));
+		resultShouldBe.add(new Criterion(2, "c2"));
+		resultShouldBe.add(new Criterion(4, "c4"));
 
 		return new NOAOutput(lm.getAlternativesComparison(), resultShouldBe.build());
 	}
@@ -242,8 +240,8 @@ public class Examples {
 
 		List<Criterion> perm1 = new ArrayList<>();
 
-		Criterion c4 = new Criterion(4, "c4", new ArrayList<Double>());
-		Criterion c6 = new Criterion(6, "c6", new ArrayList<Double>());
+		Criterion c4 = new Criterion(4, "c4");
+		Criterion c6 = new Criterion(6, "c6");
 
 		perm1.add(c4);
 		perm1.add(c6);
@@ -259,11 +257,11 @@ public class Examples {
 		List<Criterion> perm1 = new ArrayList<>();
 		List<Criterion> perm2 = new ArrayList<>();
 
-		Criterion c1 = new Criterion(1, "c1", new ArrayList<Double>());
-		Criterion c7 = new Criterion(7, "c7", new ArrayList<Double>());
+		Criterion c1 = new Criterion(1, "c1");
+		Criterion c7 = new Criterion(7, "c7");
 
-		Criterion c3 = new Criterion(3, "c3", new ArrayList<Double>());
-		Criterion c4 = new Criterion(4, "c4", new ArrayList<Double>());
+		Criterion c3 = new Criterion(3, "c3");
+		Criterion c4 = new Criterion(4, "c4");
 
 		perm1.add(c1);
 		perm1.add(c7);
@@ -283,9 +281,8 @@ public class Examples {
 	}
 
 	/***
-	 * The example 18 return an RMGCOMPOutput because
-	 * v = 1/7 - 0.12 =~ 0.22 and epsilon_w = 0,15/7 =~ 0,021
-	 * there is a mistake in Labreuche paper (2011)
+	 * The example 18 return an RMGCOMPOutput because v = 1/7 - 0.12 =~ 0.22 and
+	 * epsilon_w = 0,15/7 =~ 0,021 there is a mistake in Labreuche paper (2011)
 	 **/
 	public static RMGCOMPOutput getExample18Output() {
 		LabreucheComputer lm = getExample18();

@@ -3,19 +3,20 @@ package io.github.oliviercailloux.decision.arguer.nunes.output;
 import static java.util.Objects.requireNonNull;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class DominationOutput implements NunesOutput {
 
-	private AlternativesComparison alternativesComparison;
+	private AlternativesComparison<NunesModel> alternativesComparison;
 	private Criterion critical;
 
-	public DominationOutput(AlternativesComparison alternativesComparison) {
+	public DominationOutput(AlternativesComparison<NunesModel> alternativesComparison) {
 		this.alternativesComparison = alternativesComparison;
 		this.critical = null;
 	}
 
-	public DominationOutput(AlternativesComparison alternativesComparison, Criterion critical) {
+	public DominationOutput(AlternativesComparison<NunesModel> alternativesComparison, Criterion critical) {
 		this.alternativesComparison = alternativesComparison;
 		this.critical = requireNonNull(critical);
 	}
@@ -42,7 +43,7 @@ public class DominationOutput implements NunesOutput {
 	}
 
 	@Override
-	public AlternativesComparison getAlternativesComparison() {
+	public AlternativesComparison<NunesModel> getAlternativesComparison() {
 		return this.alternativesComparison;
 	}
 

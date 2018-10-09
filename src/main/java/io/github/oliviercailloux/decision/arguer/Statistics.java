@@ -21,19 +21,20 @@ import io.github.oliviercailloux.decision.arguer.labreuche.ArgumentGenerator;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.Anchor;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
-public class Experimentations {
+public class Statistics {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Experimentations.class);
-	private static int nbAlt = 50;
-	private static int nbCrit = 3;
+	private static final Logger LOGGER = LoggerFactory.getLogger(Statistics.class);
+	private static int nbAlt = 200;
+	private static int stepCriteria = 2;
+	private static int stepAlternatives = 10;
+	private static int nbCrit = 2;
 	private static int maxSim = 1000;
 
 	public static void main(String[] args) {
 
-		Map<Integer, Map<Integer, List<Integer>>> generalStatsLabreucheAnchor = new LinkedHashMap<>();
 		Map<Integer, Map<Integer, List<Integer>>> generalStatsALL = new LinkedHashMap<>();
 		Map<Integer, Map<Integer, List<Integer>>> generalStatsNOA = new LinkedHashMap<>();
 		Map<Integer, Map<Integer, List<Integer>>> generalStatsIVT = new LinkedHashMap<>();
@@ -42,11 +43,13 @@ public class Experimentations {
 
 		Map<Integer, Map<Integer, List<Integer>>> generalStatsSameResult = new LinkedHashMap<>();
 
-		// Map<Integer,Map<Integer,List<Integer>>> generalStatNunesPattern
+		// Map<Integer, Map<Integer, List<Integer>>> generalStatsLabreucheAnchor = new
+		// LinkedHashMap<>();
+		// Map<Integer, Map<Integer, List<Integer>>> generalStatNunesPattern = new
+		// LinkedHashMap<>();
 
-		for (int c = 3; c <= nbCrit; c += 2) {
+		for (int c = 2; c <= nbCrit; c += stepCriteria) {
 
-			Map<Integer, List<Integer>> globalStatLabreucheAnchor = new LinkedHashMap<>();
 			Map<Integer, List<Integer>> globalStatALL = new LinkedHashMap<>();
 			Map<Integer, List<Integer>> globalStatNOA = new LinkedHashMap<>();
 			Map<Integer, List<Integer>> globalStatIVT = new LinkedHashMap<>();
@@ -55,12 +58,15 @@ public class Experimentations {
 
 			Map<Integer, List<Integer>> globalStatSameResult = new LinkedHashMap<>();
 
-			// Map<Integer,List<Integer>> globalStatNunesPattern= new LinkedHashMap<>();
+			// Map<Integer, List<Integer>> globalStatLabreucheAnchor = new
+			// LinkedHashMap<>();
+			// Map<Integer, List<Integer>> globalStatNunesPattern = new LinkedHashMap<>();
 
-			for (int i = 2; i <= nbAlt; i += 2) {
+			for (int i = 10; i <= nbAlt; i += stepAlternatives) {
 
-				List<Integer> statsLabreucheAnchor = new ArrayList<>();
+				// List<Integer> statsLabreucheAnchor = new ArrayList<>();
 				// List<Integer> statsNunesPattern = new ArrayList<>();
+
 				List<Integer> statsSameResult = new ArrayList<>();
 
 				List<Integer> statsALL = new ArrayList<>();
@@ -71,8 +77,8 @@ public class Experimentations {
 
 				for (int j = 0; j < maxSim; j++) {
 					ArgumentGenerator ag = new ArgumentGenerator(i, nbCrit);
-					Alternative bestL;
-					Alternative bestN;
+					EvaluatedAlternative bestL;
+					EvaluatedAlternative bestN;
 
 					try {
 						bestL = ag.findUniqueBest();
@@ -82,7 +88,7 @@ public class Experimentations {
 						bld.append(" BUG : " + e3.getMessage());
 						LOGGER.debug(bld.toString());
 
-						Iterator<Alternative> itr = ag.findBest().iterator();
+						Iterator<EvaluatedAlternative> itr = ag.findBest().iterator();
 
 						bestL = itr.next();
 					}
@@ -94,7 +100,8 @@ public class Experimentations {
 						bld.append(" BUG : " + e3.getMessage());
 						LOGGER.debug(bld.toString());
 
-						Iterator<Alternative> itr = bestsNunes(ag.getAlternatives(), ag.getWeights()).iterator();
+						Iterator<EvaluatedAlternative> itr = bestsNunes(ag.getAlternatives(), ag.getWeights())
+								.iterator();
 
 						bestN = itr.next();
 					}
@@ -103,7 +110,7 @@ public class Experimentations {
 
 					if (!bestL.equals(bestN)) {
 						LabreucheOutput lbo = ag.compare(bestL, bestN);
-						addStatLabreuche(statsLabreucheAnchor, lbo);
+						// addStatLabreuche(statsLabreucheAnchor, lbo);
 						update(statsALL, lbo, Anchor.ALL);
 						update(statsNOA, lbo, Anchor.NOA);
 						update(statsIVT, lbo, Anchor.IVT);
@@ -112,9 +119,9 @@ public class Experimentations {
 					}
 				}
 
-				globalStatLabreucheAnchor.put(i, statsLabreucheAnchor);
-				globalStatSameResult.put(i, statsSameResult);
+				// globalStatLabreucheAnchor.put(i, statsLabreucheAnchor);
 				// globalStatNunesPattern.put(i, statsNunesPattern);
+				globalStatSameResult.put(i, statsSameResult);
 				globalStatALL.put(i, statsALL);
 				globalStatNOA.put(i, statsNOA);
 				globalStatIVT.put(i, statsIVT);
@@ -124,9 +131,9 @@ public class Experimentations {
 				System.out.println("end i " + i);
 			}
 
-			generalStatsLabreucheAnchor.put(c, globalStatLabreucheAnchor);
-			generalStatsSameResult.put(c, globalStatSameResult);
+			// generalStatsLabreucheAnchor.put(c, globalStatLabreucheAnchor);
 			// generalStatsNunesPattern.put(c,globalStatNunesPattern);
+			generalStatsSameResult.put(c, globalStatSameResult);
 			generalStatsALL.put(c, globalStatALL);
 			generalStatsNOA.put(c, globalStatNOA);
 			generalStatsIVT.put(c, globalStatIVT);
@@ -139,8 +146,10 @@ public class Experimentations {
 		StringBuilder result = new StringBuilder();
 
 		result.append(showGlobal("Pourcentage of sames alternatives find    : ", generalStatsSameResult, 0));
-		result.append(showGlobal("Variance of anchor distribution           : ", generalStatsLabreucheAnchor, 2));
-		result.append(showGlobal("Standard deviation of anchor distribution : ", generalStatsLabreucheAnchor, 1));
+		// result.append(showGlobal("Variance of anchor distribution : ",
+		// generalStatsLabreucheAnchor, 2));
+		// result.append(showGlobal("Standard deviation of anchor distribution : ",
+		// generalStatsLabreucheAnchor, 1));
 		result.append(showGlobal("Pourcentage of anchor ALL used            : ", generalStatsALL, 0));
 		result.append(showGlobal("Pourcentage of anchor NOA used            : ", generalStatsNOA, 0));
 		result.append(showGlobal("Pourcentage of anchor IVT used            : ", generalStatsIVT, 0));
@@ -211,7 +220,7 @@ public class Experimentations {
 		result.append(message + "\n");
 		result.append("numbers alternatives  : ");
 
-		for (int i = 2; i <= nbAlt; i += 2) {
+		for (int i = 10; i <= nbAlt; i += stepAlternatives) {
 			result.append(i + "	");
 		}
 
@@ -254,7 +263,8 @@ public class Experimentations {
 		}
 	}
 
-	private static void updateSame(List<Integer> statsSameResult, Alternative bestL, Alternative bestN) {
+	private static void updateSame(List<Integer> statsSameResult, EvaluatedAlternative bestL,
+			EvaluatedAlternative bestN) {
 
 		if (bestL.equals(bestN)) {
 			statsSameResult.add(1);
@@ -263,6 +273,7 @@ public class Experimentations {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void addStatLabreuche(List<Integer> stats, LabreucheOutput lbo) {
 		switch (lbo.getAnchor()) {
 
@@ -291,17 +302,17 @@ public class Experimentations {
 		}
 	}
 
-	private static Set<Alternative> bestsNunes(Set<Alternative> set, Map<Criterion, Double> weights) {
-		Map<Alternative, Integer> scoreboard = new LinkedHashMap<>();
+	private static Set<EvaluatedAlternative> bestsNunes(Set<EvaluatedAlternative> set, Map<Criterion, Double> weights) {
+		Map<EvaluatedAlternative, Integer> scoreboard = new LinkedHashMap<>();
 
-		Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(set, weights);
+		Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs = NunesTools.computeTO(set, weights);
 
-		for (Alternative a : set) {
+		for (EvaluatedAlternative a : set) {
 			scoreboard.put(a, 0);
 		}
 
-		for (Alternative a : set) {
-			for (Alternative b : set) {
+		for (EvaluatedAlternative a : set) {
+			for (EvaluatedAlternative b : set) {
 				if (!a.equals(b)) {
 					double scoreA = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
 					double scoreB = NunesTools.score(b, a, weights.keySet(), weights, tradeoffs);
@@ -316,9 +327,9 @@ public class Experimentations {
 
 		int max = Collections.max(scoreboard.values());
 
-		Set<Alternative> bests = new LinkedHashSet<>();
+		Set<EvaluatedAlternative> bests = new LinkedHashSet<>();
 
-		for (Entry<Alternative, Integer> entry : scoreboard.entrySet()) {
+		for (Entry<EvaluatedAlternative, Integer> entry : scoreboard.entrySet()) {
 			if (entry.getValue() == max) {
 				bests.add(entry.getKey());
 			}
@@ -327,11 +338,11 @@ public class Experimentations {
 		return bests;
 	}
 
-	private static Alternative uniqueBestNunes(Set<Alternative> set, Map<Criterion, Double> weights) {
-		Set<Alternative> bests = bestsNunes(set, weights);
+	private static EvaluatedAlternative uniqueBestNunes(Set<EvaluatedAlternative> set, Map<Criterion, Double> weights) {
+		Set<EvaluatedAlternative> bests = bestsNunes(set, weights);
 
 		if (bests.size() == 1) {
-			Iterator<Alternative> iter = bests.iterator();
+			Iterator<EvaluatedAlternative> iter = bests.iterator();
 			return iter.next();
 		}
 

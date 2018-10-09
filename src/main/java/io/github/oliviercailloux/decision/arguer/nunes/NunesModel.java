@@ -12,10 +12,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
-public class NunesModel implements Comparator<Alternative> {
+public class NunesModel implements Comparator<EvaluatedAlternative> {
 
 	private ImmutableMap<Criterion, Double> weights;
 	private Set<Constraint> constraints;
@@ -38,7 +38,8 @@ public class NunesModel implements Comparator<Alternative> {
 		return this.constraints;
 	}
 
-	public double getScore(Alternative a, Alternative b, Table<Alternative, Alternative, Double> tradeoffs) {
+	public double getScore(EvaluatedAlternative a, EvaluatedAlternative b,
+			Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs) {
 		checkArgument(a.getEvaluations().keySet().equals(weights.keySet()));
 		return NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
 	}
@@ -54,7 +55,7 @@ public class NunesModel implements Comparator<Alternative> {
 	 * @return a map containing, for each criterion, the difference in evaluation on
 	 *         that criterion: evaluation of x minus evaluation of y.
 	 */
-	public ImmutableMap<Criterion, Double> getDelta(Alternative x, Alternative y) {
+	public ImmutableMap<Criterion, Double> getDelta(EvaluatedAlternative x, EvaluatedAlternative y) {
 		checkArgument(x.getEvaluations().keySet().equals(weights.keySet()));
 		checkArgument(y.getEvaluations().keySet().equals(weights.keySet()));
 
@@ -63,11 +64,11 @@ public class NunesModel implements Comparator<Alternative> {
 	}
 
 	@Override
-	public int compare(Alternative a, Alternative b) {
-		Set<Alternative> set = new LinkedHashSet<>();
+	public int compare(EvaluatedAlternative a, EvaluatedAlternative b) {
+		Set<EvaluatedAlternative> set = new LinkedHashSet<>();
 		set.add(a);
 		set.add(b);
-		Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(set, weights);
+		Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs = NunesTools.computeTO(set, weights);
 
 		double scoreA = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);
 		double scoreB = NunesTools.score(a, b, weights.keySet(), weights, tradeoffs);

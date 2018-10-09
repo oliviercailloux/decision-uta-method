@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class Utils {
 

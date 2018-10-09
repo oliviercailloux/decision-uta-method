@@ -2,9 +2,9 @@ package io.github.oliviercailloux.uta_calculator.view;
 
 import java.util.Scanner;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.PartialValueFunction;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.uta_calculator.model.UTAAlternative;
 import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
 import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
 
@@ -39,7 +39,7 @@ public class MainRandomProblem {
 		System.out.println();
 		System.out.println(
 				"Displaying the value of the alternatives from the function valueFunction.getValue(alternative) :");
-		for (Alternative alternative : p1.getAlternatives()) {
+		for (UTAAlternative alternative : p1.getAlternatives()) {
 			System.out.println(alternative.getName() + " : " + vf.getValue(alternative));
 		}
 	}

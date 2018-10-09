@@ -11,37 +11,42 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
 import com.google.common.math.Stats;
 
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class NunesTools {
 
 	/* * methods for decision function d(x,y) * */
 
-	public static double score(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight,
-			Table<Alternative, Alternative, Double> tradoffs) {
-		return cost(x, y, criteria, weight) + (0.25 * extAversion(x, y)) + (0.15 * toContrast(x, y, tradoffs));
+	public static double score(EvaluatedAlternative evaluatedAlternative, EvaluatedAlternative evaluatedAlternative2,
+			Set<Criterion> set, Map<Criterion, Double> weights,
+			Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs) {
+		return cost(evaluatedAlternative, evaluatedAlternative2, set, weights)
+				+ (0.25 * extAversion(evaluatedAlternative, evaluatedAlternative2))
+				+ (0.15 * toContrast(evaluatedAlternative, evaluatedAlternative2, tradeoffs));
 	}
 
-	public static double cost(Alternative x, Alternative y, Set<Criterion> criteria, Map<Criterion, Double> weight) {
+	public static double cost(EvaluatedAlternative evaluatedAlternative, EvaluatedAlternative evaluatedAlternative2,
+			Set<Criterion> set, Map<Criterion, Double> weights) {
 		double res = 0.0;
 
-		for (Criterion c : criteria)
-			res += attCost(x, y, c) * weight.get(c);
+		for (Criterion c : set)
+			res += attCost(evaluatedAlternative, evaluatedAlternative2, c) * weights.get(c);
 
 		return res;
 	}
 
-	public static double attCost(Alternative x, Alternative y, Criterion c) {
+	public static double attCost(EvaluatedAlternative x, EvaluatedAlternative y, Criterion c) {
 		if (y.getEvaluations().get(c) > x.getEvaluations().get(c))
 			return y.getEvaluations().get(c) - x.getEvaluations().get(c);
 
 		return 0.0;
 	}
 
-	public static double extAversion(Alternative x, Alternative y) {
-		double extX = standardDeviation(x);
-		double extY = standardDeviation(y);
+	public static double extAversion(EvaluatedAlternative evaluatedAlternative,
+			EvaluatedAlternative evaluatedAlternative2) {
+		double extX = standardDeviation(evaluatedAlternative);
+		double extY = standardDeviation(evaluatedAlternative2);
 
 		if (extX < extY) {
 			return extY - extX;
@@ -55,7 +60,7 @@ public class NunesTools {
 	 * @return Standard deviation of the costs performances (1 - x_i) of the
 	 *         alternative x.
 	 */
-	public static double standardDeviation(Alternative x) {
+	public static double standardDeviation(EvaluatedAlternative x) {
 		Set<Double> dv = new LinkedHashSet<>();
 
 		for (Criterion c : x.getEvaluations().keySet()) {
@@ -65,37 +70,41 @@ public class NunesTools {
 		return Stats.of(dv).populationStandardDeviation();
 	}
 
-	public static double toContrast(Alternative x, Alternative y, Table<Alternative, Alternative, Double> tradoffs) {
+	public static double toContrast(EvaluatedAlternative evaluatedAlternative,
+			EvaluatedAlternative evaluatedAlternative2,
+			Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs) {
 
-		double avgTo = avgTo(tradoffs);
+		double avgTo = avgTo(tradeoffs);
 
-		if (tradoffs.contains(x, y) && tradoffs.get(x, y) <= avgTo)
-			return avgTo - tradoffs.get(x, y);
+		if (tradeoffs.contains(evaluatedAlternative, evaluatedAlternative2)
+				&& tradeoffs.get(evaluatedAlternative, evaluatedAlternative2) <= avgTo)
+			return avgTo - tradeoffs.get(evaluatedAlternative, evaluatedAlternative2);
 
-		if (tradoffs.contains(y, x) && tradoffs.get(y, x) > avgTo)
-			return tradoffs.get(y, x) - avgTo;
+		if (tradeoffs.contains(evaluatedAlternative2, evaluatedAlternative)
+				&& tradeoffs.get(evaluatedAlternative2, evaluatedAlternative) > avgTo)
+			return tradeoffs.get(evaluatedAlternative2, evaluatedAlternative) - avgTo;
 
 		return 0.0;
 	}
 
-	public static double avgTo(Table<Alternative, Alternative, Double> tradoffs) {
+	public static double avgTo(Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradoffs) {
 		double res = 0.0;
 
-		for (Cell<Alternative, Alternative, Double> c : tradoffs.cellSet())
+		for (Cell<EvaluatedAlternative, EvaluatedAlternative, Double> c : tradoffs.cellSet())
 			res += c.getValue();
 
 		return res / tradoffs.cellSet().size();
 	}
 
-	public static Table<Alternative, Alternative, Double> computeTO(Set<Alternative> alternatives,
+	public static Table<EvaluatedAlternative, EvaluatedAlternative, Double> computeTO(Set<EvaluatedAlternative> set,
 			Map<Criterion, Double> weights) {
-		Table<Alternative, Alternative, Double> tradoffs = HashBasedTable.create();
+		Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradoffs = HashBasedTable.create();
 
 		double costA;
 		double costB;
 
-		for (Alternative a : alternatives) {
-			for (Alternative b : alternatives) {
+		for (EvaluatedAlternative a : set) {
+			for (EvaluatedAlternative b : set) {
 				if (!a.equals(b)) {
 					costA = cost(a, b, weights.keySet(), weights);
 					costB = cost(b, a, weights.keySet(), weights);
@@ -116,7 +125,7 @@ public class NunesTools {
 
 	/* Cutoff methods */
 
-	public boolean isSatisfied(Alternative alt, Constraint c) {
+	public boolean isSatisfied(EvaluatedAlternative alt, Constraint c) {
 		if (c.isFlagMin()) {
 			return alt.getEvaluations().get(c.getCriterion()) > c.getTreshold();
 		}
@@ -124,7 +133,7 @@ public class NunesTools {
 		return alt.getEvaluations().get(c.getCriterion()) < c.getTreshold();
 	}
 
-	public boolean lpv(Alternative alt, Constraint c) {
+	public boolean lpv(EvaluatedAlternative alt, Constraint c) {
 		return (isSatisfied(alt, c) && c.getValuePref() < 0.0) || (!isSatisfied(alt, c) && c.getValuePref() > 0.0);
 	}
 
@@ -135,7 +144,7 @@ public class NunesTools {
 		return null;
 	}
 
-	public static double getPros(Alternative x, Alternative y, Map<Criterion, Double> weights) {
+	public static double getPros(EvaluatedAlternative x, EvaluatedAlternative y, Map<Criterion, Double> weights) {
 		double sum = 0.0;
 		double tmp;
 		for (Entry<Criterion, Double> entry : weights.entrySet()) {
@@ -147,7 +156,7 @@ public class NunesTools {
 		return sum;
 	}
 
-	public static double getCons(Alternative x, Alternative y, Map<Criterion, Double> weights) {
+	public static double getCons(EvaluatedAlternative x, EvaluatedAlternative y, Map<Criterion, Double> weights) {
 		double sum = 0.0;
 		double tmp;
 		for (Entry<Criterion, Double> entry : weights.entrySet()) {

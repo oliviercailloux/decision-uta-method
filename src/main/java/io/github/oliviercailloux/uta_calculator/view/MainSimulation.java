@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.oliviercailloux.uta_calculator.math.Statistics;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
 import io.github.oliviercailloux.uta_calculator.model.ProblemGenerator;
+import io.github.oliviercailloux.uta_calculator.model.UTAAlternative;
 import io.github.oliviercailloux.uta_calculator.model.UTASTAR;
 import io.github.oliviercailloux.uta_calculator.model.ValueFunction;
 import io.github.oliviercailloux.uta_calculator.model.ValueFunctionGenerator;
@@ -65,21 +65,21 @@ public class MainSimulation {
 		ValueFunction vR = vfg.generateValueFunction();
 		LOGGER.debug("ValueFunction R: {}.", vR);
 
-		List<Alternative> alternatives = problem.getAlternatives();
-		Collections.sort(alternatives, new Comparator<Alternative>() {
+		List<UTAAlternative> alternatives = problem.getAlternatives();
+		Collections.sort(alternatives, new Comparator<UTAAlternative>() {
 			@Override
-			public int compare(final Alternative a1, final Alternative a2) {
+			public int compare(final UTAAlternative a1, final UTAAlternative a2) {
 				return ((Double) vR.getValue(a1)).compareTo(vR.getValue(a2));
 			}
 		});
 
-		List<Alternative> exampleAlternatives = new ArrayList<>();
+		List<UTAAlternative> exampleAlternatives = new ArrayList<>();
 		for (int i = 0; i < numberAlternativesToCompare; i++) {
 			exampleAlternatives.add(alternatives.get(i));
 		}
 		LOGGER.debug("Examples: {}.", exampleAlternatives);
 
-		List<Alternative> alternativesToCompare = new ArrayList<>();
+		List<UTAAlternative> alternativesToCompare = new ArrayList<>();
 		for (int i = numberAlternativesToCompare; i < alternatives.size(); i++) {
 			alternativesToCompare.add(alternatives.get(i));
 		}
@@ -93,21 +93,21 @@ public class MainSimulation {
 		return compare(vR, vT, alternativesToCompare);
 	}
 
-	private double compare(ValueFunction vR, ValueFunction vT, List<Alternative> alternatives) {
+	private double compare(ValueFunction vR, ValueFunction vT, List<UTAAlternative> alternatives) {
 
-		List<Alternative> alternativeR = new ArrayList<>(alternatives);
-		List<Alternative> alternativeT = new ArrayList<>(alternatives);
+		List<UTAAlternative> alternativeR = new ArrayList<>(alternatives);
+		List<UTAAlternative> alternativeT = new ArrayList<>(alternatives);
 
-		Collections.sort(alternativeR, new Comparator<Alternative>() {
+		Collections.sort(alternativeR, new Comparator<UTAAlternative>() {
 			@Override
-			public int compare(final Alternative a1, final Alternative a2) {
+			public int compare(final UTAAlternative a1, final UTAAlternative a2) {
 				return ((Double) vR.getValue(a1)).compareTo(vR.getValue(a2));
 			}
 		});
 
-		Collections.sort(alternativeT, new Comparator<Alternative>() {
+		Collections.sort(alternativeT, new Comparator<UTAAlternative>() {
 			@Override
-			public int compare(final Alternative a1, final Alternative a2) {
+			public int compare(final UTAAlternative a1, final UTAAlternative a2) {
 				return ((Double) vT.getValue(a1)).compareTo(vT.getValue(a2));
 			}
 		});

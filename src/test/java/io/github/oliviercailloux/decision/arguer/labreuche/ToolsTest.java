@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparisonLabreucheBuilder;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
 
 public class ToolsTest {
 

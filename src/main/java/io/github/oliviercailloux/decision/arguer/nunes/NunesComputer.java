@@ -19,21 +19,21 @@ import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.Pattern;
 import io.github.oliviercailloux.decision.arguer.nunes.output.TradeOffOutput;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class NunesComputer {
 
 	private Set<Constraint> constraints;
 	private AlternativesComparison<NunesModel> alternativesComparison;
-	private Table<Alternative, Alternative, Double> tradoffs;
+	private Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradoffs;
 	private NunesOutput nunesOutput;
-	private Set<Alternative> alternatives;
-	private Set<Alternative> alternativesRejected;
+	private Set<EvaluatedAlternative> alternatives;
+	private Set<EvaluatedAlternative> alternativesRejected;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
 	public NunesComputer(AlternativesComparison<NunesModel> alternativesComparison, Set<Constraint> constraints,
-			Set<Alternative> alternatives) {
+			Set<EvaluatedAlternative> alternatives) {
 		this.alternativesComparison = requireNonNull(alternativesComparison);
 		this.constraints = new LinkedHashSet<>((requireNonNull(constraints)));
 		this.alternatives = requireNonNull(alternatives);
@@ -43,11 +43,11 @@ public class NunesComputer {
 		this.tradoffs = NunesTools.computeTO(alternatives, alternativesComparison.getPreferenceModel().getWeights());
 	}
 
-	public Set<Alternative> getAlternativesRejected() {
+	public Set<EvaluatedAlternative> getAlternativesRejected() {
 		return this.alternativesRejected;
 	}
 
-	public Set<Alternative> getAlternatives() {
+	public Set<EvaluatedAlternative> getAlternatives() {
 		return this.alternatives;
 	}
 
@@ -55,7 +55,7 @@ public class NunesComputer {
 		return this.constraints;
 	}
 
-	public Table<Alternative, Alternative, Double> getTradOffs() {
+	public Table<EvaluatedAlternative, EvaluatedAlternative, Double> getTradOffs() {
 		return this.tradoffs;
 	}
 

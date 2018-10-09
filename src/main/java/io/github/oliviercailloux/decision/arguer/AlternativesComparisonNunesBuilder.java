@@ -12,40 +12,50 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheModel;
+import io.github.oliviercailloux.decision.arguer.nunes.Constraint;
+import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 import io.github.oliviercailloux.decision.model.Criterion;
 import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
-public class AlternativesComparisonLabreucheBuilder {
+public class AlternativesComparisonNunesBuilder {
 
 	private List<Double> x;
 	private List<Double> y;
 	private List<Double> w;
+	private List<Constraint> constraints;
 
-	public AlternativesComparisonLabreucheBuilder() {
+	public AlternativesComparisonNunesBuilder() {
 		x = new ArrayList<>();
 		y = new ArrayList<>();
 		w = new ArrayList<>();
+		constraints = new ArrayList<>();
 	}
 
-	public AlternativesComparisonLabreucheBuilder setX(List<Double> x) {
+	public AlternativesComparisonNunesBuilder setX(List<Double> x) {
 		checkNotNull(x);
 		this.x.clear();
 		this.x.addAll(x);
 		return this;
 	}
 
-	public AlternativesComparisonLabreucheBuilder setY(List<Double> y) {
+	public AlternativesComparisonNunesBuilder setY(List<Double> y) {
 		checkNotNull(y);
 		this.y.clear();
 		this.y.addAll(y);
 		return this;
 	}
 
-	public AlternativesComparisonLabreucheBuilder setW(List<Double> weights) {
+	public AlternativesComparisonNunesBuilder setW(List<Double> weights) {
 		checkNotNull(weights);
 		w.clear();
 		w.addAll(weights);
+		return this;
+	}
+
+	public AlternativesComparisonNunesBuilder setConstraints(List<Constraint> constraints) {
+		checkNotNull(constraints);
+		constraints.clear();
+		constraints.addAll(constraints);
 		return this;
 	}
 
@@ -77,13 +87,21 @@ public class AlternativesComparisonLabreucheBuilder {
 		return asMap(criteria, w);
 	}
 
-	public AlternativesComparison<LabreucheModel> build() {
+	public ImmutableSet<Constraint> getConstraints() {
+		checkState(!constraints.isEmpty());
+
+		return ImmutableSet.copyOf(constraints);
+	}
+
+	public AlternativesComparison<NunesModel> build() {
 		final int size = x.size();
+		final int size2 = constraints.size();
 		checkState(size == y.size());
 		checkState(size == w.size());
+		checkState(size2 >= 0);
 		checkState(size >= 1);
 
-		final LabreucheModel model = new LabreucheModel(getWeights());
+		final NunesModel model = new NunesModel(getWeights(), getConstraints());
 		return new AlternativesComparison<>(getX(), getY(), model);
 	}
 

@@ -30,8 +30,8 @@ import io.github.oliviercailloux.decision.arguer.labreuche.output.LabreucheOutpu
 import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGAVGOutput;
 import io.github.oliviercailloux.decision.arguer.labreuche.output.RMGCOMPOutput;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class LabreucheComputer {
 
@@ -162,8 +162,8 @@ public class LabreucheComputer {
 	}
 
 	private Map<Criterion, Double> getDelta() {
-		Alternative x = alternativesComparison.getX();
-		Alternative y = alternativesComparison.getY();
+		EvaluatedAlternative x = alternativesComparison.getX();
+		EvaluatedAlternative y = alternativesComparison.getY();
 		LabreucheModel lm = alternativesComparison.getPreferenceModel();
 
 		return lm.getDelta(x, y);

@@ -10,9 +10,8 @@ import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
 
-import io.github.oliviercailloux.decision.arguer.labreuche.output.NOAOutput;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 /**
  *
@@ -21,7 +20,7 @@ import io.github.oliviercailloux.uta_calculator.model.Criterion;
  * @author Olivier Cailloux
  *
  */
-public class LabreucheModel implements Comparator<Alternative> {
+public class LabreucheModel implements Comparator<EvaluatedAlternative> {
 
 	public static double getEpsilonDefaultValue(Map<Criterion, Double> weights) {
 		requireNonNull(weights);
@@ -30,29 +29,29 @@ public class LabreucheModel implements Comparator<Alternative> {
 		}
 		return 0.2 / weights.size();
 	}
-	
+
 	public static double getEpsilonWDefaultValue(Map<Criterion, Double> weights) {
 		requireNonNull(weights);
 		if (weights.isEmpty()) {
 			return 0;
 		}
 		return 0.15 / weights.size();
-	} 
-	
+	}
+
 	public static double getEpsilonWPrimeDefaultValue(Map<Criterion, Double> weights) {
 		requireNonNull(weights);
 		if (weights.isEmpty()) {
 			return 0;
 		}
 		return 0.3 / weights.size();
-	} 
+	}
 
 	private ImmutableMap<Criterion, Double> weights;
 	private double epsilon;
 	private double epsilonW;
 	private double epsilonWPrime;
 
-	private final Comparator<Alternative> comparingScores;
+	private final Comparator<EvaluatedAlternative> comparingScores;
 
 	/**
 	 * @param weights
@@ -80,7 +79,8 @@ public class LabreucheModel implements Comparator<Alternative> {
 	 *            not <code>null</code>, may be empty.
 	 */
 	public LabreucheModel(Map<Criterion, Double> weights) {
-		this(weights, getEpsilonDefaultValue(weights), getEpsilonWDefaultValue(weights), getEpsilonWPrimeDefaultValue(weights));
+		this(weights, getEpsilonDefaultValue(weights), getEpsilonWDefaultValue(weights),
+				getEpsilonWPrimeDefaultValue(weights));
 	}
 
 	/**
@@ -112,11 +112,11 @@ public class LabreucheModel implements Comparator<Alternative> {
 	}
 
 	@Override
-	public int compare(Alternative a1, Alternative a2) {
+	public int compare(EvaluatedAlternative a1, EvaluatedAlternative a2) {
 		return comparingScores.compare(a1, a2);
 	}
 
-	public double getScore(Alternative a) {
+	public double getScore(EvaluatedAlternative a) {
 		checkArgument(a.getEvaluations().keySet().equals(weights.keySet()));
 		return weights.entrySet().stream().mapToDouble((e) -> e.getValue() * a.getEvaluations().get(e.getKey())).sum();
 	}
@@ -125,14 +125,14 @@ public class LabreucheModel implements Comparator<Alternative> {
 	 * @return a map containing, for each criterion, the difference in evaluation on
 	 *         that criterion: evaluation of x minus evaluation of y.
 	 */
-	public ImmutableMap<Criterion, Double> getDelta(Alternative x, Alternative y) {
+	public ImmutableMap<Criterion, Double> getDelta(EvaluatedAlternative x, EvaluatedAlternative y) {
 		checkArgument(x.getEvaluations().keySet().equals(weights.keySet()));
 		checkArgument(y.getEvaluations().keySet().equals(weights.keySet()));
 
 		return weights.keySet().stream()
 				.collect(toImmutableMap((c) -> c, (c) -> x.getEvaluations().get(c) - y.getEvaluations().get(c)));
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -148,18 +148,18 @@ public class LabreucheModel implements Comparator<Alternative> {
 
 		if (other.getEpsilon() != epsilon)
 			return false;
-		
-		if(other.getEpsilonW() != epsilonW)
+
+		if (other.getEpsilonW() != epsilonW)
 			return false;
-		
-		if(other.getEpsilonWPrime() != epsilonWPrime)
+
+		if (other.getEpsilonWPrime() != epsilonWPrime)
 			return false;
-		
+
 		return other.getWeights().equals(weights);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(weights,epsilon,epsilonW,epsilonWPrime);
+		return Objects.hash(weights, epsilon, epsilonW, epsilonWPrime);
 	}
 }

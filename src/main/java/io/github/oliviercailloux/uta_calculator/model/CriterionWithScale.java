@@ -6,7 +6,7 @@ import java.util.Objects;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-public class Criterion {
+public class CriterionWithScale {
 
 	// Attributes
 	private int id;
@@ -14,7 +14,7 @@ public class Criterion {
 	private List<Double> scale;
 
 	// Constructors
-	public Criterion(int id, String name, List<Double> scale) {
+	public CriterionWithScale(int id, String name, List<Double> scale) {
 		this.id = id;
 		this.name = name;
 		this.scale = scale;
@@ -65,7 +65,7 @@ public class Criterion {
 		if (getClass() != obj.getClass())
 			return false;
 
-		Criterion other = (Criterion) obj;
+		CriterionWithScale other = (CriterionWithScale) obj;
 
 		return id == other.id;
 	}

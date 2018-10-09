@@ -5,15 +5,15 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-public class Alternative {
+public class UTAAlternative {
 
 	// Attributes
 	private int id;
 	private String name;
-	private Map<Criterion, Double> evaluations;
+	private Map<CriterionWithScale, Double> evaluations;
 
 	// Constructors
-	public Alternative(int id, String name, Map<Criterion, Double> evaluations) {
+	public UTAAlternative(int id, String name, Map<CriterionWithScale, Double> evaluations) {
 		this.id = id;
 		this.name = name;
 		this.evaluations = evaluations;
@@ -36,11 +36,11 @@ public class Alternative {
 		this.name = name;
 	}
 
-	public Map<Criterion, Double> getEvaluations() {
+	public Map<CriterionWithScale, Double> getEvaluations() {
 		return evaluations;
 	}
 
-	public void setEvaluations(Map<Criterion, Double> evaluations) {
+	public void setEvaluations(Map<CriterionWithScale, Double> evaluations) {
 		this.evaluations = evaluations;
 	}
 
@@ -79,7 +79,7 @@ public class Alternative {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Alternative other = (Alternative) obj;
+		UTAAlternative other = (UTAAlternative) obj;
 		if (evaluations == null) {
 			if (other.evaluations != null)
 				return false;

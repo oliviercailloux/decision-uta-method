@@ -19,8 +19,8 @@ import io.github.oliviercailloux.decision.arguer.nunes.NunesComputer;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesTools;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
-import io.github.oliviercailloux.uta_calculator.model.Alternative;
-import io.github.oliviercailloux.uta_calculator.model.Criterion;
+import io.github.oliviercailloux.decision.model.Criterion;
+import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 
 public class ArguerUI {
 
@@ -41,7 +41,7 @@ public class ArguerUI {
 		showAlternativesRanked(laltcompTMP, false);
 		showStartExplanation(laltcompTMP);
 
-		Set<Alternative> set = new LinkedHashSet<>();
+		Set<EvaluatedAlternative> set = new LinkedHashSet<>();
 		set.add(altsComp.getX());
 		set.add(altsComp.getY());
 
@@ -127,7 +127,7 @@ public class ArguerUI {
 			scoreY = LabreucheTools.score(altsComp.getY(), altsComp.getPreferenceModel().getWeights());
 		} else {
 
-			Table<Alternative, Alternative, Double> tradeoffs = NunesTools.computeTO(
+			Table<EvaluatedAlternative, EvaluatedAlternative, Double> tradeoffs = NunesTools.computeTO(
 					ImmutableSet.of(altsComp.getX(), altsComp.getY()), altsComp.getPreferenceModel().getWeights());
 			scoreX = NunesTools.score(altsComp.getX(), altsComp.getY(), altsComp.getCriteria(),
 					altsComp.getPreferenceModel().getWeights(), tradeoffs);
