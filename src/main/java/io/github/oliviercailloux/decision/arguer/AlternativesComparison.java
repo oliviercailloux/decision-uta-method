@@ -38,7 +38,7 @@ public class AlternativesComparison<M extends Comparator<EvaluatedAlternative>> 
 	 *            model, must be evaluated on the same criteria than x, must be
 	 *            evaluated on some criteria.
 	 * @param preferenceModel
-	 *            must be immutable (no defensive copy is done).
+	 *            not <code>null</code>, must be immutable (no defensive copy is done).
 	 */
 	public AlternativesComparison(EvaluatedAlternative x, EvaluatedAlternative y, M preferenceModel) {
 		this.x = requireNonNull(x);
@@ -119,7 +119,7 @@ public class AlternativesComparison<M extends Comparator<EvaluatedAlternative>> 
 
 	@Override
 	public int hashCode() {
-		return Objects.hash();
+		return Objects.hash(x,y,preferenceModel);
 	}
 
 }

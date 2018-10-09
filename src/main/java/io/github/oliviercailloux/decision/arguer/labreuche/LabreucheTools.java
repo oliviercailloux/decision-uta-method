@@ -50,12 +50,11 @@ public class LabreucheTools {
 
 	/***
 	 * For now this is an identity function
-	 * 
+	 * @param c
 	 * @param alternativePerformance
-	 * @return the satisfaction degree on the criterion c of the alternative calling
-	 *         this method.
+	 * @return the satisfaction degree on the criterion c of the alternative calling this method.
 	 */
-	public static double valueFunction(@SuppressWarnings("unused") Criterion criterion, double alternativePerformance) {
+	public static double valueFunction(@SuppressWarnings("unused") Criterion c, double alternativePerformance) {
 
 		return alternativePerformance;
 	}
@@ -102,7 +101,12 @@ public class LabreucheTools {
 
 		return cycles;
 	}
-
+	
+	/***
+	 * @param l
+	 * @param c
+	 * @return the list l with the criterion c included.
+	 */
 	static List<Criterion> add(List<Criterion> l, Criterion c) {
 		List<Criterion> newList = new ArrayList<>(l);
 		newList.add(c);
@@ -126,8 +130,15 @@ public class LabreucheTools {
 
 		return result;
 	}
-
-	static Couple<Double, List<Criterion>> dEU(List<Criterion> subset, Map<Criterion, Double> w,
+	
+	/**
+	 * In delta we have the result of the difference between x and y.
+	 * @param subset
+	 * @param weights
+	 * @param delta
+	 * @return the minimal permutation in subset who cover the difference between x and y on subset.
+	 */
+	static Couple<Double, List<Criterion>> dEU(List<Criterion> subset, Map<Criterion, Double> weights,
 			Map<Criterion, Double> delta) {
 
 		double firstPart = 0.0;
@@ -137,16 +148,16 @@ public class LabreucheTools {
 		}
 
 		for (Criterion c : subset) {
-			firstPart += w.get(c) * delta.get(c);
+			firstPart += weights.get(c) * delta.get(c);
 		}
 
-		List<Criterion> bestMinPi = minimalPi(subset, w, delta);
+		List<Criterion> bestMinPi = minimalPi(subset, weights, delta);
 
 		if (bestMinPi == null) {
 			throw new NullArgumentException();
 		}
 
-		Map<Criterion, Double> piW = modifiedW(bestMinPi, w);
+		Map<Criterion, Double> piW = modifiedW(bestMinPi, weights);
 
 		double secondPart = 0.0;
 

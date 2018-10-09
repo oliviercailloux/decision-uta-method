@@ -2,46 +2,46 @@ package io.github.oliviercailloux.decision.model;
 
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class EvaluatedAlternative {
 
-	// Attributes
 	private int id;
 	private String name;
-	private Map<Criterion, Double> evaluations;
-
-	// Constructors
+	private ImmutableMap<Criterion, Double> evaluations;
+	
+	/***
+	 * 
+	 * @param id
+	 * 				not <code>null</code>
+	 * @param name
+	 * 				not <code>null</code>
+	 * @param evaluations 
+	 * 				not <code>empty</code>
+	 */
 	public EvaluatedAlternative(int id, String name, Map<Criterion, Double> evaluations) {
-		this.id = id;
-		this.name = name;
-		this.evaluations = evaluations;
+		this.id = requireNonNull(id);
+		this.name = requireNonNull(name);
+		checkArgument(!evaluations.isEmpty());
+		this.evaluations = ImmutableMap.copyOf(evaluations);
 	}
 
-	// Getters and Setters
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Map<Criterion, Double> getEvaluations() {
+	public ImmutableMap<Criterion, Double> getEvaluations() {
 		return evaluations;
-	}
-
-	public void setEvaluations(Map<Criterion, Double> evaluations) {
-		this.evaluations = evaluations;
 	}
 
 	@Override

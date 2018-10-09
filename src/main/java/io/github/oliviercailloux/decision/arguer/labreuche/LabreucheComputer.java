@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,6 +46,7 @@ public class LabreucheComputer {
 	private List<List<Criterion>> ivtPermutations;
 	private List<List<Criterion>> setCIVT;
 	private LabreucheOutput labreucheOutput;
+	private EnumSet<Anchor> notApplicable;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
 	public LabreucheComputer(AlternativesComparison<LabreucheModel> alternativesComparaison) {
@@ -190,30 +193,45 @@ public class LabreucheComputer {
 	private LabreucheOutput computeExplanation() {
 		Preconditions.checkState(labreucheOutput == null);
 
-		if (tryALL()) {
+		if (tryALLExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		if (tryNOA()) {
+		
+		notApplicable.add(Anchor.ALL);
+		
+		if (tryNOAExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		if (tryIVT()) {
+		
+		notApplicable.add(Anchor.NOA);
+		
+		if (tryIVTExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		if (tryRMGAVG()) {
+		
+		notApplicable.add(Anchor.IVT);
+		
+		if (tryRMGAVGExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		if (tryRMGCOMP()) {
+		
+		notApplicable.add(Anchor.RMGAVG);
+		
+		if (tryRMGCOMPExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
+		
+		notApplicable.add(Anchor.RMGCOMP);
+		
 		throw new IllegalStateException();
 	}
 
-	private boolean tryALL() {
+	private boolean tryALLExplanation() {
 		Preconditions.checkState(labreucheOutput == null);
 
 		for (Double v : getDelta().values()) {
@@ -229,7 +247,8 @@ public class LabreucheComputer {
 		return true;
 	}
 
-	private boolean tryNOA() {
+	private boolean tryNOAExplanation() {
+		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
 		Preconditions.checkState(labreucheOutput == null);
 
 		if (LabreucheTools.score(alternativesComparison.getX(), getWeightReference()) >= LabreucheTools
@@ -284,7 +303,9 @@ public class LabreucheComputer {
 		return vectorRef;
 	}
 
-	private boolean tryIVT() {
+	private boolean tryIVTExplanation() {
+		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
+		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
 		Preconditions.checkState(labreucheOutput == null);
 
 		int size = 2;
@@ -370,7 +391,10 @@ public class LabreucheComputer {
 		return true;
 	}
 
-	private boolean tryRMGAVG() {
+	private boolean tryRMGAVGExplanation() {
+		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
+		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
+		Preconditions.checkState(notApplicable.contains(Anchor.IVT));
 		Preconditions.checkState(labreucheOutput == null);
 
 		double maxW = getMaxW();
@@ -401,7 +425,11 @@ public class LabreucheComputer {
 		return maxW;
 	}
 
-	private boolean tryRMGCOMP() {
+	private boolean tryRMGCOMPExplanation() {
+		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
+		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
+		Preconditions.checkState(notApplicable.contains(Anchor.IVT));
+		Preconditions.checkState(notApplicable.contains(Anchor.RMGAVG));
 		Preconditions.checkState(labreucheOutput == null);
 
 		double maxW = getMaxW();

@@ -27,10 +27,10 @@ import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
 public class Statistics {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Statistics.class);
-	private static int nbAlt = 200;
+	private static int nbAlt = 50;
 	private static int stepCriteria = 2;
-	private static int stepAlternatives = 10;
-	private static int nbCrit = 2;
+	private static int stepAlternatives = 5;
+	private static int nbCrit = 10;
 	private static int maxSim = 1000;
 
 	public static void main(String[] args) {
@@ -47,6 +47,8 @@ public class Statistics {
 		// LinkedHashMap<>();
 		// Map<Integer, Map<Integer, List<Integer>>> generalStatNunesPattern = new
 		// LinkedHashMap<>();
+		
+		System.out.println("Starting simulation");
 
 		for (int c = 2; c <= nbCrit; c += stepCriteria) {
 
@@ -62,7 +64,9 @@ public class Statistics {
 			// LinkedHashMap<>();
 			// Map<Integer, List<Integer>> globalStatNunesPattern = new LinkedHashMap<>();
 
-			for (int i = 10; i <= nbAlt; i += stepAlternatives) {
+			System.out.println("Starting with c = " + c);
+			
+			for (int i = 5; i <= nbAlt; i += stepAlternatives) {
 
 				// List<Integer> statsLabreucheAnchor = new ArrayList<>();
 				// List<Integer> statsNunesPattern = new ArrayList<>();
@@ -76,7 +80,9 @@ public class Statistics {
 				List<Integer> statsRMGCOMP = new ArrayList<>();
 
 				for (int j = 0; j < maxSim; j++) {
-					ArgumentGenerator ag = new ArgumentGenerator(i, nbCrit);
+					System.out.println("j = " + j);
+					
+					ArgumentGenerator ag = new ArgumentGenerator(i, c);
 					EvaluatedAlternative bestL;
 					EvaluatedAlternative bestN;
 
@@ -92,6 +98,8 @@ public class Statistics {
 
 						bestL = itr.next();
 					}
+					
+					System.out.println("find L");
 
 					try {
 						bestN = uniqueBestNunes(ag.getAlternatives(), ag.getWeights());
@@ -105,11 +113,17 @@ public class Statistics {
 
 						bestN = itr.next();
 					}
+					
+					System.out.println("fing N");
 
 					updateSame(statsSameResult, bestL, bestN);
 
 					if (!bestL.equals(bestN)) {
+						System.out.println("Not equal");
 						LabreucheOutput lbo = ag.compare(bestL, bestN);
+						
+						System.out.println("output type = "+ lbo.getAnchor().toString());
+						
 						// addStatLabreuche(statsLabreucheAnchor, lbo);
 						update(statsALL, lbo, Anchor.ALL);
 						update(statsNOA, lbo, Anchor.NOA);
@@ -128,7 +142,7 @@ public class Statistics {
 				globalStatRMGAVG.put(i, statsRMGAVG);
 				globalStatRMGCOMP.put(i, statsRMGCOMP);
 
-				System.out.println("end i " + i);
+				System.out.println("Ending with i = " + i);
 			}
 
 			// generalStatsLabreucheAnchor.put(c, globalStatLabreucheAnchor);
@@ -140,7 +154,7 @@ public class Statistics {
 			generalStatsRMGAVG.put(c, globalStatRMGAVG);
 			generalStatsRMGCOMP.put(c, globalStatRMGCOMP);
 
-			System.out.println("end c " + c);
+			System.out.println("Ending with c = " + c);
 		}
 
 		StringBuilder result = new StringBuilder();

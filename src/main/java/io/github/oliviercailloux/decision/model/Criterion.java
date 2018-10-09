@@ -4,15 +4,24 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import static java.util.Objects.requireNonNull;
+
 
 public class Criterion {
 
 	private int id;
 	private String name;
 
+	/***
+	 * 
+	 * @param id  
+	 * 				not <code>null</code>.
+	 * @param name
+	 * 				not <code>null</code>.
+	 */
 	public Criterion(int id, String name) {
-		this.id = id;
-		this.name = name;
+		this.id = requireNonNull(id);
+		this.name = requireNonNull(name);
 	}
 
 	public int getId() {
