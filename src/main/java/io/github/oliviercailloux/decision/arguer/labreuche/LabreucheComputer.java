@@ -53,6 +53,7 @@ public class LabreucheComputer {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 		this.ivtPermutations = new ArrayList<>();
 		this.setCIVT = new ArrayList<>();
+		this.notApplicable = EnumSet.noneOf(Anchor.class);
 		this.labreucheOutput = null;
 	}
 
