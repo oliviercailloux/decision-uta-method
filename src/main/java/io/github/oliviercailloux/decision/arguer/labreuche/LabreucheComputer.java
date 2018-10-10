@@ -49,6 +49,8 @@ public class LabreucheComputer {
 	private EnumSet<Anchor> notApplicable;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabreucheComputer.class);
 
+	
+	
 	public LabreucheComputer(AlternativesComparison<LabreucheModel> alternativesComparaison) {
 		this.alternativesComparison = requireNonNull(alternativesComparaison);
 		this.ivtPermutations = new ArrayList<>();
@@ -57,9 +59,9 @@ public class LabreucheComputer {
 		this.labreucheOutput = null;
 	}
 
-	/***************************************************************************************
-	 * * GETTERS & SETTERS * *
-	 *************************************************************************************/
+	/****************
+	 * * GETTERS  * *
+	 ****************/
 
 	public List<List<Criterion>> getSetCIVT() {
 		return this.setCIVT;
@@ -77,9 +79,9 @@ public class LabreucheComputer {
 		return this.ivtPermutations;
 	}
 
-	/****************************************************************************************
+	/***************
 	 * * METHODS * *
-	 ****************************************************************************************/
+	 ***************/
 
 	/**
 	 * @return the minimal set of permutation that inverse the decision between x
@@ -174,8 +176,7 @@ public class LabreucheComputer {
 	}
 
 	/*
-	 * * * * * * * * * * * * * * * * * * * * * Resolution problem * * * * * * * * *
-	 * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * Resolution problem * * * * * * * * *
 	 */
 
 	public LabreucheOutput getExplanation() {
@@ -199,45 +200,38 @@ public class LabreucheComputer {
 			return labreucheOutput;
 		}
 		
-		notApplicable.add(Anchor.ALL);
 		
 		if (tryNOAExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		
-		notApplicable.add(Anchor.NOA);
-		
+				
 		if (tryIVTExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		
-		notApplicable.add(Anchor.IVT);
-		
+				
 		if (tryRMGAVGExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		
-		notApplicable.add(Anchor.RMGAVG);
-		
+				
 		if (tryRMGCOMPExplanation()) {
 			assert labreucheOutput != null;
 			return labreucheOutput;
 		}
-		
-		notApplicable.add(Anchor.RMGCOMP);
-		
+				
 		throw new IllegalStateException();
 	}
 
-	private boolean tryALLExplanation() {
+	public boolean tryALLExplanation() {
+		Preconditions.checkState(!notApplicable.contains(Anchor.ALL));
 		Preconditions.checkState(labreucheOutput == null);
 
 		for (Double v : getDelta().values()) {
 			if (v < 0.0) {
 				LOGGER.debug("ALL false");
+				notApplicable.add(Anchor.ALL);
 				return false;
 			}
 		}
@@ -248,13 +242,15 @@ public class LabreucheComputer {
 		return true;
 	}
 
-	private boolean tryNOAExplanation() {
+	public boolean tryNOAExplanation() {
 		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
+		Preconditions.checkState(!notApplicable.contains(Anchor.NOA));
 		Preconditions.checkState(labreucheOutput == null);
 
 		if (LabreucheTools.score(alternativesComparison.getX(), getWeightReference()) >= LabreucheTools
 				.score(alternativesComparison.getY(), getWeightReference())) {
 			LOGGER.debug("NOA false");
+			notApplicable.add(Anchor.NOA);
 			return false;
 		}
 
@@ -293,20 +289,10 @@ public class LabreucheComputer {
 
 	}
 
-	private Map<Criterion, Double> getWeightReference() {
-		Map<Criterion, Double> vectorRef = new LinkedHashMap<>();
-		Set<Criterion> criteria = alternativesComparison.getCriteria();
-
-		for (Criterion c : criteria) {
-			vectorRef.put(c, 1.0 / criteria.size());
-		}
-
-		return vectorRef;
-	}
-
-	private boolean tryIVTExplanation() {
+	public boolean tryIVTExplanation() {
 		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
 		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
+		Preconditions.checkState(!notApplicable.contains(Anchor.IVT));
 		Preconditions.checkState(labreucheOutput == null);
 
 		int size = 2;
@@ -363,6 +349,7 @@ public class LabreucheComputer {
 
 		if (ivtPermutations == null) {
 			LOGGER.debug("IVT false");
+			notApplicable.add(Anchor.IVT);
 			return false;
 		}
 
@@ -392,10 +379,11 @@ public class LabreucheComputer {
 		return true;
 	}
 
-	private boolean tryRMGAVGExplanation() {
+	public boolean tryRMGAVGExplanation() {
 		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
 		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
 		Preconditions.checkState(notApplicable.contains(Anchor.IVT));
+		Preconditions.checkState(!notApplicable.contains(Anchor.RMGAVG));
 		Preconditions.checkState(labreucheOutput == null);
 
 		double maxW = getMaxW();
@@ -409,28 +397,17 @@ public class LabreucheComputer {
 		}
 
 		LOGGER.debug("RMGAVG false");
+		notApplicable.add(Anchor.RMGAVG);
 
 		return false;
 	}
 
-	private double getMaxW() {
-		double maxW = Double.MIN_VALUE;
-
-		for (Double v : alternativesComparison.getPreferenceModel().getWeights().values()) {
-			double value = Math.abs(v - (1.0 / alternativesComparison.getCriteria().size()));
-
-			if (value > maxW) {
-				maxW = value;
-			}
-		}
-		return maxW;
-	}
-
-	private boolean tryRMGCOMPExplanation() {
+	public boolean tryRMGCOMPExplanation() {
 		Preconditions.checkState(notApplicable.contains(Anchor.ALL));
 		Preconditions.checkState(notApplicable.contains(Anchor.NOA));
 		Preconditions.checkState(notApplicable.contains(Anchor.IVT));
 		Preconditions.checkState(notApplicable.contains(Anchor.RMGAVG));
+		Preconditions.checkState(!notApplicable.contains(Anchor.RMGCOMP));
 		Preconditions.checkState(labreucheOutput == null);
 
 		double maxW = getMaxW();
@@ -444,6 +421,7 @@ public class LabreucheComputer {
 		}
 
 		LOGGER.debug("RMGCOMP false");
+		notApplicable.add(Anchor.RMGCOMP);
 
 		return false;
 	}
@@ -454,6 +432,30 @@ public class LabreucheComputer {
 		return labreucheOutput.getAnchor() == anchor;
 	}
 
+	private Map<Criterion, Double> getWeightReference() {
+		Map<Criterion, Double> vectorRef = new LinkedHashMap<>();
+		Set<Criterion> criteria = alternativesComparison.getCriteria();
+
+		for (Criterion c : criteria) {
+			vectorRef.put(c, 1.0 / criteria.size());
+		}
+
+		return vectorRef;
+	}
+	
+	private double getMaxW() {
+		double maxW = Double.MIN_VALUE;
+
+		for (Double v : alternativesComparison.getPreferenceModel().getWeights().values()) {
+			double value = Math.abs(v - (1.0 / alternativesComparison.getCriteria().size()));
+
+			if (value > maxW) {
+				maxW = value;
+			}
+		}
+		return maxW;
+	}
+	
 	/**
 	 * @param anchor
 	 *            : the type of Anchor explanation claimed

@@ -2,6 +2,7 @@ package io.github.oliviercailloux.decision.arguer.nunes;
 
 import io.github.oliviercailloux.decision.Utils;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
+import io.github.oliviercailloux.decision.arguer.nunes.output.CriticalAttributeOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.CutOffOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
@@ -14,7 +15,10 @@ public class NunesArguer {
 
 		switch (output.getPattern()) {
 
-		case DOMINATION:
+		case CRIT:
+			return argueCriticalAttribut((CriticalAttributeOutput) output);
+			
+		case DOM:
 			return argueDomination((DominationOutput) output);
 
 		case CUTOFF:
@@ -37,21 +41,21 @@ public class NunesArguer {
 		}
 	}
 
+	private String argueCriticalAttribut(CriticalAttributeOutput output) {
+		AlternativesComparison<NunesModel> alcoCRIT = output.getAlternativesComparison();
+		
+		return alcoCRIT.getX().getName() + " is recommended because it got the best value on "
+				+ output.getCritical().getName();
+	}
+
 	private String argueDomination(DominationOutput output) {
-
 		AlternativesComparison<NunesModel> alcoDOM = output.getAlternativesComparison();
-
-		if (output.getCritical() != null) {
-			return alcoDOM.getX().getName() + " is recommended because it got the best value on "
-					+ output.getCritical().getName();
-		}
 
 		return "There is no reason to choose " + alcoDOM.getY().getName() + ", as " + alcoDOM.getX().getName()
 				+ "is better on all criteria.";
 	}
 
 	private String argueCutOff(CutOffOutput output) {
-
 		AlternativesComparison<NunesModel> alcoCutoff = output.getAlternativesComparison();
 
 		return alcoCutoff.getX().getName() + " is rejected because she doesn't satisfied the constrain on the criteria "
@@ -59,7 +63,6 @@ public class NunesArguer {
 	}
 
 	private String argueDecisive(DecisiveOutput output) {
-
 		AlternativesComparison<NunesModel> alco = output.getAlternativesComparison();
 
 		return alco.getX() + "was chosen because of its " + Utils.showCriteria(alco.getCriteria());

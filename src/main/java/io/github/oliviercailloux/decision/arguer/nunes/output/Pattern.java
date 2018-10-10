@@ -1,5 +1,5 @@
 package io.github.oliviercailloux.decision.arguer.nunes.output;
 
 public enum Pattern {
-	DOMINATION, CUTOFF, MINREQP, MINREQM, DECISIVE, TRADEOFF;
+	CRIT, DOM, CUTOFF, MINREQP, MINREQM, DECISIVE, TRADEOFF;
 }

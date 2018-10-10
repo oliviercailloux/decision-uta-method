@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.AlternativesComparisonNunesBuilder;
+import io.github.oliviercailloux.decision.arguer.nunes.output.CriticalAttributeOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.model.Criterion;
 import io.github.oliviercailloux.decision.model.EvaluatedAlternative;
@@ -49,12 +50,12 @@ public class Examples {
 		return new NunesComputer(altsComp, new LinkedHashSet<Constraint>(), set);
 	}
 
-	public static DominationOutput getExampleCRITICALOutput() {
+	public static CriticalAttributeOutput getExampleCRITICALOutput() {
 		NunesComputer nm = getExampleCRITICAL();
 
 		Criterion critical = new Criterion(4, "c4");
 
-		return new DominationOutput(nm.getAlternativesComparison(), critical);
+		return new CriticalAttributeOutput(nm.getAlternativesComparison(), critical);
 	}
 
 	public static DominationOutput getExampleDOMINATIONOutput() {

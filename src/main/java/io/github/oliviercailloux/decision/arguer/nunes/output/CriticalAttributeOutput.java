@@ -6,19 +6,20 @@ import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.nunes.NunesModel;
 import io.github.oliviercailloux.decision.model.Criterion;
 
-public class DominationOutput implements NunesOutput {
-
+public class CriticalAttributeOutput implements NunesOutput {
+	
 	private AlternativesComparison<NunesModel> alternativesComparison;
 	private Criterion critical;
 
-	public DominationOutput(AlternativesComparison<NunesModel> alternativesComparison) {
+	public CriticalAttributeOutput(AlternativesComparison<NunesModel> alternativesComparison, Criterion critical) {
 		this.alternativesComparison = alternativesComparison;
+		this.critical = requireNonNull(critical);
 	}
 
 	public String argue() {
-		return "There is no reason to choose " + alternativesComparison.getY().getName() + ", as "
-				+ alternativesComparison.getX().getName()
-				+ "is better on all criteria.";
+
+			return alternativesComparison.getX().getName() + " is recommended because it got the best value on "
+					+ critical.getName();
 	}
 
 	public Criterion getCritical() {
@@ -27,7 +28,7 @@ public class DominationOutput implements NunesOutput {
 
 	@Override
 	public Pattern getPattern() {
-		return Pattern.DOM;
+		return Pattern.CRIT;
 	}
 
 	@Override

@@ -14,6 +14,8 @@ import com.google.common.collect.Table;
 
 import io.github.oliviercailloux.decision.arguer.AlternativesComparison;
 import io.github.oliviercailloux.decision.arguer.labreuche.LabreucheComputer;
+import io.github.oliviercailloux.decision.arguer.nunes.output.CriticalAttributeOutput;
+import io.github.oliviercailloux.decision.arguer.nunes.output.CutOffOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DecisiveOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.NunesOutput;
@@ -77,7 +79,12 @@ public class NunesComputer {
 	private NunesOutput computeExplanation() {
 		Preconditions.checkState(nunesOutput == null);
 
-		if (tryDOMINATION()) {
+		if(tryCRIT()) {
+			assert nunesOutput != null;
+			return nunesOutput;
+		}
+		
+		if (tryDOM()) {
 			assert nunesOutput != null;
 			return nunesOutput;
 		}
@@ -117,10 +124,19 @@ public class NunesComputer {
 		Preconditions.checkState(nunesOutput.getPattern() == pattern, "This pattern is not the one applicable");
 		return nunesOutput;
 	}
-
-	public DominationOutput getDOMINATIONExplanation() {
-		return (DominationOutput) getCheckedExplanation(Pattern.DOMINATION);
+	
+	public CriticalAttributeOutput getCRITExplanation() {
+		return (CriticalAttributeOutput) getCheckedExplanation(Pattern.CRIT);
 	}
+
+	public DominationOutput getDOMExplanation() {
+		return (DominationOutput) getCheckedExplanation(Pattern.DOM);
+	}
+	
+	public CutOffOutput getCUTOFFExplanation() {
+		return (CutOffOutput) getCheckedExplanation(Pattern.CUTOFF);
+	}
+	
 
 	public DecisiveOutput getDECISIVEExplanation() {
 		return (DecisiveOutput) getCheckedExplanation(Pattern.DECISIVE);
@@ -130,7 +146,7 @@ public class NunesComputer {
 		return (TradeOffOutput) getCheckedExplanation(Pattern.TRADEOFF);
 	}
 
-	private boolean tryDOMINATION() {
+	private boolean tryCRIT() {
 		Preconditions.checkState(nunesOutput == null);
 
 		int count = 0;
@@ -138,22 +154,36 @@ public class NunesComputer {
 
 		for (Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel()
 				.getDelta(alternativesComparison.getX(), alternativesComparison.getY()).entrySet()) {
-			if (entry.getValue() > 0.0) {
+			if (entry.getValue() < 0.0) {
 				count++;
 				critical = entry.getKey();
-
 			}
 
 			if (entry.getValue() < 0.0) {
-				LOGGER.info("DOM false");
+				LOGGER.info("CRIT false");
 				return false;
 			}
 		}
 
 		if (count == 1) {
 			LOGGER.info("DOM (critical) true");
-			nunesOutput = new DominationOutput(alternativesComparison, critical);
+			nunesOutput = new CriticalAttributeOutput(alternativesComparison, critical);
 			return true;
+		}
+
+		LOGGER.info("CRIT false");
+		return false;
+	}
+	
+	private boolean tryDOM() {
+		Preconditions.checkState(nunesOutput == null);
+
+		for (Entry<Criterion, Double> entry : alternativesComparison.getPreferenceModel()
+				.getDelta(alternativesComparison.getX(), alternativesComparison.getY()).entrySet()) {
+			if (entry.getValue() < 0.0) {
+				LOGGER.info("DOM false");
+				return false;
+			}
 		}
 
 		LOGGER.info("DOM true");
@@ -162,8 +192,18 @@ public class NunesComputer {
 		return true;
 	}
 
+	private boolean tryCUTOFF() {
+		//TODO
+		return false;
+	}
+	
 	private boolean tryMINREQP() {
-
+		// TODO
+		return false;
+	}
+	
+	private boolean tryMINREQM() {
+		// TODO
 		return false;
 	}
 

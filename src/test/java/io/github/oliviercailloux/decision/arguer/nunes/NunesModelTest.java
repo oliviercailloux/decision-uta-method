@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.oliviercailloux.decision.arguer.nunes.output.CriticalAttributeOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.DominationOutput;
 import io.github.oliviercailloux.decision.arguer.nunes.output.Pattern;
 
@@ -19,10 +20,10 @@ public class NunesModelTest {
 
 		NunesComputer nm = Examples.getExampleCRITICAL();
 
-		DominationOutput dom = nm.getDOMINATIONExplanation();
-		DominationOutput domExpected = Examples.getExampleCRITICALOutput();
+		CriticalAttributeOutput dom = nm.getCRITExplanation();
+		CriticalAttributeOutput domExpected = Examples.getExampleCRITICALOutput();
 
-		assertTrue(nm.isApplicable(Pattern.DOMINATION));
+		assertTrue(nm.isApplicable(Pattern.CRIT));
 		assertEquals(domExpected.getCritical(), dom.getCritical());
 	}
 
@@ -32,7 +33,7 @@ public class NunesModelTest {
 
 		NunesComputer nm = Examples.getExampleDOMINATION();
 
-		assertTrue(nm.isApplicable(Pattern.DOMINATION));
+		assertTrue(nm.isApplicable(Pattern.DOM));
 	}
 
 }
