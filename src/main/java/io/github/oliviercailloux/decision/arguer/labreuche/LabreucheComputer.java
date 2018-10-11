@@ -334,10 +334,7 @@ public class LabreucheComputer {
 			LOGGER.debug("setCIVT : ");
 
 			for (List<Criterion> l : setCIVT) {
-				LOGGER.debug("pi = {}  dEU = {}  minPI = {}", l,
-						LabreucheTools.dEU(l, alternativesComparison.getPreferenceModel().getWeights(), getDelta()),
-						LabreucheTools.minimalPi(l, alternativesComparison.getPreferenceModel().getWeights(),
-								getDelta()));
+				LOGGER.debug("pi = {}", l);
 			}
 
 			bigC = algo(bigA, null, 0);
@@ -347,7 +344,7 @@ public class LabreucheComputer {
 
 		ivtPermutations = bigC;
 
-		if (ivtPermutations == null) {
+		if (ivtPermutations == null || ivtPermutations.isEmpty()) {
 			LOGGER.debug("IVT false");
 			notApplicable.add(Anchor.IVT);
 			return false;
@@ -487,5 +484,4 @@ public class LabreucheComputer {
 	public RMGCOMPOutput getRMGCOMPExplanation() {
 		return (RMGCOMPOutput) getCheckedExplanation(Anchor.RMGCOMP);
 	}
-
 }

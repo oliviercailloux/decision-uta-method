@@ -13,6 +13,7 @@ import org.apache.commons.math3.exception.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
@@ -494,34 +495,33 @@ public class LabreucheTools {
 				}
 			}
 		}
+		
 		return ImmutableGraph.copyOf(result);
 	}
 
 	static ImmutableGraph<Criterion> rTopG(Graph<Criterion> graph) {
 
 		boolean changeFlag = false;
-		MutableGraph<Criterion> light;
 		MutableGraph<Criterion> copy = Graphs.copyOf(graph);
 
 		do {
 			changeFlag = false;
-
+			
 			// c1 = (a b)
 			for (EndpointPair<Criterion> c1 : copy.edges()) {
-				light = Graphs.copyOf(copy);
-				light.removeEdge(c1.nodeU(), c1.nodeV());
-
+			
 				// c2 = (c d)
-				for (EndpointPair<Criterion> c2 : light.edges()) {
-					// (a b) , (c d) => b=c and a!=d
-					if (c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())
+				for (EndpointPair<Criterion> c2 : copy.edges()) {
+					
+					// (a b) , (c d) : if b=c and a!=d then add (a d) 
+					if (!c1.equals(c2) && c1.nodeV().equals(c2.nodeU()) && !c1.nodeU().equals(c2.nodeV())
 							&& !copy.hasEdgeConnecting(c1.nodeU(), c2.nodeV())) {
 						copy.putEdge(c1.nodeU(), c2.nodeV());
 						changeFlag = true;
 					}
 
-					// (c d) , (a b) => a=d and b!=d
-					if (c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU())
+					// (c d) , (a b) : if a=d and b!=d then add (b c)
+					if (!c1.equals(c2) && c1.nodeU().equals(c2.nodeV()) && !c1.nodeV().equals(c2.nodeU())
 							&& !copy.hasEdgeConnecting(c1.nodeV(), c2.nodeU())) {
 						copy.putEdge(c1.nodeV(), c2.nodeU());
 						changeFlag = true;

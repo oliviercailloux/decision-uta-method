@@ -192,6 +192,7 @@ public class NunesComputer {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean tryCUTOFF() {
 		//TODO
 		return false;
@@ -202,6 +203,7 @@ public class NunesComputer {
 		return false;
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean tryMINREQM() {
 		// TODO
 		return false;
